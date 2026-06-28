@@ -2087,9 +2087,7 @@ window.setLang = function(lang,el){
 
     updates["status/appConnected"] = true;
     updates["status/lastUpdate"] = nowISO();
-    updates["app/version"] = DOVLIM_APP_VERSION;
-    updates["app/lastOpen"] = nowISO();
-
+    
     const seedType = getSeedType();
     if (seedType !== "not_set") {
       updates["food/seedType"] = seedType;
