@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Smart Pro">
+<meta name="theme-color" content="#0c0e14">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230c0e14'/><text y='.9em' font-size='80' x='10'>🐦</text></svg>">
+<link rel="manifest" href="data:application/json,{%22name%22:%22Smart%20Pro%20V8.1%22,%22short_name%22:%22SmartPro%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230c0e14%22,%22theme_color%22:%22%230c0e14%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230c0e14'/><text y='.9em' font-size='80' x='10'>🐦</text></svg>%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}">
+<title>Smart Pro V8.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e14;--bg2:#13161f;--bg3:#181b26;--bg4:#1e2230;
+  --border:rgba(255,255,255,.07);
+  --text:#f2f4f8;--text2:#8b90a0;--text3:#444860;
+  --blue:#4A90D9;--blue-dk:#0d1829;--blue-md:#1a4a80;
+  --ok:#22a874;--ok-dk:#0a3d2b;
+  --warn:#e8972a;--warn-dk:#3d2800;
+  --danger:#e04545;
+  --teal:#5DCAA5;
+  --r:18px;--rs:12px;--rx:8px;
+}
+/* NO horizontal scroll anywhere */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;max-width:100%;}
+html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;}
+
+/* APP: full screen, flex column */
+.app{
+  width:390px;
+  max-width:100vw;
+  height:100vh;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+  overflow:hidden;
+}
+
+/* STATUS BAR */
+.sb{padding:12px 20px 4px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg);}
+.sb-t{font-size:14px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+.sb-i{font-size:13px;color:var(--text2);}
+
+/* SCROLL AREA: takes all remaining space */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
+.scroll::-webkit-scrollbar{display:none;}
+.scroll{scrollbar-width:none;-ms-overflow-style:none;}
+
+/* SCREENS: hidden by default */
+.screen{display:none;}
+.screen.on{display:block;}
+
+/* BOTTOM NAV: always at bottom */
+.nav{
+  flex-shrink:0;
+  display:flex;
+  background:rgba(12,14,20,.98);
+  border-top:.5px solid var(--border);
+  padding:8px 0 16px;
+}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;position:relative;}
+.ni-ic{font-size:22px;line-height:1.2;}
+.ni-lb{font-size:10px;color:var(--text3);}
+.ni.on .ni-lb{color:var(--blue);}
+.ni-bd{position:absolute;top:0;right:calc(50% - 20px);background:var(--danger);color:#fff;font-size:9px;font-weight:600;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
+
+/* TOPBAR */
+.tb{padding:12px 16px 6px;}
+.tb h1{font-size:24px;font-weight:600;color:var(--text);letter-spacing:-.3px;}
+.tb-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.tb-meta{font-size:13px;color:var(--text3);margin-top:3px;}
+.online{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ok);}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* CONTENT */
+.c{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
+
+/* CARD */
+.card{background:var(--bg2);border-radius:var(--r);border:.5px solid var(--border);}
+.clbl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.1em;padding:13px 16px 0;text-transform:uppercase;}
+.cbody{padding:12px 16px 16px;}
+
+/* HEALTH SCORE */
+.hcard{background:linear-gradient(135deg,#0d1829,#13161f);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:16px;border:.5px solid rgba(74,144,217,.2);}
+.hring{position:relative;width:76px;height:76px;flex-shrink:0;}
+.hring svg{width:76px;height:76px;transform:rotate(-90deg);}
+.hv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.hnum{font-size:24px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;line-height:1;}
+.hof{font-size:9px;color:var(--text3);margin-top:1px;}
+.htitle{font-size:16px;font-weight:500;color:var(--text);}
+.hsub{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5;}
+.hbadge{display:inline-flex;align-items:center;background:rgba(34,168,116,.15);color:var(--ok);font-size:11px;padding:4px 10px;border-radius:20px;margin-top:8px;}
+
+/* LEVEL CARDS */
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.lcard{background:var(--bg3);border-radius:var(--rs);padding:14px;border:.5px solid var(--border);}
+.licon{font-size:20px;margin-bottom:6px;}
+.llbl{font-size:12px;color:var(--text2);margin-bottom:2px;}
+.lval{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;line-height:1.1;}
+.lbar{height:4px;background:var(--bg4);border-radius:2px;margin-top:8px;}
+.lbarfill{height:100%;border-radius:2px;}
+.lsub{font-size:11px;color:var(--text3);margin-top:5px;}
+
+/* ENVIRONMENT */
+.erow{display:flex;gap:8px;}
+.ebox{flex:1;background:var(--bg3);border-radius:var(--rs);padding:12px;border:.5px solid var(--border);min-width:0;}
+.etitle{font-size:10px;font-weight:500;color:var(--text3);letter-spacing:.08em;margin-bottom:8px;}
+.ems{display:flex;gap:6px;align-items:center;}
+.em{flex:1;min-width:0;}
+.emv{font-size:17px;font-weight:500;font-family:'DM Mono',monospace;}
+.eml{font-size:10px;color:var(--text3);margin-top:1px;}
+.ebadge{font-size:10px;font-weight:500;padding:3px 7px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.eok{background:rgba(34,168,116,.15);color:var(--ok);}
+.ewarn{background:rgba(232,151,42,.15);color:var(--warn);}
+
+/* CAMERA CARD */
+.camcard{background:var(--bg2);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:.5px solid var(--border);}
+.camth{width:48px;height:48px;border-radius:var(--rx);background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;flex-shrink:0;}
+.camdot{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--danger);animation:pulse 2s infinite;}
+.camtitle{font-size:15px;font-weight:500;color:var(--text);}
+.camsub{font-size:12px;color:var(--text3);margin-top:2px;}
+
+/* MEAL ROWS */
+.mrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);}
+.mrow:last-child{border-bottom:none;}
+.mico{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.mname{font-size:14px;font-weight:500;color:var(--text);}
+.mdose{font-size:12px;color:var(--text3);margin-top:1px;}
+.badge{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;white-space:nowrap;}
+.bdone{background:var(--ok-dk);color:var(--ok);}
+.bnext{background:var(--blue-dk);color:var(--blue);}
+.bpend{background:var(--bg4);color:var(--text3);}
+
+/* CHART */
+.chart{height:80px;display:flex;align-items:flex-end;gap:4px;}
+.bar{border-radius:4px 4px 0 0;flex:1;}
+.clbls{display:flex;gap:4px;margin-top:5px;}
+.clbl2{flex:1;font-size:9px;color:var(--text3);text-align:center;font-family:'DM Mono',monospace;}
+
+/* ALERTS */
+.aitem{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border);}
+.aitem:last-child{border-bottom:none;}
+.adot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.atitle{font-size:14px;font-weight:500;color:var(--text);}
+.asub{font-size:12px;color:var(--text3);margin-top:2px;}
+.atime{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;}
+
+/* SCHEDULE */
+.slist{display:flex;flex-direction:column;gap:8px;}
+.sitem{background:var(--bg3);border-radius:var(--rs);padding:13px 14px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border);}
+.sico{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
+.stime{font-size:17px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+.timeInput{width:92px;background:transparent;border:none;color:var(--text);font-size:17px;font-weight:500;font-family:'DM Mono',monospace;outline:none;cursor:pointer;}
+.timeInput::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.7;cursor:pointer;}
+.timeInput:focus{background:var(--blue-dk);border:1px solid var(--blue);border-radius:8px;padding:4px 6px;margin:-5px -7px;}
+.smeta{font-size:12px;color:var(--text3);margin-top:2px;}
+.tog{width:40px;height:24px;border-radius:12px;position:relative;cursor:pointer;border:none;flex-shrink:0;transition:background .2s;}
+.ton{background:var(--ok);}
+.toff{background:var(--bg4);}
+.tknob{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;transition:left .18s;}
+.ton .tknob{left:18px;}
+.toff .tknob{left:2px;}
+
+/* SEED PICKER */
+.seedrow{display:flex;gap:6px;margin-bottom:12px;}
+.sopt{flex:1;background:var(--bg4);border-radius:var(--rx);padding:10px 6px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
+.sopt.sel{background:var(--blue-dk);border-color:var(--blue);}
+.sopt-ic{font-size:18px;display:block;margin-bottom:3px;}
+.sopt-lb{font-size:11px;color:var(--text2);display:block;}
+.sopt.sel .sopt-lb{color:var(--blue);}
+
+/* TIME PILLS */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.tpill{background:var(--bg4);border-radius:var(--rx);padding:11px 12px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
+.tpill.sel{background:var(--blue-dk);border-color:var(--blue);}
+.tpill-t{font-size:16px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+.tpill-l{font-size:11px;color:var(--text3);margin-top:2px;}
+.tpill.sel .tpill-l{color:var(--blue);}
+.tpill.hidden{display:none;}
+
+/* DOSE */
+.drow{display:flex;align-items:center;padding:10px 0;opacity:1;pointer-events:auto;transition:opacity .2s;}
+.drow.on{opacity:1;pointer-events:auto;}
+.dlbl{font-size:14px;color:var(--text2);flex:1;}
+.dctrl{display:flex;align-items:center;gap:12px;}
+.dbtn{width:32px;height:32px;border-radius:var(--rx);background:var(--bg4);border:none;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.dval{font-size:18px;font-weight:500;color:var(--text);min-width:52px;text-align:center;font-family:'DM Mono',monospace;}
+
+/* SAVE BTN */
+.savebtn{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:15px;font-size:15px;font-weight:500;width:100%;cursor:pointer;margin-top:4px;font-family:'Inter',sans-serif;}
+.savebtn:disabled{background:var(--bg4);color:var(--text3);cursor:not-allowed;}
+
+/* SECTION LABEL */
+.slbl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.08em;margin-bottom:6px;}
+
+/* STAT ROW */
+.strow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:.5px solid var(--border);}
+.strow:last-child{border-bottom:none;}
+.stlbl{font-size:13px;color:var(--text2);}
+.stval{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;}
+
+/* TABS */
+.tabs{display:flex;gap:6px;margin-bottom:12px;}
+.tab{padding:6px 16px;border-radius:var(--rx);font-size:13px;cursor:pointer;border:none;background:var(--bg4);color:var(--text3);font-family:'Inter',sans-serif;}
+.tab.on{background:var(--blue-dk);color:var(--blue);}
+
+/* SETTINGS ROWS */
+.srow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:.5px solid var(--border);}
+.srow:last-child{border-bottom:none;}
+.srowico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.stitle{font-size:14px;font-weight:500;color:var(--text);}
+.ssub{font-size:12px;color:var(--text3);margin-top:1px;}
+
+/* SLIDER */
+.swrap{padding:12px 16px;}
+.swrap+.swrap{padding-top:0;}
+.shead{display:flex;justify-content:space-between;margin-bottom:6px;}
+.shead span{font-size:13px;color:var(--text2);}
+.shead strong{font-size:13px;color:var(--text);font-family:'DM Mono',monospace;}
+input[type=range]{width:100%;height:4px;border-radius:2px;appearance:none;background:var(--bg4);outline:none;}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;}
+
+/* CAMERA SCREEN */
+.camtb{display:flex;align-items:center;gap:12px;padding:12px 16px;}
+.camback{width:36px;height:36px;border-radius:var(--rx);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text);cursor:pointer;flex-shrink:0;}
+.camwrap{margin:0 16px;border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:4/3;position:relative;display:flex;align-items:center;justify-content:center;}
+.camwrap img{width:100%;height:100%;object-fit:cover;display:none;}
+.camph{color:var(--text3);font-size:13px;text-align:center;padding:24px;}
+.campill{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);border-radius:20px;padding:5px 11px;display:flex;align-items:center;gap:5px;font-size:11px;color:#fff;}
+
+.remoteInput{width:100%;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;}
+.remoteInput:focus{border:1px solid var(--blue);}
+.remoteBtn{background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
+.remoteNote{font-size:11px;color:var(--text3);line-height:1.45;margin-top:8px;}
+.remoteStatus{font-size:11px;color:var(--text3);margin-top:8px;font-family:'DM Mono',monospace;}
+
+
+/* API READY + PROFESSIONAL LANGUAGE */
+.proLangWrap{background:var(--bg3);border-radius:var(--rs);border:.5px solid var(--border);padding:12px;display:flex;align-items:center;gap:12px;}
+.proLangIcon{width:38px;height:38px;border-radius:12px;background:var(--blue-dk);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.proLangText{flex:1;min-width:0;}
+.proLangTitle{font-size:14px;font-weight:500;color:var(--text);}
+.proLangSub{font-size:11px;color:var(--text3);margin-top:2px;}
+.proLangSelect{background:var(--bg4);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font-size:13px;font-family:'Inter',sans-serif;outline:none;min-width:122px;}
+.apiStatusDot{width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;margin-right:6px;}
+.apiStatusDot.ok{background:var(--ok);}
+.apiStatusDot.err{background:var(--danger);}
+.apiSmall{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px;}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="sb"><span class="sb-t" id="clk">09:41</span><span class="sb-i">📶 🔋</span></div>
+
+<div class="scroll">
+
+<!-- HOME -->
+<div class="screen on" id="s-home">
+  <div class="tb"><div class="tb-row"><div><h1 id="t-app-name">Smart Pro</h1><div class="tb-meta" id="t-app-sub">Cage A · Tangier</div></div><div class="online"><div class="dot"></div><span id="t-online">Online</span></div></div></div>
+  <div class="c">
+    <div class="hcard">
+      <div class="hring"><svg viewBox="0 0 76 76"><circle cx="38" cy="38" r="30" fill="none" stroke="#1e2230" stroke-width="7"/><circle cx="38" cy="38" r="30" fill="none" stroke="#5DCAA5" stroke-width="7" stroke-dasharray="170 188" stroke-linecap="round"/></svg><div class="hv"><span class="hnum">90</span><span class="hof">/100</span></div></div>
+      <div><div class="htitle" id="t-health-title">Bird Health Score</div><div class="hsub" id="t-health-sub">Schedule on track · 23°C · 52% RH</div><div class="hbadge" id="t-health-badge">✓ All conditions normal</div></div>
+    </div>
+    <div class="lgrid">
+      <div class="lcard"><div class="licon">💧</div><div class="llbl" id="t-water-lbl">Water</div><div class="lval" style="color:var(--blue)">72<span style="font-size:14px;color:var(--text3)">%</span></div><div class="lbar"><div class="lbarfill" style="width:72%;background:var(--blue);height:4px;border-radius:2px;"></div></div><div class="lsub" id="t-water-sub">~5 days left</div></div>
+      <div class="lcard"><div class="licon">🌾</div><div class="llbl" id="t-seeds-lbl">Seeds</div><div class="lval" style="color:var(--warn)">45<span style="font-size:14px;color:var(--text3)">%</span></div><div class="lbar"><div class="lbarfill" style="width:45%;background:var(--warn);height:4px;border-radius:2px;"></div></div><div class="lsub" id="t-seeds-sub">~3 days left</div></div>
+    </div>
+    <div class="erow">
+      <div class="ebox"><div class="etitle" id="t-inbox-title">📦 INSIDE BOX</div><div class="ems"><div class="em"><div class="emv" style="color:var(--teal)">23°</div><div class="eml" id="t-inbox-temp">Temp</div></div><div class="em"><div class="emv" style="color:var(--blue)">48%</div><div class="eml" id="t-inbox-hum">Humidity</div></div><div class="ebadge eok">✓ OK</div></div></div>
+      <div class="ebox"><div class="etitle" id="t-cageair-title">🐦 CAGE AIR</div><div class="ems"><div class="em"><div class="emv" style="color:var(--teal)">25°</div><div class="eml" id="t-cageair-temp">Temp</div></div><div class="em"><div class="emv" style="color:var(--warn)">71%</div><div class="eml" id="t-cageair-hum">Humidity</div></div><div class="ebadge ewarn">⚠ Clean</div></div></div>
+    </div>
+    <div class="camcard" onclick="openCam()"><div class="camth">📷<div class="camdot"></div></div><div style="flex:1"><div class="camtitle" id="t-cam-title">Live Camera</div><div class="camsub" id="t-cam-sub">Motion triggered · 3 events today</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
+    <div class="card"><div class="clbl" id="t-meals-lbl">Today's Meals</div><div class="cbody" style="padding-top:8px">
+      <div class="mrow"><div class="mico">🌅</div><div style="flex:1"><div class="mname" id="t-m1-name">Morning · 08:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bdone" id="t-badge-done">Done</span></div>
+      <div class="mrow"><div class="mico">☀️</div><div style="flex:1"><div class="mname" id="t-m2-name">Midday · 12:30</div><div class="mdose">2.0 g · Small seeds</div></div><span class="badge bnext" id="t-badge-next">Next</span></div>
+      <div class="mrow"><div class="mico">🌆</div><div style="flex:1"><div class="mname">Evening · 17:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bpend" id="t-badge-pend">Pending</span></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- CAMERA -->
+<div class="screen" id="s-camera">
+  <div class="camtb"><div class="camback" onclick="closeCam()">‹</div><div><div style="font-size:16px;font-weight:500;color:var(--text)">Live Camera</div><div style="font-size:12px;color:var(--text3)">ESP32-CAM · Motion triggered</div></div></div>
+  <div class="camwrap"><img id="camImg" alt="stream"><div id="camPh" class="camph"><div style="font-size:36px;margin-bottom:10px">📷</div><div>Set camera IP in Settings<br>to enable live stream</div></div><div class="campill"><div class="dot"></div>LIVE</div></div>
+  <div style="padding:14px 16px 0"><div class="card"><div class="clbl">Motion Events Today</div><div class="cbody" style="padding-top:8px">
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">09:12</span></div>
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">08:03</span></div>
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">07:45</span></div>
+  </div></div></div>
+</div>
+
+<!-- SCHEDULE -->
+<div class="screen" id="s-schedule">
+  <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">4 meals · 8.5 g/day</div></div>
+  <div class="c">
+    <div class="slist">
+      <div class="sitem"><div class="sico">🌅</div><div style="flex:1"><input class="timeInput" data-slot="0" type="time" value="08:00" onchange="updateScheduleTime(this)"><div class="smeta">2.5 g · Small seeds · every day</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="sitem"><div class="sico">☀️</div><div style="flex:1"><input class="timeInput" data-slot="1" type="time" value="12:30" onchange="updateScheduleTime(this)"><div class="smeta">2.0 g · Small seeds · every day</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="sitem"><div class="sico">🌆</div><div style="flex:1"><input class="timeInput" data-slot="2" type="time" value="17:00" onchange="updateScheduleTime(this)"><div class="smeta">2.5 g · Small seeds · every day</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="sitem"><div class="sico">🌙</div><div style="flex:1"><input class="timeInput" data-slot="3" type="time" value="21:00" onchange="updateScheduleTime(this)"><div class="smeta">1.5 g · Small seeds · every day</div></div><button class="tog toff" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+    </div>
+    <div class="card"><div class="clbl" id="t-addmeal-lbl">Add Meal</div><div class="cbody">
+      <div style="background:var(--bg4);border-radius:var(--rx);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <span style="font-size:13px;color:var(--text2)" id="t-seedsize-display-lbl">Seed size</span>
+        <span id="schedSeed" style="font-size:13px;font-weight:500;color:var(--warn)">Not set — go to Settings</span>
+      </div>
+      <div class="slbl" id="t-time-lbl">TIME</div>
+      <div class="tgrid">
+        <div class="tpill sel" data-slot="0" onclick="selTime(this)"><div class="tpill-t">08:00</div><div class="tpill-l">Morning</div></div>
+        <div class="tpill" data-slot="1" onclick="selTime(this)"><div class="tpill-t">12:30</div><div class="tpill-l">Mid-morning</div></div>
+        <div class="tpill" data-slot="2" onclick="selTime(this)"><div class="tpill-t">17:00</div><div class="tpill-l">Afternoon</div></div>
+        <div class="tpill" data-slot="3" onclick="selTime(this)"><div class="tpill-t">21:00</div><div class="tpill-l">Evening</div></div>
+      </div>
+      <div class="slbl" id="t-dose-lbl">DOSE</div>
+      <div class="drow" id="drow">
+        <span class="dlbl" id="t-grams-lbl">Grams per meal</span>
+        <div class="dctrl">
+          <button class="dbtn" onclick="chgD(-0.5)">−</button>
+          <span class="dval" id="dval">2.0 g</span>
+          <button class="dbtn" onclick="chgD(0.5)">+</button>
+        </div>
+      </div>
+      <button class="savebtn" id="savebtn" disabled onclick="doSave(this)"><span id="t-savemeal">Save meal</span></button>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-manfeed-lbl">Manual Feed</div><div class="cbody" style="display:flex;align-items:center;gap:12px">
+      <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)" id="t-dispense-lbl">Dispense now</div><div style="font-size:12px;margin-top:2px"><span id="t-feednow-seed-lbl">Seed:</span> <span id="feedseed" style="color:var(--warn)">not set — select in Settings</span></div></div>
+      <button id="feedbtn" disabled onclick="doFeed(this)" style="background:var(--bg4);color:var(--text3);border:none;border-radius:var(--rx);padding:11px 18px;font-size:14px;font-weight:500;cursor:not-allowed;font-family:'Inter',sans-serif;opacity:.5;flex-shrink:0;white-space:nowrap;"><span id="t-feedbtn-txt">Feed now</span></button>
+    </div></div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="screen" id="s-alerts">
+  <div class="tb"><h1 id="t-alerts-h">Alerts</h1><div class="tb-meta">Last 24 hours</div></div>
+  <div class="c">
+    <div class="card"><div class="clbl" id="t-active-lbl">Active</div><div class="cbody" style="padding-top:8px">
+      <div class="aitem"><div class="adot" style="background:var(--warn)"></div><div style="flex:1"><div class="atitle" id="t-alert1-title">High humidity — cage air</div><div class="asub" id="t-alert1-sub">71% detected · Max 65% · Clean cage soon</div></div><span class="atime">now</span></div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-today-lbl">Today</div><div class="cbody" style="padding-top:8px">
+      <div class="aitem"><div class="adot" style="background:var(--ok)"></div><div style="flex:1"><div class="atitle" id="t-alrt-meal1">Meal distributed</div><div class="asub" id="t-alrt-meal1-sub">2.5g dispensed · Morning schedule</div></div><span class="atime">08:00</span></div>
+      <div class="aitem"><div class="adot" style="background:var(--ok)"></div><div style="flex:1"><div class="atitle" id="t-alrt-meal2">Meal distributed</div><div class="asub" id="t-alrt-meal2-sub">2.0g dispensed · Midday schedule</div></div><span class="atime">12:30</span></div>
+      <div class="aitem"><div class="adot" style="background:var(--blue)"></div><div style="flex:1"><div class="atitle" id="t-alrt-solar">Solar charging active</div><div class="asub" id="t-alrt-solar-sub">Battery at 78%</div></div><span class="atime">14:00</span></div>
+      <div class="aitem"><div class="adot" style="background:var(--text3)"></div><div style="flex:1"><div class="atitle" id="t-alrt-pump">Water pump cycle</div><div class="asub" id="t-alrt-pump-sub">Circulation completed</div></div><span class="atime">09:00</span></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="screen" id="s-stats">
+  <div class="tb"><h1 id="t-stats-h">Statistics</h1></div>
+  <div class="c">
+    <div class="lgrid">
+      <div class="lcard"><div class="llbl" id="t-avg-seeds-lbl">Avg daily seeds</div><div class="lval" style="color:var(--warn);font-size:22px">8.3<span style="font-size:13px;color:var(--text3)"> g</span></div><div class="lsub" id="t-vs-week">+0.4g vs last week</div></div>
+      <div class="lcard"><div class="llbl" id="t-avg-water-lbl">Avg daily water</div><div class="lval" style="color:var(--blue);font-size:22px">38<span style="font-size:13px;color:var(--text3)"> ml</span></div><div class="lsub" id="t-normal-range">Normal range</div></div>
+    </div>
+    <div class="card"><div class="clbl" id="t-seed-chart-lbl">Seed Consumption (g/day)</div><div class="cbody">
+      <div class="tabs"><button class="tab on" onclick="swTab(this,7)">7d</button><button class="tab" onclick="swTab(this,30)">30d</button><button class="tab" onclick="swTab(this,90)">90d</button></div>
+      <div class="chart" id="ch1"></div><div class="clbls" id="lb1"></div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-water-chart-lbl">Water Consumed (ml/day)</div><div class="cbody">
+      <div class="chart" id="ch2"></div><div class="clbls" id="lb2"></div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-env-lbl">Environment (last 24h)</div><div class="cbody" style="padding-top:8px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:var(--bg3);border-radius:var(--rx);padding:10px 12px"><div style="font-size:10px;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">📦 INSIDE BOX</div><div style="display:flex;gap:16px"><div><div class="stval" style="color:var(--teal)">23.2°C</div><div style="font-size:11px;color:var(--text3)">Avg temp</div></div><div><div class="stval" style="color:var(--blue)">48%</div><div style="font-size:11px;color:var(--text3)">Avg humidity</div></div><div><div class="stval" style="color:var(--ok)">✓ OK</div><div style="font-size:11px;color:var(--text3)">Food safe</div></div></div></div>
+        <div style="background:var(--bg3);border-radius:var(--rx);padding:10px 12px"><div style="font-size:10px;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">🐦 CAGE AIR</div><div style="display:flex;gap:16px"><div><div class="stval" style="color:var(--teal)">25.1°C</div><div style="font-size:11px;color:var(--text3)">Avg temp</div></div><div><div class="stval" style="color:var(--warn)">71%</div><div style="font-size:11px;color:var(--text3)">Avg humidity</div></div><div><div class="stval" style="color:var(--warn)">⚠ High</div><div style="font-size:11px;color:var(--text3)">Clean cage</div></div></div></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-dev-health-lbl">Device Health</div><div class="cbody" style="padding-top:8px">
+      <div class="strow"><span class="stlbl" id="t-solar-lbl">☀️ Solar today</span><span class="stval" style="color:var(--warn)">712 mAh</span></div>
+      <div class="strow"><span class="stlbl" id="t-bat-lbl">🔋 Battery</span><span class="stval" style="color:var(--ok)">78%</span></div>
+      <div class="strow"><span class="stlbl" id="t-pump-lbl">💧 Pump cycles</span><span class="stval" id="t-pump-val">14 this week</span></div>
+      <div class="strow"><span class="stlbl" id="t-uptime-lbl">📶 Uptime</span><span class="stval" style="color:var(--ok)">99.8%</span></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="s-settings">
+  <div class="tb"><h1 id="t-settings-h">Settings</h1></div>
+  <div class="c">
+    <div style="background:var(--bg3);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border)"><div style="font-size:28px">🐦</div><div style="flex:1"><div style="font-size:15px;font-weight:500;color:var(--text)">Smart Pro · Cage A</div><div style="font-size:12px;color:var(--text3);margin-top:2px">ESP32 · FW 8.1.2 · IP54</div></div><div class="badge bdone" id="t-online">Online</div></div>
+
+    <!-- LANGUAGE -->
+    <div class="card"><div class="clbl" id="t-lang-lbl">Language</div><div class="cbody">
+      <div class="proLangWrap">
+        <div class="proLangIcon">🌐</div>
+        <div class="proLangText">
+          <div class="proLangTitle">App language</div>
+          <div class="proLangSub">Choose the interface language</div>
+        </div>
+        <select id="proLangSelect" class="proLangSelect" onchange="setLang(this.value)">
+          <option value="en">🇬🇧 English</option>
+          <option value="fr">🇫🇷 Français</option>
+          <option value="ar">🇸🇦 العربية</option>
+          <option value="es">🇪🇸 Español</option>
+          <option value="it">🇮🇹 Italiano</option>
+          <option value="ja">🇯🇵 日本語</option>
+        </select>
+      </div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-seedsize-lbl">Seed Size</div><div class="cbody">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px" id="t-seedsize-hint">Select before using manual feed or adding meals</div>
+      <div class="seedrow" id="seedpicker">
+        <div class="sopt" onclick="selSeed(this)"><span class="sopt-ic">🌱</span><span class="sopt-lb">Small</span></div>
+        <div class="sopt" onclick="selSeed(this)"><span class="sopt-ic">🌾</span><span class="sopt-lb">Medium</span></div>
+        <div class="sopt" onclick="selSeed(this)"><span class="sopt-ic">🌻</span><span class="sopt-lb">Large</span></div>
+      </div>
+    </div></div>
+    <div class="card"><div class="clbl" id="t-thresh-lbl">Alert Thresholds</div>
+      <div class="swrap"><div class="shead"><span id="t-hum-lbl">Max cage humidity</span><strong id="hv">65%</strong></div><input type="range" min="50" max="85" value="65" step="5" oninput="document.getElementById('hv').textContent=this.value+'%'"></div>
+      <div class="swrap"><div class="shead"><span id="t-temp-lbl2">Max cage temperature</span><strong id="tv">32°C</strong></div><input type="range" min="25" max="42" value="32" step="1" oninput="document.getElementById('tv').textContent=this.value+'°C'"></div>
+      <div class="swrap" style="padding-bottom:14px"><div class="shead"><span id="t-food-lbl">Low food alert</span><strong id="fv">20%</strong></div><input type="range" min="10" max="40" value="20" step="5" oninput="document.getElementById('fv').textContent=this.value+'%'"></div>
+    </div>
+    <div class="card"><div class="clbl" id="t-notif-lbl">Notifications</div>
+      <div class="srow"><div class="srowico" style="background:#0d1829">💧</div><div style="flex:1"><div class="stitle" id="t-notif1">Low water</div><div class="ssub" id="t-notif1-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#1a1200">🌾</div><div style="flex:1"><div class="stitle" id="t-notif2">Low seeds</div><div class="ssub" id="t-notif2-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f0f18">🔋</div><div style="flex:1"><div class="stitle" id="t-notif3">Low battery</div><div class="ssub" id="t-notif3-sub">Alert when below 10%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#1a0f0e">🌡️</div><div style="flex:1"><div class="stitle" id="t-notif4">High temp/humidity — box</div><div class="ssub" id="t-notif4-sub">Food spoilage risk</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f1a0e">🐦</div><div style="flex:1"><div class="stitle" id="t-notif5">High humidity — cage air</div><div class="ssub" id="t-notif5-sub">Bird health risk · clean cage</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f0f1a">📶</div><div style="flex:1"><div class="stitle" id="t-notif6">WiFi disconnected</div><div class="ssub" id="t-notif6-sub">Device offline or out of range</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+    </div>
+
+    <div class="card"><div class="clbl">Device Connection</div>
+      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
+        <div><div class="stitle">📡 ESP32 Device IP</div><div class="ssub">Local control: phone and box on same WiFi</div></div>
+        <input id="deviceIp" class="remoteInput" type="text" placeholder="192.168.1.105">
+        <button class="remoteBtn" onclick="saveDeviceIp()">Save Device IP</button>
+        <div id="deviceIpStatus" class="remoteStatus">Not saved</div>
+      </div>
+    </div>
+
+    <div class="card"><div class="clbl">Remote Notifications</div>
+      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
+        <div><div class="stitle">🔔 Telegram Alerts</div><div class="ssub">For alerts when you are in another city</div></div>
+        <input id="telegramChatId" class="remoteInput" type="text" placeholder="Telegram Chat ID">
+        <input id="telegramBotToken" class="remoteInput" type="password" placeholder="Telegram Bot Token">
+        <button class="remoteBtn" onclick="saveTelegramSettings()">Save Telegram Settings</button>
+        <div id="telegramStatus" class="remoteStatus">Not configured</div>
+        <div class="remoteNote">Important: ESP32 must send alerts to Telegram. Local WiFi control alone cannot send phone notifications when you are far from the box.</div>
+      </div>
+    </div>
+
+
+    <div class="card"><div class="clbl">API Ready</div>
+      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
+        <div><div class="stitle"><span id="apiDot" class="apiStatusDot"></span>Box connection status</div>
+        <div class="ssub">Prepared endpoints: /api/status · /api/schedule · /api/feed · /api/settings</div></div>
+        <button class="remoteBtn" onclick="testBoxConnection()">Test Box Connection</button>
+        <div id="apiStatusText" class="apiSmall">Waiting for ESP32 IP</div>
+      </div>
+    </div>
+
+    <div class="card"><div class="clbl" id="t-hw-lbl">Hardware</div>
+      <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px;padding:14px 16px">
+        <div><div class="stitle" id="t-cam-ip-title">📷 Camera IP</div><div class="ssub" id="t-cam-ip-hint">Used to load the live stream</div></div>
+        <div style="display:flex;gap:8px"><input id="camip" type="text" placeholder="192.168.1.105" style="flex:1;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;min-width:0"><button onclick="saveCam()" id="t-save-btn" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">Save</button></div>
+      </div>
+      <div class="srow"><div class="srowico" style="background:#0d1520">📶</div><div style="flex:1"><div class="stitle" id="t-wifi-title">WiFi network</div><div class="ssub">HomeNetwork_5G</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
+    </div>
+    <div class="card"><div class="clbl" id="t-device-lbl">Device</div>
+      <div class="srow"><div class="srowico" style="background:var(--bg3)">🔄</div><div style="flex:1"><div class="stitle" id="t-update-title">Check for updates</div><div class="ssub" id="t-update-sub">FW 8.1.2 · Up to date</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
+      <div class="srow"><div class="srowico" style="background:#3d0f0f">⚠️</div><div style="flex:1"><div class="stitle" style="color:var(--danger)" id="t-reset-title">Factory reset</div><div class="ssub" id="t-reset-sub">Clears all schedules &amp; data</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
+    </div>
+    <div style="text-align:center;padding:16px 0 4px"><div style="font-size:12px;color:var(--text3)">Smart Pro V8.1 · Inventor: Lotfi Mouaffek</div><div style="font-size:11px;color:var(--text3);opacity:.5;margin-top:3px">© 2026 · All rights reserved</div></div>
+  </div>
+</div>
+
+</div><!-- end .scroll -->
+
+<!-- INSTALL BANNER -->
+<div id="installBanner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;background:#1a4a80;border-radius:14px;padding:12px 16px;z-index:50;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);">
+  <div style="font-size:24px">📲</div>
+  <div style="flex:1"><div style="font-size:13px;font-weight:500;color:#fff">Install Smart Pro</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:1px">Add to home screen for best experience</div></div>
+  <button onclick="installApp()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">Install</button>
+  <button onclick="dismissInstall()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:4px;">✕</button>
+</div>
+
+<!-- iOS INSTALL HINT (shows only on iOS Safari) -->
+<div id="iosBanner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;background:#1a4a80;border-radius:14px;padding:12px 16px;z-index:50;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);">
+  <div style="font-size:24px">📲</div>
+  <div style="flex:1"><div style="font-size:13px;font-weight:500;color:#fff">Install on iPhone</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">Tap <strong>Share</strong> ↑ then <strong>"Add to Home Screen"</strong></div></div>
+  <button onclick="document.getElementById('iosBanner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:4px;">✕</button>
+</div>
+
+<nav class="nav">
+  <div class="ni on" onclick="go('home',this)"><div class="ni-ic">🏠</div><span class="ni-lb">Home</span></div>
+  <div class="ni" onclick="go('schedule',this)"><div class="ni-ic">📅</div><span class="ni-lb">Schedule</span></div>
+  <div class="ni" onclick="go('alerts',this)"><div class="ni-ic">🔔</div><span class="ni-lb">Alerts</span><div class="ni-bd">1</div></div>
+  <div class="ni" onclick="go('stats',this)"><div class="ni-ic">📊</div><span class="ni-lb">Stats</span></div>
+  <div class="ni" onclick="go('settings',this)"><div class="ni-ic">⚙️</div><span class="ni-lb">Settings</span></div>
+</nav>
+
+</div>
+<script>
+// ═══ i18n TRANSLATIONS ═══
+var T={
+  en:{
+    appName:'Smart Pro',appSub:'Cage A · Tangier',online:'Online',
+    home:'Home',schedule:'Schedule',alerts:'Alerts',stats:'Stats',settings:'Settings',
+    healthTitle:'Bird Health Score',healthBadge:'✓ All conditions normal',healthSub:'Schedule on track · 23°C · 52% RH',
+    water:'Water',seeds:'Seeds',daysLeft:'~{n} days left',
+    insideBox:'📦 INSIDE BOX',cageAir:'🐦 CAGE AIR',temp:'Temp',humidity:'Humidity',
+    camTitle:'Live Camera',camSub:'Motion triggered · 3 events today',
+    todayMeals:"Today's Meals",done:'Done',next:'Next',pending:'Pending',
+    addMeal:'Add Meal',seedSize:'Seed size',notSet:'Not set — go to Settings',
+    timeLabel:'TIME',doseLabel:'DOSE',gramsPerMeal:'Grams per meal',saveMeal:'Save meal',
+    manualFeed:'Manual Feed',dispenseNow:'Dispense now',seedColon:'Seed:',notSetFeed:'not set — select in Settings',feedNow:'Feed now',
+    activeAlerts:'Active',todayAlerts:'Today',
+    avgSeeds:'Avg daily seeds',avgWater:'Avg daily water',vsLastWeek:'+0.4g vs last week',normalRange:'Normal range',
+    seedChart:'Seed Consumption (g/day)',waterChart:'Water Consumed (ml/day)',
+    environment:'Environment (last 24h)',deviceHealth:'Device Health',
+    solar:'☀️ Solar today',battery:'🔋 Battery',pump:'💧 Pump cycles',uptime:'📶 Uptime',
+    tSettings:'Settings',langLabel:'Language',
+    seedSizeLabel:'Seed Size',seedSizeHint:'Select before using manual feed or adding meals',
+    small:'Small',medium:'Medium',large:'Large',
+    alertThresh:'Alert Thresholds',maxHumidity:'Max cage humidity',maxTemp:'Max cage temperature',lowFood:'Low food alert',
+    notifLabel:'Notifications',lowWater:'Low water',lowSeeds:'Low seeds',lowBattery:'Low battery',highTempBox:'High temp/humidity — box',highHumCage:'High humidity — cage air',wifiOff:'WiFi disconnected',
+    alertWhenBelow:'Alert when below',foodSpoilage:'Food spoilage risk',birdRisk:'Bird health risk · clean cage',deviceOffline:'Device offline or out of range',
+    hardware:'Hardware',camIP:'📷 Camera IP',camIPHint:'Used to load the live stream',wifiNetwork:'WiFi network',save:'Save',
+    deviceLabel:'Device',checkUpdates:'Check for updates',fwUpToDate:'FW 8.1.2 · Up to date',factoryReset:'Factory reset',factoryResetHint:'Clears all schedules & data',
+    pumpCycles:'14 this week',motionSub:'Near feeder',motionTitle:'Movement detected',
+    alertHighHum:'High humidity — cage air',alertHighHumSub:'71% detected · Max 65% · Clean cage soon',
+    mealDist:'Meal distributed',morning:'Morning · 08:00',midday:'Midday · 12:30',
+    solarActive:'Solar charging active',batAt:'Battery at 78%',
+    waterPump:'Water pump cycle',circDone:'Circulation completed',
+    seedsUnit:' seeds ✓',confirm:' ✓',camNotSet:'Set camera IP in Settings\nto enable live stream',
+    seedConsumption:'Seed Consumption (g/day)',d7:'7d',d30:'30d',d90:'90d',
+  },
+  fr:{
+    appName:'Smart Pro',appSub:'Cage A · Tanger',online:'En ligne',
+    home:'Accueil',schedule:'Planning',alerts:'Alertes',stats:'Stats',settings:'Réglages',
+    healthTitle:'Score santé',healthBadge:'✓ Toutes conditions normales',healthSub:'Planning respecté · 23°C · 52% HR',
+    water:'Eau',seeds:'Graines',daysLeft:'~{n} jours restants',
+    insideBox:'📦 INTÉRIEUR',cageAir:'🐦 AIR CAGE',temp:'Temp',humidity:'Humidité',
+    camTitle:'Caméra en direct',camSub:'Mouvement détecté · 3 événements',
+    todayMeals:"Repas du jour",done:'Terminé',next:'Prochain',pending:'En attente',
+    addMeal:'Ajouter repas',seedSize:'Taille graines',notSet:'Non défini — aller aux Réglages',
+    timeLabel:'HEURE',doseLabel:'DOSE',gramsPerMeal:'Grammes par repas',saveMeal:'Enregistrer',
+    manualFeed:'Alimentation manuelle',dispenseNow:'Distribuer maintenant',seedColon:'Graines :',notSetFeed:'non défini — sélectionner dans Réglages',feedNow:'Distribuer',
+    activeAlerts:'Actives',todayAlerts:"Aujourd'hui",
+    avgSeeds:'Moy. graines/jour',avgWater:'Moy. eau/jour',vsLastWeek:'+0.4g vs semaine dernière',normalRange:'Plage normale',
+    seedChart:'Consommation graines (g/jour)',waterChart:'Eau consommée (ml/jour)',
+    environment:'Environnement (24h)',deviceHealth:'Santé appareil',
+    solar:'☀️ Solaire auj.',battery:'🔋 Batterie',pump:'💧 Cycles pompe',uptime:'📶 Disponibilité',
+    tSettings:'Réglages',langLabel:'Langue',
+    seedSizeLabel:'Taille des graines',seedSizeHint:'Sélectionner avant alimentation manuelle',
+    small:'Petites',medium:'Moyennes',large:'Grandes',
+    alertThresh:'Seuils d\'alerte',maxHumidity:'Humidité max cage',maxTemp:'Température max cage',lowFood:'Alerte graines basses',
+    notifLabel:'Notifications',lowWater:'Eau basse',lowSeeds:'Graines basses',lowBattery:'Batterie faible',highTempBox:'Temp/humidité élevée — boîte',highHumCage:'Humidité élevée — cage',wifiOff:'WiFi déconnecté',
+    alertWhenBelow:'Alerter en dessous de',foodSpoilage:'Risque de détérioration',birdRisk:'Risque santé oiseau · nettoyer',deviceOffline:'Appareil hors ligne',
+    hardware:'Matériel',camIP:'📷 IP Caméra',camIPHint:'Pour charger le flux en direct',wifiNetwork:'Réseau WiFi',save:'Sauvegarder',
+    deviceLabel:'Appareil',checkUpdates:'Vérifier mises à jour',fwUpToDate:'FW 8.1.2 · À jour',factoryReset:'Réinitialisation',factoryResetHint:'Efface tous les plannings',
+    pumpCycles:'14 cette semaine',motionSub:'Près du distributeur',motionTitle:'Mouvement détecté',
+    alertHighHum:'Humidité élevée — air cage',alertHighHumSub:'71% détecté · Max 65% · Nettoyer bientôt',
+    mealDist:'Repas distribué',morning:'Matin · 08:00',midday:'Midi · 12:30',
+    solarActive:'Charge solaire active',batAt:'Batterie à 78%',
+    waterPump:'Cycle pompe eau',circDone:'Circulation terminée',
+    seedsUnit:' graines ✓',confirm:' ✓',camNotSet:'Configurer l\'IP caméra dans Réglages',
+    seedConsumption:'Consommation graines (g/jour)',d7:'7j',d30:'30j',d90:'90j',
+  },
+  ar:{
+    appName:'سمارت برو',appSub:'قفص A · طنجة',online:'متصل',
+    home:'الرئيسية',schedule:'الجدول',alerts:'التنبيهات',stats:'الإحصاء',settings:'الإعدادات',
+    healthTitle:'مؤشر صحة الطيور',healthBadge:'✓ جميع الظروف طبيعية',healthSub:'الجدول منتظم · 23°م · 52% رطوبة',
+    water:'ماء',seeds:'بذور',daysLeft:'~{n} أيام متبقية',
+    insideBox:'📦 داخل الصندوق',cageAir:'🐦 هواء القفص',temp:'الحرارة',humidity:'الرطوبة',
+    camTitle:'كاميرا مباشرة',camSub:'كشف حركة · 3 أحداث اليوم',
+    todayMeals:'وجبات اليوم',done:'منتهي',next:'التالي',pending:'قيد الانتظار',
+    addMeal:'إضافة وجبة',seedSize:'حجم البذور',notSet:'غير محدد — اذهب للإعدادات',
+    timeLabel:'الوقت',doseLabel:'الجرعة',gramsPerMeal:'غرامات لكل وجبة',saveMeal:'حفظ الوجبة',
+    manualFeed:'توزيع يدوي',dispenseNow:'توزيع الآن',seedColon:'البذور:',notSetFeed:'غير محدد — حدد في الإعدادات',feedNow:'وزّع الآن',
+    activeAlerts:'نشط',todayAlerts:'اليوم',
+    avgSeeds:'متوسط البذور اليومي',avgWater:'متوسط الماء اليومي',vsLastWeek:'+0.4g مقارنة بالأسبوع الماضي',normalRange:'نطاق طبيعي',
+    seedChart:'استهلاك البذور (غ/يوم)',waterChart:'الماء المستهلك (مل/يوم)',
+    environment:'البيئة (24 ساعة)',deviceHealth:'صحة الجهاز',
+    solar:'☀️ الشمسية اليوم',battery:'🔋 البطارية',pump:'💧 دورات المضخة',uptime:'📶 وقت التشغيل',
+    tSettings:'الإعدادات',langLabel:'اللغة',
+    seedSizeLabel:'حجم البذور',seedSizeHint:'حدد قبل التوزيع اليدوي أو إضافة وجبات',
+    small:'صغيرة',medium:'متوسطة',large:'كبيرة',
+    alertThresh:'حدود التنبيه',maxHumidity:'أقصى رطوبة للقفص',maxTemp:'أقصى حرارة للقفص',lowFood:'تنبيه نقص الغذاء',
+    notifLabel:'الإشعارات',lowWater:'ماء منخفض',lowSeeds:'بذور منخفضة',lowBattery:'بطارية منخفضة',highTempBox:'حرارة/رطوبة عالية — الصندوق',highHumCage:'رطوبة عالية — القفص',wifiOff:'انقطع الواي فاي',
+    alertWhenBelow:'تنبيه عند أقل من',foodSpoilage:'خطر فساد الغذاء',birdRisk:'خطر على صحة الطير · نظف القفص',deviceOffline:'الجهاز غير متصل',
+    hardware:'الأجهزة',camIP:'📷 عنوان IP الكاميرا',camIPHint:'يستخدم لتحميل البث المباشر',wifiNetwork:'شبكة الواي فاي',save:'حفظ',
+    deviceLabel:'الجهاز',checkUpdates:'التحقق من التحديثات',fwUpToDate:'FW 8.1.2 · محدّث',factoryReset:'إعادة ضبط المصنع',factoryResetHint:'يمسح جميع الجداول والبيانات',
+    pumpCycles:'14 هذا الأسبوع',motionSub:'بالقرب من الموزع',motionTitle:'تم رصد حركة',
+    alertHighHum:'رطوبة عالية — هواء القفص',alertHighHumSub:'71% — الحد 65% · نظف القفص قريباً',
+    mealDist:'تم توزيع وجبة',morning:'صباح · 08:00',midday:'ظهر · 12:30',
+    solarActive:'الشحن الشمسي نشط',batAt:'البطارية 78%',
+    waterPump:'دورة مضخة الماء',circDone:'اكتملت عملية التوزيع',
+    seedsUnit:' بذور ✓',confirm:' ✓',camNotSet:'حدد عنوان IP الكاميرا في الإعدادات\nلتفعيل البث المباشر',
+    seedConsumption:'استهلاك البذور (غ/يوم)',d7:'7أ',d30:'30أ',d90:'90أ',
+  },
+  es:{
+    appName:'Smart Pro',appSub:'Jaula A · Tánger',online:'En línea',
+    home:'Inicio',schedule:'Horario',alerts:'Alertas',stats:'Estadísticas',settings:'Ajustes',
+    healthTitle:'Salud del pájaro',healthBadge:'✓ Todo en condiciones normales',healthSub:'Horario cumplido · 23°C · 52% HR',
+    water:'Agua',seeds:'Semillas',daysLeft:'~{n} días restantes',
+    insideBox:'📦 INTERIOR',cageAir:'🐦 AIRE JAULA',temp:'Temp',humidity:'Humedad',
+    camTitle:'Cámara en vivo',camSub:'Movimiento detectado · 3 eventos',
+    todayMeals:'Comidas de hoy',done:'Listo',next:'Siguiente',pending:'Pendiente',
+    addMeal:'Agregar comida',seedSize:'Tamaño semillas',notSet:'No definido — ir a Ajustes',
+    timeLabel:'HORA',doseLabel:'DOSIS',gramsPerMeal:'Gramos por comida',saveMeal:'Guardar',
+    manualFeed:'Alimentación manual',dispenseNow:'Distribuir ahora',seedColon:'Semillas:',notSetFeed:'no definido — seleccionar en Ajustes',feedNow:'Distribuir',
+    activeAlerts:'Activas',todayAlerts:'Hoy',
+    avgSeeds:'Prom. semillas/día',avgWater:'Prom. agua/día',vsLastWeek:'+0.4g vs semana pasada',normalRange:'Rango normal',
+    seedChart:'Consumo semillas (g/día)',waterChart:'Agua consumida (ml/día)',
+    environment:'Entorno (24h)',deviceHealth:'Salud dispositivo',
+    solar:'☀️ Solar hoy',battery:'🔋 Batería',pump:'💧 Ciclos bomba',uptime:'📶 Disponibilidad',
+    tSettings:'Ajustes',langLabel:'Idioma',
+    seedSizeLabel:'Tamaño semillas',seedSizeHint:'Seleccionar antes de alimentación manual',
+    small:'Pequeñas',medium:'Medianas',large:'Grandes',
+    alertThresh:'Umbrales de alerta',maxHumidity:'Humedad máx jaula',maxTemp:'Temperatura máx jaula',lowFood:'Alerta semillas bajas',
+    notifLabel:'Notificaciones',lowWater:'Agua baja',lowSeeds:'Semillas bajas',lowBattery:'Batería baja',highTempBox:'Temp/humedad alta — caja',highHumCage:'Humedad alta — jaula',wifiOff:'WiFi desconectado',
+    alertWhenBelow:'Alertar por debajo de',foodSpoilage:'Riesgo deterioro alimento',birdRisk:'Riesgo salud ave · limpiar',deviceOffline:'Dispositivo sin conexión',
+    hardware:'Hardware',camIP:'📷 IP Cámara',camIPHint:'Para cargar transmisión en vivo',wifiNetwork:'Red WiFi',save:'Guardar',
+    deviceLabel:'Dispositivo',checkUpdates:'Buscar actualizaciones',fwUpToDate:'FW 8.1.2 · Actualizado',factoryReset:'Restablecimiento',factoryResetHint:'Borra todos los horarios',
+    pumpCycles:'14 esta semana',motionSub:'Cerca del dispensador',motionTitle:'Movimiento detectado',
+    alertHighHum:'Humedad alta — aire jaula',alertHighHumSub:'71% detectado · Máx 65% · Limpiar pronto',
+    mealDist:'Comida distribuida',morning:'Mañana · 08:00',midday:'Mediodía · 12:30',
+    solarActive:'Carga solar activa',batAt:'Batería al 78%',
+    waterPump:'Ciclo bomba agua',circDone:'Circulación completada',
+    seedsUnit:' semillas ✓',confirm:' ✓',camNotSet:'Configurar IP cámara en Ajustes',
+    seedConsumption:'Consumo semillas (g/día)',d7:'7d',d30:'30d',d90:'90d',
+  },
+  it:{
+    appName:'Smart Pro',appSub:'Gabbia A · Tangeri',online:'Online',
+    home:'Home',schedule:'Orario',alerts:'Avvisi',stats:'Statistiche',settings:'Impostazioni',
+    healthTitle:'Salute dell\'uccello',healthBadge:'✓ Tutte le condizioni normali',healthSub:'Orario rispettato · 23°C · 52% UR',
+    water:'Acqua',seeds:'Semi',daysLeft:'~{n} giorni rimanenti',
+    insideBox:'📦 INTERNO',cageAir:'🐦 ARIA GABBIA',temp:'Temp',humidity:'Umidità',
+    camTitle:'Telecamera live',camSub:'Movimento rilevato · 3 eventi',
+    todayMeals:'Pasti di oggi',done:'Fatto',next:'Prossimo',pending:'In attesa',
+    addMeal:'Aggiungi pasto',seedSize:'Dimensione semi',notSet:'Non impostato — vai alle Impostazioni',
+    timeLabel:'ORA',doseLabel:'DOSE',gramsPerMeal:'Grammi per pasto',saveMeal:'Salva pasto',
+    manualFeed:'Alimentazione manuale',dispenseNow:'Distribuisci ora',seedColon:'Semi:',notSetFeed:'non impostato — seleziona in Impostazioni',feedNow:'Distribuisci',
+    activeAlerts:'Attive',todayAlerts:'Oggi',
+    avgSeeds:'Media semi/giorno',avgWater:'Media acqua/giorno',vsLastWeek:'+0.4g vs settimana scorsa',normalRange:'Intervallo normale',
+    seedChart:'Consumo semi (g/giorno)',waterChart:'Acqua consumata (ml/giorno)',
+    environment:'Ambiente (24h)',deviceHealth:'Salute dispositivo',
+    solar:'☀️ Solare oggi',battery:'🔋 Batteria',pump:'💧 Cicli pompa',uptime:'📶 Disponibilità',
+    tSettings:'Impostazioni',langLabel:'Lingua',
+    seedSizeLabel:'Dimensione semi',seedSizeHint:'Selezionare prima dell\'alimentazione manuale',
+    small:'Piccoli',medium:'Medi',large:'Grandi',
+    alertThresh:'Soglie di avviso',maxHumidity:'Umidità max gabbia',maxTemp:'Temperatura max gabbia',lowFood:'Avviso semi bassi',
+    notifLabel:'Notifiche',lowWater:'Acqua bassa',lowSeeds:'Semi bassi',lowBattery:'Batteria bassa',highTempBox:'Temp/umidità alta — box',highHumCage:'Umidità alta — gabbia',wifiOff:'WiFi disconnesso',
+    alertWhenBelow:'Avvisa sotto',foodSpoilage:'Rischio deterioramento',birdRisk:'Rischio salute uccello · pulire',deviceOffline:'Dispositivo offline',
+    hardware:'Hardware',camIP:'📷 IP Telecamera',camIPHint:'Per caricare lo streaming live',wifiNetwork:'Rete WiFi',save:'Salva',
+    deviceLabel:'Dispositivo',checkUpdates:'Verifica aggiornamenti',fwUpToDate:'FW 8.1.2 · Aggiornato',factoryReset:'Reset di fabbrica',factoryResetHint:'Cancella tutti i programmi',
+    pumpCycles:'14 questa settimana',motionSub:'Vicino al distributore',motionTitle:'Movimento rilevato',
+    alertHighHum:'Umidità alta — aria gabbia',alertHighHumSub:'71% rilevato · Max 65% · Pulire presto',
+    mealDist:'Pasto distribuito',morning:'Mattina · 08:00',midday:'Mezzogiorno · 12:30',
+    solarActive:'Ricarica solare attiva',batAt:'Batteria all\'78%',
+    waterPump:'Ciclo pompa acqua',circDone:'Circolazione completata',
+    seedsUnit:' semi ✓',confirm:' ✓',camNotSet:'Configura IP telecamera in Impostazioni',
+    seedConsumption:'Consumo semi (g/giorno)',d7:'7g',d30:'30g',d90:'90g',
+  },
+  ja:{
+    appName:'スマートプロ',appSub:'ゲージA · タンジェ',online:'オンライン',
+    home:'ホーム',schedule:'スケジュール',alerts:'アラート',stats:'統計',settings:'設定',
+    healthTitle:'鳥の健康スコア',healthBadge:'✓ すべて正常',healthSub:'スケジュール通り · 23°C · 52% 湿度',
+    water:'水',seeds:'種',daysLeft:'残り約{n}日',
+    insideBox:'📦 ボックス内',cageAir:'🐦 ケージ内気',temp:'気温',humidity:'湿度',
+    camTitle:'ライブカメラ',camSub:'動体検知 · 今日3件',
+    todayMeals:'今日の食事',done:'完了',next:'次',pending:'待機中',
+    addMeal:'食事を追加',seedSize:'種のサイズ',notSet:'未設定 — 設定へ',
+    timeLabel:'時間',doseLabel:'用量',gramsPerMeal:'1食あたりのグラム',saveMeal:'食事を保存',
+    manualFeed:'手動給餌',dispenseNow:'今すぐ給餌',seedColon:'種：',notSetFeed:'未設定 — 設定で選択',feedNow:'給餌する',
+    activeAlerts:'アクティブ',todayAlerts:'今日',
+    avgSeeds:'1日平均種量',avgWater:'1日平均水量',vsLastWeek:'先週比+0.4g',normalRange:'正常範囲',
+    seedChart:'種の消費量 (g/日)',waterChart:'水の消費量 (ml/日)',
+    environment:'環境 (24時間)',deviceHealth:'デバイスの健康',
+    solar:'☀️ 今日の太陽光',battery:'🔋 バッテリー',pump:'💧 ポンプサイクル',uptime:'📶 稼働時間',
+    tSettings:'設定',langLabel:'言語',
+    seedSizeLabel:'種のサイズ',seedSizeHint:'手動給餌前に選択してください',
+    small:'小',medium:'中',large:'大',
+    alertThresh:'アラートしきい値',maxHumidity:'ケージ最大湿度',maxTemp:'ケージ最大温度',lowFood:'食料低下アラート',
+    notifLabel:'通知',lowWater:'水不足',lowSeeds:'種不足',lowBattery:'バッテリー低下',highTempBox:'高温/湿度 — ボックス',highHumCage:'高湿度 — ケージ',wifiOff:'WiFi切断',
+    alertWhenBelow:'以下でアラート',foodSpoilage:'食料劣化リスク',birdRisk:'鳥の健康リスク · 清掃',deviceOffline:'デバイスオフライン',
+    hardware:'ハードウェア',camIP:'📷 カメラIPアドレス',camIPHint:'ライブストリーム用',wifiNetwork:'WiFiネットワーク',save:'保存',
+    deviceLabel:'デバイス',checkUpdates:'アップデート確認',fwUpToDate:'FW 8.1.2 · 最新',factoryReset:'工場出荷時設定',factoryResetHint:'全スケジュールを削除',
+    pumpCycles:'今週14回',motionSub:'フィーダー付近',motionTitle:'動作検知',
+    alertHighHum:'高湿度 — ケージ内気',alertHighHumSub:'71%検知 · 最大65% · 清掃必要',
+    mealDist:'食事を配給',morning:'朝 · 08:00',midday:'昼 · 12:30',
+    solarActive:'太陽光充電中',batAt:'バッテリー78%',
+    waterPump:'水ポンプサイクル',circDone:'循環完了',
+    seedsUnit:'の種 ✓',confirm:' ✓',camNotSet:'設定でカメラIPを設定してください',
+    seedConsumption:'種の消費量 (g/日)',d7:'7日',d30:'30日',d90:'90日',
+  }
+};
+
+var lang='en';
+function setLang(l,el){
+  lang=l;
+  // Update picker
+  document.querySelectorAll('#langPicker .sopt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  // RTL for Arabic
+  document.querySelector('.app').setAttribute('dir',l==='ar'?'rtl':'ltr');
+  document.querySelector('.app').style.fontFamily=l==='ja'?'\'DM Mono\',sans-serif':'\'Inter\',sans-serif';
+  var t=T[l];
+  // App name + meta
+  var els={
+    'h1[id=t-settings]':t.tSettings,
+  };
+  // Nav
+  var navLbls=document.querySelectorAll('.ni-lb');
+  navLbls[0].textContent=t.home;
+  navLbls[1].textContent=t.schedule;
+  navLbls[2].textContent=t.alerts;
+  navLbls[3].textContent=t.stats;
+  navLbls[4].textContent=t.settings;
+  // Home
+  setText('t-app-name',t.appName);
+  setText('t-app-sub',t.appSub);
+  setText('t-online',t.online);
+  setText('t-health-title',t.healthTitle);
+  setText('t-health-badge',t.healthBadge);
+  setText('t-health-sub',t.healthSub);
+  setText('t-water-lbl',t.water);
+  setText('t-seeds-lbl',t.seeds);
+  setText('t-water-sub',t.daysLeft.replace('{n}','5'));
+  setText('t-seeds-sub',t.daysLeft.replace('{n}','3'));
+  setText('t-inbox-title',t.insideBox);
+  setText('t-inbox-temp',t.temp);
+  setText('t-inbox-hum',t.humidity);
+  setText('t-cageair-title',t.cageAir);
+  setText('t-cageair-temp',t.temp);
+  setText('t-cageair-hum',t.humidity);
+  setText('t-cam-title',t.camTitle);
+  setText('t-cam-sub',t.camSub);
+  setText('t-meals-lbl',t.todayMeals);
+  setText('t-m1-name',t.morning);
+  setText('t-m2-name',t.midday);
+  setText('t-badge-done',t.done);
+  setText('t-badge-next',t.next);
+  setText('t-badge-pend',t.pending);
+  // Schedule
+  setText('t-sched-h',t.schedule);
+  setText('t-addmeal-lbl',t.addMeal);
+  setText('t-seedsize-display-lbl','Seed size');
+  setText('t-time-lbl',t.timeLabel);
+  setText('t-dose-lbl',t.doseLabel);
+  setText('t-grams-lbl',t.gramsPerMeal);
+  setText('t-savemeal',t.saveMeal);
+  setText('t-manfeed-lbl',t.manualFeed);
+  setText('t-dispense-lbl',t.dispenseNow);
+  setText('t-feednow-seed-lbl',t.seedColon);
+  setText('t-feedbtn-txt',t.feedNow);
+  // Alerts
+  setText('t-alerts-h',t.alerts);
+  setText('t-active-lbl',t.activeAlerts);
+  setText('t-today-lbl',t.todayAlerts);
+  setText('t-alert1-title',t.alertHighHum);
+  setText('t-alert1-sub',t.alertHighHumSub);
+  setText('t-alrt-meal1',t.mealDist);
+  setText('t-alrt-meal1-sub','2.5g · '+t.morning);
+  setText('t-alrt-meal2',t.mealDist);
+  setText('t-alrt-meal2-sub','2.0g · '+t.midday);
+  setText('t-alrt-solar',t.solarActive);
+  setText('t-alrt-solar-sub',t.batAt);
+  setText('t-alrt-pump',t.waterPump);
+  setText('t-alrt-pump-sub',t.circDone);
+  // Stats
+  setText('t-stats-h',t.stats);
+  setText('t-avg-seeds-lbl',t.avgSeeds);
+  setText('t-avg-water-lbl',t.avgWater);
+  setText('t-vs-week',t.vsLastWeek);
+  setText('t-normal-range',t.normalRange);
+  setText('t-seed-chart-lbl',t.seedChart);
+  setText('t-water-chart-lbl',t.waterChart);
+  setText('t-env-lbl',t.environment);
+  setText('t-dev-health-lbl',t.deviceHealth);
+  setText('t-solar-lbl',t.solar);
+  setText('t-bat-lbl',t.battery);
+  setText('t-pump-lbl',t.pump);
+  setText('t-uptime-lbl',t.uptime);
+  setText('t-pump-val',t.pumpCycles);
+  // Settings
+  setText('t-settings-h',t.tSettings);
+  setText('t-lang-lbl',t.langLabel);
+  setText('t-seedsize-lbl',t.seedSizeLabel);
+  setText('t-seedsize-hint',t.seedSizeHint);
+  var sOpts=document.querySelectorAll('#seedpicker .sopt-lb');
+  if(sOpts[0])sOpts[0].textContent=t.small;
+  if(sOpts[1])sOpts[1].textContent=t.medium;
+  if(sOpts[2])sOpts[2].textContent=t.large;
+  setText('t-thresh-lbl',t.alertThresh);
+  setText('t-hum-lbl',t.maxHumidity);
+  setText('t-temp-lbl2',t.maxTemp);
+  setText('t-food-lbl',t.lowFood);
+  setText('t-notif-lbl',t.notifLabel);
+  setText('t-notif1',t.lowWater);setText('t-notif1-sub','Alert when below 20%');
+  setText('t-notif2',t.lowSeeds);setText('t-notif2-sub','Alert when below 20%');
+  setText('t-notif3',t.lowBattery);setText('t-notif3-sub','Alert when below 10%');
+  setText('t-notif4',t.highTempBox);setText('t-notif4-sub',t.foodSpoilage);
+  setText('t-notif5',t.highHumCage);setText('t-notif5-sub',t.birdRisk);
+  setText('t-notif6',t.wifiOff);setText('t-notif6-sub',t.deviceOffline);
+  setText('t-hw-lbl',t.hardware);
+  setText('t-cam-ip-title',t.camIP);setText('t-cam-ip-hint',t.camIPHint);
+  setText('t-save-btn',t.save);
+  setText('t-wifi-title',t.wifiNetwork);
+  setText('t-device-lbl',t.deviceLabel);
+  setText('t-update-title',t.checkUpdates);setText('t-update-sub',t.fwUpToDate);
+  setText('t-reset-title',t.factoryReset);setText('t-reset-sub',t.factoryResetHint);
+  // Update schedSeed + feedseed if already set
+  var ss=document.getElementById('schedSeed');
+  if(ss&&ss.style.color!=='var(--warn)'){ss.textContent=ss.textContent;}
+  else if(ss){ss.textContent=t.notSet;}
+  var fs=document.getElementById('feedseed');
+  if(fs&&fs.style.color!=='var(--warn)'){fs.textContent=fs.textContent;}
+  else if(fs){fs.textContent=t.notSetFeed;}
+  // Feed now button
+  var fbtn=document.getElementById('feedbtn');
+  if(fbtn&&!fbtn.disabled)fbtn.textContent=t.feedNow;
+  else if(fbtn)fbtn.textContent=t.feedNow;
+  // Chart labels
+  var tabs=document.querySelectorAll('.tab');
+  if(tabs[0])tabs[0].textContent=t.d7;
+  if(tabs[1])tabs[1].textContent=t.d30;
+  if(tabs[2])tabs[2].textContent=t.d90;
+}
+
+function setText(id,txt){var el=document.getElementById(id);if(el)el.textContent=txt;}
+
+
+function go(name,el){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  document.getElementById('s-'+name).classList.add('on');
+  el.classList.add('on');
+  if(name==='alerts'){var b=el.querySelector('.ni-bd');if(b)b.style.display='none';}
+  document.querySelector('.scroll').scrollTop=0;
+}
+
+function togBtn(btn){
+  var on=btn.classList.contains('ton');
+  btn.classList.toggle('ton',!on);
+  btn.classList.toggle('toff',on);
+  syncAddMealTimes();
+}
+
+function syncAddMealTimes(){
+  var items=document.querySelectorAll('#s-schedule .slist .sitem');
+  var pills=document.querySelectorAll('#s-schedule .tpill[data-slot]');
+  pills.forEach(function(pill){
+    var slot=pill.getAttribute('data-slot');
+    var item=items[parseInt(slot,10)];
+    if(!item)return;
+    var toggle=item.querySelector('.tog');
+    var timeInput=item.querySelector('.timeInput');
+    var isOn=toggle && toggle.classList.contains('ton');
+    pill.classList.toggle('hidden',!isOn);
+    if(timeInput){pill.querySelector('.tpill-t').textContent=timeInput.value || timeInput.getAttribute('value');}
+  });
+  var selected=document.querySelector('#s-schedule .tpill.sel');
+  if(!selected || selected.classList.contains('hidden')){
+    if(selected)selected.classList.remove('sel');
+    var firstVisible=document.querySelector('#s-schedule .tpill:not(.hidden)');
+    if(firstVisible)firstVisible.classList.add('sel');
+  }
+}
+
+function updateScheduleTime(inp){
+  // Keeps the chosen time visible immediately. Later this can be sent to ESP32/Firebase.
+  inp.setAttribute('value', inp.value);
+  syncAddMealTimes();
+}
+
+function openCam(){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  document.getElementById('s-camera').classList.add('on');
+  var img=document.getElementById('camImg'),ph=document.getElementById('camPh');
+  if(camIP){img.src='http://'+camIP+'/stream';img.style.display='block';ph.style.display='none';}
+  else{img.style.display='none';ph.style.display='flex';}
+}
+function closeCam(){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
+  document.getElementById('s-home').classList.add('on');
+  document.querySelector('.ni').classList.add('on');
+}
+function saveCam(){var v=document.getElementById('camip').value.trim();if(v){camIP=v;alert('Saved: '+v);}}
+
+function selSeed(el){
+  document.querySelectorAll('#seedpicker .sopt').forEach(function(o){o.classList.remove('sel');});
+  el.classList.add('sel');
+  var lb=el.querySelector('.sopt-lb').textContent;
+  var ic=el.querySelector('.sopt-ic').textContent;
+  var full=ic+' '+lb+' seeds';
+  var fb=document.getElementById('feedbtn'),fl=document.getElementById('feedseed');
+  if(fb){fb.disabled=false;fb.style.background='var(--ok-dk)';fb.style.color='var(--ok)';fb.style.cursor='pointer';fb.style.opacity='1';}
+  if(fl){fl.textContent=full+' ✓';fl.style.color='var(--ok)';}
+  var sd=document.getElementById('schedSeed');
+  if(sd){sd.textContent=full+' ✓';sd.style.color='var(--ok)';}
+  var dr=document.getElementById('drow'),sb=document.getElementById('savebtn');
+  if(dr)dr.classList.add('on');
+  if(sb)sb.disabled=false;
+}
+
+function selTime(el){
+  document.querySelectorAll('.tpill').forEach(function(p){p.classList.remove('sel');});
+  el.classList.add('sel');
+}
+
+var dose = 2.0;
+function chgD(d){
+  dose = Math.round((dose + d) * 10) / 10;
+  if(dose < 0.5) dose = 0.5;
+  if(dose > 100) dose = 100;
+  var el = document.getElementById('dval');
+  if(el) el.textContent = dose.toFixed(1) + ' g';
+}
+function doSave(btn){btn.textContent='✓ Saved!';setTimeout(function(){btn.textContent='Save meal';},1500);}
+function doFeed(btn){btn.textContent='✓ Done';setTimeout(function(){btn.textContent='Feed now';},2000);}
+
+var cd={
+  7:{v:[7.8,8.5,8.0,8.8,8.2,8.9,7.5],l:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']},
+  30:{v:[7.2,8.1,8.6,7.9,8.3,8.7,8.0],l:['W1','W2','W3','W4','W5','W6','W7']},
+  90:{v:[6.8,7.5,8.2,8.0,8.4,8.1,8.3],l:['M1','M2','M3','M4','M5','M6','M7']}
+};
+var wd=[28,32,30,35,29,33,31],wl=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+function drawChart(cid,lid,vals,lbls,col,colLast){
+  var mx=Math.max.apply(null,vals);
+  document.getElementById(cid).innerHTML=vals.map(function(v,i){
+    var h=Math.round(v/mx*100);
+    return '<div class="bar" style="height:'+h+'%;background:'+(i===vals.length-1?colLast:col)+';"></div>';
+  }).join('');
+  document.getElementById(lid).innerHTML=lbls.map(function(l){
+    return '<span class="clbl2">'+l+'</span>';
+  }).join('');
+}
+function swTab(el,d){
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  drawChart('ch1','lb1',cd[d].v,cd[d].l,'var(--blue-md)','var(--blue)');
+}
+
+function tick(){
+  var n=new Date();
+  document.getElementById('clk').textContent=
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+}
+
+drawChart('ch1','lb1',cd[7].v,cd[7].l,'var(--blue-md)','var(--blue)');
+drawChart('ch2','lb2',wd,wl,'var(--blue-md)','var(--blue)');
+tick();setInterval(tick,10000);
+
+// PWA Install prompt
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();
+  deferredPrompt=e;
+  var banner=document.getElementById('installBanner');
+  if(banner)banner.style.display='flex';
+});
+function installApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){
+      deferredPrompt=null;
+      var banner=document.getElementById('installBanner');
+      if(banner)banner.style.display='none';
+    });
+  }
+}
+function dismissInstall(){
+  var banner=document.getElementById('installBanner');
+  if(banner)banner.style.display='none';
+}
+
+// iOS Safari hint
+var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+var isInStandalone=('standalone' in navigator)&&navigator.standalone;
+if(isIOS&&!isInStandalone){
+  setTimeout(function(){
+    var b=document.getElementById('iosBanner');
+    if(b)b.style.display='flex';
+  },2000);
+}
+if('serviceWorker' in navigator){
+  var sw='data:application/javascript,self.addEventListener(\'install\',function(e){e.waitUntil(caches.open(\'sp-v1\').then(function(c){return c.addAll([\'/\']);}));});self.addEventListener(\'fetch\',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request);}));});';
+  navigator.serviceWorker.register(sw,{type:'classic'}).catch(function(){});
+}
+syncAddMealTimes();
+</script>
+
+<script>
+function syncHomeTimes(){
+  try{
+    const times=[...document.querySelectorAll('.timeInput')].map(x=>x.value);
+    const names=['Morning','Midday','Evening','Night'];
+    const ids=['t-m1-name','t-m2-name'];
+    if(document.getElementById('t-m1-name')) document.getElementById('t-m1-name').textContent='Morning · '+times[0];
+    if(document.getElementById('t-m2-name')) document.getElementById('t-m2-name').textContent='Midday · '+times[1];
+    const rows=document.querySelectorAll('#s-home .mrow .mname');
+    if(rows[2]) rows[2].textContent='Evening · '+times[2];
+  }catch(e){}
+}
+document.addEventListener('change',e=>{
+  if(e.target.classList && e.target.classList.contains('timeInput')) syncHomeTimes();
+});
+setTimeout(syncHomeTimes,500);
+</script>
+
+<script>
+function saveDeviceIp(){
+  const el=document.getElementById('deviceIp');
+  const ip=el ? el.value.trim() : '';
+  localStorage.setItem('smartpro_device_ip', ip);
+  const st=document.getElementById('deviceIpStatus');
+  if(st) st.textContent = ip ? ('Saved: '+ip) : 'Not saved';
+}
+function saveTelegramSettings(){
+  const chatEl=document.getElementById('telegramChatId');
+  const tokenEl=document.getElementById('telegramBotToken');
+  const chat=chatEl ? chatEl.value.trim() : '';
+  const token=tokenEl ? tokenEl.value.trim() : '';
+  localStorage.setItem('smartpro_telegram_chat_id', chat);
+  localStorage.setItem('smartpro_telegram_bot_token', token);
+  const st=document.getElementById('telegramStatus');
+  if(st) st.textContent = (chat && token) ? 'Saved for ESP32 setup' : 'Not configured';
+}
+function loadRemoteSettings(){
+  const ip=localStorage.getItem('smartpro_device_ip')||'';
+  const chat=localStorage.getItem('smartpro_telegram_chat_id')||'';
+  const token=localStorage.getItem('smartpro_telegram_bot_token')||'';
+  if(document.getElementById('deviceIp')) document.getElementById('deviceIp').value=ip;
+  if(document.getElementById('telegramChatId')) document.getElementById('telegramChatId').value=chat;
+  if(document.getElementById('telegramBotToken')) document.getElementById('telegramBotToken').value=token;
+  if(document.getElementById('deviceIpStatus')) document.getElementById('deviceIpStatus').textContent=ip ? ('Saved: '+ip) : 'Not saved';
+  if(document.getElementById('telegramStatus')) document.getElementById('telegramStatus').textContent=(chat && token) ? 'Saved for ESP32 setup' : 'Not configured';
+}
+async function sendScheduleToESP32(){
+  const ip=localStorage.getItem('smartpro_device_ip') || '';
+  if(!ip) return false;
+  const times=[...document.querySelectorAll('.timeInput')].map(x=>x.value);
+  const doseText=(document.getElementById('dval')||{}).textContent || '2.0 g';
+  const dose=parseFloat(doseText.replace('g','').trim()) || 2.0;
+  const payload={times:times,dose:dose,updatedAt:new Date().toISOString()};
+  try{
+    await fetch('http://'+ip+'/api/schedule',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+document.addEventListener('DOMContentLoaded',loadRemoteSettings);
+setTimeout(loadRemoteSettings,800);
+const smartproOldDoSave = window.doSave;
+window.doSave = async function(btn){
+  if(typeof smartproOldDoSave === 'function') smartproOldDoSave(btn);
+  const ok = await sendScheduleToESP32();
+  if(btn){
+    const old = btn.textContent || 'Save meal';
+    btn.textContent = ok ? 'Saved to device' : 'Saved locally · device offline';
+    setTimeout(()=>{btn.textContent=old},1800);
+  }
+};
+</script>
+
+
+<script>
+/* SMART PRO API READY LAYER */
+const SMARTPRO_API = {
+  status:'/api/status',
+  schedule:'/api/schedule',
+  feed:'/api/feed',
+  settings:'/api/settings',
+  camera:'/stream'
+};
+
+function spDeviceBase(){
+  const ip = localStorage.getItem('smartpro_device_ip') || (document.getElementById('deviceIp') ? document.getElementById('deviceIp').value.trim() : '');
+  if(!ip) return '';
+  if(ip.startsWith('http://') || ip.startsWith('https://')) return ip.replace(/\/$/,'');
+  return 'http://' + ip;
+}
+
+function spGetMealsPayload(){
+  const timeInputs=[...document.querySelectorAll('.timeInput')];
+  const rows=[...document.querySelectorAll('#s-schedule .slist .sitem')];
+  const pills=[...document.querySelectorAll('.tpill')];
+  const doseText=(document.getElementById('dval')||{}).textContent || '2.0 g';
+  const selectedDose=parseFloat(doseText.replace('g','').trim()) || 2.0;
+  return timeInputs.map((inp,i)=>{
+    const row=rows[i];
+    const meta=row ? row.querySelector('.smeta') : null;
+    const enabled=row ? row.querySelector('.tog')?.classList.contains('ton') : true;
+    let grams=selectedDose;
+    if(meta){
+      const m=meta.textContent.match(/([0-9]+(\.[0-9]+)?)\s*g/i);
+      if(m) grams=parseFloat(m[1]);
+    }
+    return {
+      id:i+1,
+      time:inp.value,
+      grams:grams,
+      enabled:!!enabled,
+      seedSize:localStorage.getItem('smartpro_seed_size') || 'small'
+    };
+  });
+}
+
+async function spApiPost(path,payload){
+  const base=spDeviceBase();
+  if(!base) throw new Error('Missing ESP32 IP');
+  const res = await fetch(base + path, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error('ESP32 error '+res.status);
+  try{return await res.json();}catch(e){return {ok:true};}
+}
+
+async function spApiGet(path){
+  const base=spDeviceBase();
+  if(!base) throw new Error('Missing ESP32 IP');
+  const res = await fetch(base + path);
+  if(!res.ok) throw new Error('ESP32 error '+res.status);
+  return await res.json();
+}
+
+function spSetApiStatus(ok,msg){
+  const dot=document.getElementById('apiDot');
+  const txt=document.getElementById('apiStatusText');
+  if(dot){dot.classList.remove('ok','err'); dot.classList.add(ok?'ok':'err');}
+  if(txt) txt.textContent=msg;
+}
+
+async function testBoxConnection(){
+  try{
+    const data=await spApiGet(SMARTPRO_API.status);
+    spSetApiStatus(true,'Connected · '+(data.device||'ESP32')+' · '+new Date().toLocaleTimeString());
+    spUpdateDashboard(data);
+  }catch(e){
+    spSetApiStatus(false,'Not connected · '+e.message);
+  }
+}
+
+function spUpdateDashboard(data){
+  if(!data) return;
+  // expected JSON from box:
+  // {water:72,seeds:45,battery:78,tempBox:23,humBox:48,tempCage:25,humCage:71,alerts:[...]}
+  const water = data.water ?? data.waterPercent;
+  const seeds = data.seeds ?? data.seedPercent;
+  const battery = data.battery ?? data.batteryPercent;
+  const tempBox = data.tempBox ?? data.boxTemp;
+  const humBox = data.humBox ?? data.boxHumidity;
+  const tempCage = data.tempCage ?? data.cageTemp;
+  const humCage = data.humCage ?? data.cageHumidity;
+
+  const waterVal=[...document.querySelectorAll('.lval')][0];
+  const seedsVal=[...document.querySelectorAll('.lval')][1];
+  if(water!==undefined && waterVal) waterVal.innerHTML=Math.round(water)+'<span style="font-size:14px;color:var(--text3)">%</span>';
+  if(seeds!==undefined && seedsVal) seedsVal.innerHTML=Math.round(seeds)+'<span style="font-size:14px;color:var(--text3)">%</span>';
+
+  const emv=[...document.querySelectorAll('.emv')];
+  if(tempBox!==undefined && emv[0]) emv[0].textContent=Math.round(tempBox)+'°';
+  if(humBox!==undefined && emv[1]) emv[1].textContent=Math.round(humBox)+'%';
+  if(tempCage!==undefined && emv[2]) emv[2].textContent=Math.round(tempCage)+'°';
+  if(humCage!==undefined && emv[3]) emv[3].textContent=Math.round(humCage)+'%';
+
+  const battRow=[...document.querySelectorAll('.strow .stval')].find(x=>x.textContent.includes('%'));
+  if(battery!==undefined && battRow) battRow.textContent=Math.round(battery)+'%';
+}
+
+async function spSendFullSchedule(btn){
+  const payload={
+    meals:spGetMealsPayload(),
+    updatedAt:new Date().toISOString()
+  };
+  const res=await spApiPost(SMARTPRO_API.schedule,payload);
+  return res;
+}
+
+async function spSendManualFeed(){
+  const doseText=(document.getElementById('dval')||{}).textContent || '2.0 g';
+  const grams=parseFloat(doseText.replace('g','').trim()) || 2.0;
+  return await spApiPost(SMARTPRO_API.feed,{grams:grams,seedSize:localStorage.getItem('smartpro_seed_size') || 'small',mode:'manual'});
+}
+
+// Override Save Meal to become API-ready
+const spOriginalDoSave = window.doSave;
+window.doSave = async function(btn){
+  if(typeof spOriginalDoSave==='function') spOriginalDoSave(btn);
+  try{
+    await spSendFullSchedule(btn);
+    if(btn){
+      const old=btn.textContent || 'Save meal';
+      btn.textContent='Saved to box';
+      setTimeout(()=>btn.textContent=old,1600);
+    }
+    spSetApiStatus(true,'Schedule sent to ESP32');
+  }catch(e){
+    if(btn){
+      const old=btn.textContent || 'Save meal';
+      btn.textContent='Saved locally · box offline';
+      setTimeout(()=>btn.textContent=old,1800);
+    }
+    spSetApiStatus(false,e.message);
+  }
+};
+
+// Override Feed now
+const spOriginalDoFeed = window.doFeed;
+window.doFeed = async function(btn){
+  try{
+    await spSendManualFeed();
+    if(btn){
+      const old=btn.innerText || 'Feed now';
+      btn.innerText='Sent';
+      setTimeout(()=>btn.innerText=old,1200);
+    }
+    spSetApiStatus(true,'Manual feed command sent');
+  }catch(e){
+    if(typeof spOriginalDoFeed==='function') spOriginalDoFeed(btn);
+    spSetApiStatus(false,e.message);
+  }
+};
+
+// When toggle or time changes, keep app internally synced
+document.addEventListener('change',function(e){
+  if(e.target && e.target.classList && e.target.classList.contains('timeInput')){
+    if(typeof syncHomeTimes==='function') syncHomeTimes();
+  }
+});
+
+document.addEventListener('DOMContentLoaded',function(){
+  if(document.getElementById('proLangSelect') && localStorage.getItem('smartpro_lang')){
+    document.getElementById('proLangSelect').value=localStorage.getItem('smartpro_lang');
+  }
+  setInterval(async()=>{
+    try{
+      const data=await spApiGet(SMARTPRO_API.status);
+      spUpdateDashboard(data);
+      spSetApiStatus(true,'Live · '+new Date().toLocaleTimeString());
+    }catch(e){}
+  },10000);
+});
+
+// Save language choice also
+const spOldSetLang = window.setLang;
+window.setLang = function(lang,el){
+  localStorage.setItem('smartpro_lang',lang);
+  if(document.getElementById('proLangSelect')) document.getElementById('proLangSelect').value=lang;
+  if(typeof spOldSetLang === 'function') return spOldSetLang(lang,el);
+};
+</script>
+
+
+
+<script>
+/* DOVLIM V8.1 — 30 DAY TRIAL STABLE LAYER
+   Purpose: one schedule source, API-ready local/remote base URL, safe manual feed,
+   live status, offline mode, no rebuild needed later. */
+(function(){
+  const LS_MEALS='dovlim_v81_meals';
+  const LS_SEED='smartpro_seed_size';
+  const LS_IP='smartpro_device_ip';
+  const LS_STATUS='dovlim_v81_last_status';
+  const DEFAULT_MEALS=[
+    {id:1,label:'Morning', icon:'🌅', time:'08:00', grams:2.5, enabled:true, seedSize:'small'},
+    {id:2,label:'Midday', icon:'☀️', time:'12:30', grams:2.0, enabled:true, seedSize:'small'},
+    {id:3,label:'Evening', icon:'🌆', time:'17:00', grams:2.5, enabled:true, seedSize:'small'},
+    {id:4,label:'Night', icon:'🌙', time:'21:00', grams:1.5, enabled:false, seedSize:'small'}
+  ];
+
+  function $(sel,root){return (root||document).querySelector(sel);}
+  function $all(sel,root){return Array.from((root||document).querySelectorAll(sel));}
+  function clone(x){return JSON.parse(JSON.stringify(x));}
+  function safeNum(v, fallback){ const n=parseFloat(v); return isNaN(n)?fallback:n; }
+  function seedSize(){ return localStorage.getItem(LS_SEED) || ''; }
+  function seedLabel(s){ return s==='large'?'Large':(s==='medium'?'Medium':(s==='small'?'Small':'Not set')); }
+  function seedIcon(s){ return s==='large'?'🌻':(s==='medium'?'🌾':(s==='small'?'🌱':'⚠️')); }
+  function apiBase(){
+    const raw=(localStorage.getItem(LS_IP)||($('#deviceIp')?$('#deviceIp').value:'')||'').trim();
+    if(!raw) return '';
+    return (raw.startsWith('http://')||raw.startsWith('https://')) ? raw.replace(/\/$/,'') : 'http://'+raw;
+  }
+
+  function loadMeals(){
+    try{
+      const parsed=JSON.parse(localStorage.getItem(LS_MEALS)||'null');
+      if(Array.isArray(parsed) && parsed.length) return DEFAULT_MEALS.map((d,i)=>Object.assign({},d,parsed[i]||{}));
+    }catch(e){}
+    return clone(DEFAULT_MEALS);
+  }
+  function saveMeals(meals){ localStorage.setItem(LS_MEALS, JSON.stringify(meals)); }
+  function selectedSlot(){
+    const p=$('#s-schedule .tpill.sel');
+    return p ? parseInt(p.getAttribute('data-slot')||'0',10) : 0;
+  }
+  function setDoseValue(g){ const d=$('#dval'); if(d) d.textContent=(Math.round(g*10)/10).toFixed(1)+' g'; }
+
+  function syncAll(){
+    const meals=loadMeals();
+    const seed=seedSize();
+
+    // Schedule list rows
+    const rows=$all('#s-schedule .slist .sitem');
+    rows.forEach((row,i)=>{
+      const m=meals[i] || DEFAULT_MEALS[i];
+      const input=$('.timeInput',row); if(input){ input.value=m.time; input.setAttribute('value',m.time); }
+      const meta=$('.smeta',row); if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+seedLabel(m.seedSize||seed)+' seeds · every day';
+      const tog=$('.tog',row); if(tog){ tog.classList.toggle('ton',!!m.enabled); tog.classList.toggle('toff',!m.enabled); }
+    });
+
+    // Add-meal pills
+    const pills=$all('#s-schedule .tpill[data-slot]');
+    pills.forEach(p=>{
+      const i=parseInt(p.getAttribute('data-slot')||'0',10);
+      const m=meals[i] || DEFAULT_MEALS[i];
+      const t=$('.tpill-t',p); if(t) t.textContent=m.time;
+      const l=$('.tpill-l',p); if(l) l.textContent=m.label;
+      p.classList.toggle('hidden',!m.enabled);
+    });
+    let sel=$('#s-schedule .tpill.sel');
+    if(!sel || sel.classList.contains('hidden')){
+      if(sel) sel.classList.remove('sel');
+      const first=$('#s-schedule .tpill:not(.hidden)'); if(first) first.classList.add('sel');
+    }
+    const i=selectedSlot(); if(meals[i]) setDoseValue(meals[i].grams);
+
+    // Seed text + enable buttons: seed type is mandatory before schedule/feed editing
+    const hasSeed = !!seed;
+    const full = hasSeed ? (seedIcon(seed)+' '+seedLabel(seed)+' seeds ✓') : 'Not set — go to Settings';
+    const schedSeed=$('#schedSeed'); if(schedSeed){ schedSeed.textContent=full; schedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
+    const feedSeed=$('#feedseed'); if(feedSeed){ feedSeed.textContent=hasSeed?full:'not set — select in Settings'; feedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
+    const feedBtn=$('#feedbtn'); if(feedBtn){
+      feedBtn.disabled=!hasSeed;
+      feedBtn.style.background=hasSeed?'var(--ok-dk)':'var(--bg4)';
+      feedBtn.style.color=hasSeed?'var(--ok)':'var(--text3)';
+      feedBtn.style.cursor=hasSeed?'pointer':'not-allowed';
+      feedBtn.style.opacity=hasSeed?'1':'.5';
+    }
+    const saveBtn=$('#savebtn'); if(saveBtn){ saveBtn.disabled=!hasSeed; saveBtn.style.cursor=hasSeed?'pointer':'not-allowed'; }
+
+    // Home: same active meals as schedule
+    const active=meals.filter(m=>m.enabled);
+    const homeRows=$all('#s-home .mrow');
+    homeRows.forEach((row,i)=>{
+      const m=active[i];
+      if(!m){ row.style.display='none'; return; }
+      row.style.display='flex';
+      const icon=$('.mico',row); if(icon) icon.textContent=m.icon || DEFAULT_MEALS[i].icon;
+      const name=$('.mname',row); if(name) name.textContent=(m.label||DEFAULT_MEALS[i].label)+' · '+m.time;
+      const dose=$('.mdose',row); if(dose) dose.textContent=(m.grams||0).toFixed(1)+' g · '+seedLabel(m.seedSize||seed)+' seeds';
+      const badge=$('.badge',row);
+      if(badge){
+        badge.classList.remove('bdone','bnext','bpend');
+        if(i===0){ badge.classList.add('bdone'); badge.textContent='Done'; }
+        else if(i===1){ badge.classList.add('bnext'); badge.textContent='Next'; }
+        else { badge.classList.add('bpend'); badge.textContent='Pending'; }
+      }
+    });
+
+    // Header summary
+    const meta=$('#s-schedule .tb-meta');
+    if(meta){
+      const total=meals.filter(m=>m.enabled).reduce((a,m)=>a+(parseFloat(m.grams)||0),0);
+      meta.textContent=meals.filter(m=>m.enabled).length+' meals · '+(Math.round(total*10)/10).toFixed(1)+' g/day';
+    }
+  }
+
+  function updateMealFromUI(slot){
+    const meals=loadMeals();
+    const row=$all('#s-schedule .slist .sitem')[slot];
+    if(!row || !meals[slot]) return;
+    const input=$('.timeInput',row);
+    const tog=$('.tog',row);
+    meals[slot].time = input ? input.value : meals[slot].time;
+    meals[slot].enabled = tog ? tog.classList.contains('ton') : meals[slot].enabled;
+    meals[slot].seedSize = seedSize();
+    saveMeals(meals);
+    syncAll();
+  }
+
+  // Override original fragile UI functions
+  window.updateScheduleTime=function(inp){
+    const slot=parseInt(inp.getAttribute('data-slot')||'0',10);
+    updateMealFromUI(slot);
+  };
+  window.togBtn=function(btn){
+    btn.classList.toggle('ton');
+    btn.classList.toggle('toff');
+    const row=btn.closest('.sitem');
+    const rows=$all('#s-schedule .slist .sitem');
+    const slot=rows.indexOf(row);
+    if(slot>=0) updateMealFromUI(slot);
+  };
+  window.selTime=function(el){
+    $all('#s-schedule .tpill').forEach(p=>p.classList.remove('sel'));
+    el.classList.add('sel');
+    const meals=loadMeals();
+    const i=selectedSlot();
+    if(meals[i]) setDoseValue(meals[i].grams);
+  };
+  window.chgD=function(delta){
+    if(!seedSize()){ alert('Select seed size in Settings first.'); setApiStatus(false,'Seed size required'); return; }
+    const meals=loadMeals();
+    const i=selectedSlot();
+    if(!meals[i]) return;
+    const next=Math.max(1, Math.min(30, (parseFloat(meals[i].grams)||1)+delta));
+    meals[i].grams=Math.round(next*10)/10;
+    meals[i].seedSize=seedSize();
+    saveMeals(meals);
+    syncAll();
+  };
+  window.selSeed=function(el){
+    $all('#seedpicker .sopt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');
+    const lb=($('.sopt-lb',el)||{}).textContent || 'Small';
+    const val=lb.toLowerCase().includes('large')?'large':(lb.toLowerCase().includes('medium')?'medium':'small');
+    localStorage.setItem(LS_SEED,val);
+    const meals=loadMeals().map(m=>Object.assign({},m,{seedSize:val}));
+    saveMeals(meals);
+    syncAll();
+  };
+
+  async function apiGet(path){ const base=apiBase(); if(!base) throw new Error('Missing Device IP'); const r=await fetch(base+path,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
+  async function apiPost(path,payload){ const base=apiBase(); if(!base) throw new Error('Missing Device IP'); const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); if(!r.ok) throw new Error('HTTP '+r.status); try{return await r.json();}catch(e){return {ok:true};} }
+  function setApiStatus(ok,msg){
+    const dot=$('#apiDot'), txt=$('#apiStatusText'), online=$('.online span');
+    if(dot){ dot.classList.remove('ok','err'); dot.classList.add(ok?'ok':'err'); }
+    if(txt) txt.textContent=msg;
+    if(online) online.textContent=ok?'Online':'Offline';
+  }
+
+  function updateDashboard(data){
+    if(!data) return;
+    localStorage.setItem(LS_STATUS, JSON.stringify(Object.assign({},data,{_savedAt:new Date().toISOString()})));
+    const waterPct = data.water_percent ?? data.waterPercent ?? data.water;
+    const foodPct  = data.food_percent ?? data.seedPercent ?? data.seeds;
+    const waterG = data.water_g ?? data.waterWeight;
+    const foodG  = data.food_g ?? data.foodWeight;
+    const tempCage = data.cage_temp_c ?? data.tempCage ?? data.cageTemp;
+    const humCage  = data.cage_humidity ?? data.humCage ?? data.cageHumidity;
+    const tempBox  = data.box_temp_c ?? data.tempBox ?? data.boxTemp;
+    const humBox   = data.box_humidity ?? data.humBox ?? data.boxHumidity;
+    const battery  = data.battery_percent ?? data.batteryPercent ?? data.battery;
+
+    const vals=$all('.lval');
+    if(vals[0] && waterPct!==undefined) vals[0].innerHTML=Math.round(waterPct)+'<span style="font-size:14px;color:var(--text3)">%</span>';
+    if(vals[1] && foodPct!==undefined) vals[1].innerHTML=Math.round(foodPct)+'<span style="font-size:14px;color:var(--text3)">%</span>';
+    const subs=$all('.lsub');
+    if(subs[0] && waterG!==undefined) subs[0].textContent=Math.round(waterG)+' g in tank';
+    if(subs[1] && foodG!==undefined) subs[1].textContent=Math.round(foodG)+' g in tank';
+
+    const emv=$all('.emv');
+    if(tempBox!==undefined && emv[0]) emv[0].textContent=Math.round(tempBox)+'°';
+    if(humBox!==undefined && emv[1]) emv[1].textContent=Math.round(humBox)+'%';
+    if(tempCage!==undefined && emv[2]) emv[2].textContent=Math.round(tempCage)+'°';
+    if(humCage!==undefined && emv[3]) emv[3].textContent=Math.round(humCage)+'%';
+
+    const batt=$all('.strow .stval').find(x=>x.textContent.includes('%'));
+    if(batt && battery!==undefined) batt.textContent=Math.round(battery)+'%';
+  }
+
+  window.testBoxConnection=async function(){
+    try{ const data=await apiGet('/api/status'); updateDashboard(data); setApiStatus(true,'Connected · '+new Date().toLocaleTimeString()); }
+    catch(e){ setApiStatus(false,'Offline · '+e.message); }
+  };
+  window.saveDeviceIp=function(){
+    const ip=($('#deviceIp')?$('#deviceIp').value.trim():'');
+    localStorage.setItem(LS_IP,ip);
+    const st=$('#deviceIpStatus'); if(st) st.textContent=ip?'Saved: '+ip:'Not saved';
+    setApiStatus(!!ip, ip?'Device URL saved':'Missing Device IP');
+  };
+  window.doSave=async function(btn){
+    if(!seedSize()){ alert('Select seed size in Settings first.'); setApiStatus(false,'Seed size required'); return; }
+    const i=selectedSlot();
+    updateMealFromUI(i);
+    const meals=loadMeals();
+    const old=btn?btn.innerText:'';
+    try{
+      await apiPost('/api/schedule',{meals:meals,updatedAt:new Date().toISOString()});
+      if(btn){ btn.innerText='Saved to box'; setTimeout(()=>btn.innerText=old||'Save meal',1500); }
+      setApiStatus(true,'Schedule sent');
+    }catch(e){
+      if(btn){ btn.innerText='Saved locally · box offline'; setTimeout(()=>btn.innerText=old||'Save meal',1800); }
+      setApiStatus(false,'Local saved · '+e.message);
+    }
+  };
+  window.doFeed=async function(btn){
+    const meals=loadMeals();
+    const i=selectedSlot();
+    const grams=meals[i]?meals[i].grams:1;
+    const seed=seedSize();
+    if(!seed){ alert('Select seed size in Settings first.'); setApiStatus(false,'Seed size required'); return; }
+    if(!apiBase()){ setApiStatus(false,'Missing Device IP'); return; }
+    if(!confirm('Feed now '+grams.toFixed(1)+' g?')) return;
+    const old=btn?btn.innerText:'';
+    try{
+      await apiPost('/api/feed',{grams:grams,seedSize:seed,mode:'manual'});
+      if(btn){ btn.innerText='Sent'; setTimeout(()=>btn.innerText=old||'Feed now',1200); }
+      setApiStatus(true,'Feed command sent');
+    }catch(e){
+      if(btn){ btn.innerText='Failed'; setTimeout(()=>btn.innerText=old||'Feed now',1400); }
+      setApiStatus(false,'Feed failed · '+e.message);
+    }
+  };
+
+  // Language selector safe override (works from select without crashing)
+  const oldSetLang=window.setLang;
+  window.setLang=function(l,el){
+    localStorage.setItem('smartpro_lang',l);
+    const select=$('#proLangSelect'); if(select) select.value=l;
+    const app=$('.app'); if(app) app.setAttribute('dir',l==='ar'?'rtl':'ltr');
+    try{ if(typeof oldSetLang==='function' && el) oldSetLang(l,el); }catch(e){}
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    const ip=localStorage.getItem(LS_IP)||''; if($('#deviceIp')) $('#deviceIp').value=ip; if($('#deviceIpStatus')) $('#deviceIpStatus').textContent=ip?'Saved: '+ip:'Not saved';
+    const lang=localStorage.getItem('smartpro_lang')||'en'; if($('#proLangSelect')) $('#proLangSelect').value=lang;
+    syncAll();
+    try{ const last=JSON.parse(localStorage.getItem(LS_STATUS)||'null'); if(last) updateDashboard(last); }catch(e){}
+    setInterval(async()=>{ try{ const d=await apiGet('/api/status'); updateDashboard(d); setApiStatus(true,'Live · '+new Date().toLocaleTimeString()); }catch(e){ setApiStatus(false,'Offline · showing last data'); } },10000);
+  });
+
+  // Immediate init if script loads after DOM already ready
+  if(document.readyState!=='loading'){
+    const ev=new Event('DOMContentLoaded'); document.dispatchEvent(ev);
+  }
+})();
+</script>
+
+
+<script>
+/* === DOVLIM V8.1 PATCH v3: FEED NOW BUTTON FINAL FIX ===
+   This patch is loaded last. It forces Feed Now to work after seed selection,
+   avoids disabled-click problems, and uses the selected meal dose.
+*/
+(function(){
+  function $(q,root){return (root||document).querySelector(q);}
+  function $all(q,root){return Array.from((root||document).querySelectorAll(q));}
+  function getDeviceBase(){
+    var v=(localStorage.getItem('smartpro_device_ip')||'').trim();
+    if(!v){ var inp=$('#deviceIp'); if(inp) v=inp.value.trim(); }
+    if(!v) return '';
+    if(!/^https?:\/\//i.test(v)) v='http://'+v;
+    return v.replace(/\/+$/,'');
+  }
+  function getSeed(){
+    return (localStorage.getItem('smartpro_seed_size')||localStorage.getItem('smartpro_seed')||'').trim();
+  }
+  function selectedSlot(){
+    var el=$('#s-schedule .tpill.sel[data-slot]');
+    return el ? parseInt(el.getAttribute('data-slot')||'0',10) : 0;
+  }
+  function getDose(){
+    var d=$('#dval');
+    var v=d ? parseFloat((d.textContent||'').replace('g','').trim()) : NaN;
+    if(!isNaN(v) && v>0) return v;
+    try{
+      var meals=JSON.parse(localStorage.getItem('smartpro_meals')||'[]');
+      var m=meals[selectedSlot()];
+      if(m && Number(m.grams)>0) return Number(m.grams);
+    }catch(e){}
+    return 1;
+  }
+  function seedFromText(text){
+    text=(text||'').toLowerCase();
+    if(text.includes('large') || text.includes('grande') || text.includes('كبيرة') || text.includes('🌻')) return 'large';
+    if(text.includes('medium') || text.includes('moy') || text.includes('متوسطة') || text.includes('🌾')) return 'medium';
+    return 'small';
+  }
+  function seedLabel(seed){
+    if(seed==='large') return '🌻 Large seeds';
+    if(seed==='medium') return '🌾 Medium seeds';
+    return '🌱 Small seeds';
+  }
+  function setApiStatus(ok,msg){
+    var dot=$('#apiDot'), txt=$('#apiStatusText');
+    if(dot){ dot.classList.toggle('ok',!!ok); dot.classList.toggle('err',!ok); }
+    if(txt) txt.textContent=msg;
+  }
+  function updateFeedUI(){
+    var seed=getSeed();
+    var btn=$('#feedbtn');
+    var fs=$('#feedseed');
+    var sched=$('#schedSeed');
+    if(fs){ fs.textContent=seed ? (seedLabel(seed)+' ✓') : 'not set — select in Settings'; fs.style.color=seed?'var(--ok)':'var(--warn)'; }
+    if(sched){ sched.textContent=seed ? (seedLabel(seed)+' ✓') : 'Not set — go to Settings'; sched.style.color=seed?'var(--ok)':'var(--warn)'; }
+    if(btn){
+      btn.disabled=!seed;
+      btn.style.pointerEvents='auto';
+      btn.style.opacity=seed?'1':'.5';
+      btn.style.cursor=seed?'pointer':'not-allowed';
+      btn.style.background=seed?'var(--ok-dk)':'var(--bg4)';
+      btn.style.color=seed?'var(--ok)':'var(--text3)';
+      var span=$('#t-feedbtn-txt',btn);
+      if(span) span.textContent='Feed now'; else btn.textContent='Feed now';
+    }
+    var saveBtn=$('#savebtn');
+    if(saveBtn){ saveBtn.disabled=!seed; saveBtn.style.cursor=seed?'pointer':'not-allowed'; }
+  }
+
+  window.selSeed=function(el){
+    $all('#seedpicker .sopt').forEach(function(o){o.classList.remove('sel');});
+    if(el) el.classList.add('sel');
+    var seed=seedFromText(el?el.textContent:'small');
+    localStorage.setItem('smartpro_seed_size',seed);
+    localStorage.setItem('smartpro_seed',seed);
+    updateFeedUI();
+    setApiStatus(true,'Seed size selected: '+seed);
+  };
+
+  window.doFeed=async function(btn){
+    var seed=getSeed();
+    if(!seed){
+      alert('اختار نوع الحبوب من Settings أولا.');
+      updateFeedUI();
+      setApiStatus(false,'Seed size required');
+      return;
+    }
+    var grams=getDose();
+    if(!confirm('Feed now '+grams.toFixed(1)+' g?')) return;
+    var old='Feed now';
+    if(btn){
+      var sp=$('#t-feedbtn-txt',btn);
+      if(sp){ old=sp.textContent||old; sp.textContent='Sending...'; }
+      else { old=btn.textContent||old; btn.textContent='Sending...'; }
+    }
+    var base=getDeviceBase();
+    if(!base){
+      alert('Device IP ما محفوظش. دخل IP ديال ESP32 فـ Settings.');
+      if(btn){ var sp2=$('#t-feedbtn-txt',btn); if(sp2) sp2.textContent=old; else btn.textContent=old; }
+      setApiStatus(false,'Missing Device IP');
+      return;
+    }
+    try{
+      var res=await fetch(base+'/api/feed',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({grams:grams,seedSize:seed,mode:'manual'})
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      if(btn){ var sp3=$('#t-feedbtn-txt',btn); if(sp3) sp3.textContent='Sent'; else btn.textContent='Sent'; setTimeout(function(){ if(sp3) sp3.textContent=old; else btn.textContent=old; },1200); }
+      setApiStatus(true,'Feed command sent');
+    }catch(e){
+      if(btn){ var sp4=$('#t-feedbtn-txt',btn); if(sp4) sp4.textContent='Failed'; else btn.textContent='Failed'; setTimeout(function(){ if(sp4) sp4.textContent=old; else btn.textContent=old; },1400); }
+      setApiStatus(false,'Feed failed · '+e.message);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    updateFeedUI();
+    var btn=$('#feedbtn');
+    if(btn){
+      btn.onclick=function(ev){ ev.preventDefault(); window.doFeed(btn); return false; };
+    }
+  });
+  updateFeedUI();
+})();
+</script>
+
+
+
+<script>
+/* === DOVLIM V8.1 PATCH v4: SEED SETTINGS VISUAL SYNC ===
+   Fix: if seed is already saved in localStorage, Settings page must show the same seed active.
+*/
+(function(){
+  function $(q,root){return (root||document).querySelector(q);}
+  function $all(q,root){return Array.from((root||document).querySelectorAll(q));}
+  function currentSeed(){
+    return (localStorage.getItem('smartpro_seed_size')||localStorage.getItem('smartpro_seed')||'').trim();
+  }
+  function seedFromOptionText(txt){
+    txt=(txt||'').toLowerCase();
+    if(txt.includes('large') || txt.includes('grande') || txt.includes('كبيرة') || txt.includes('🌻')) return 'large';
+    if(txt.includes('medium') || txt.includes('moy') || txt.includes('متوسطة') || txt.includes('🌾')) return 'medium';
+    if(txt.includes('small') || txt.includes('petite') || txt.includes('صغيرة') || txt.includes('🌱')) return 'small';
+    return '';
+  }
+  function label(seed){
+    if(seed==='large') return '🌻 Large seeds';
+    if(seed==='medium') return '🌾 Medium seeds';
+    if(seed==='small') return '🌱 Small seeds';
+    return '';
+  }
+  function syncSeedSettingsVisual(){
+    var seed=currentSeed();
+    var opts=$all('#seedpicker .sopt');
+    opts.forEach(function(o){
+      var optSeed=seedFromOptionText(o.textContent);
+      o.classList.toggle('sel', !!seed && optSeed===seed);
+    });
+
+    var feed=$('#feedseed');
+    if(feed){
+      feed.textContent=seed ? (label(seed)+' ✓') : 'not set — select in Settings';
+      feed.style.color=seed ? 'var(--ok)' : 'var(--warn)';
+    }
+
+    var sched=$('#schedSeed');
+    if(sched){
+      sched.textContent=seed ? (label(seed)+' ✓') : 'Not set — go to Settings';
+      sched.style.color=seed ? 'var(--ok)' : 'var(--warn)';
+    }
+
+    var feedBtn=$('#feedbtn');
+    if(feedBtn){
+      feedBtn.disabled=!seed;
+      feedBtn.style.pointerEvents='auto';
+      feedBtn.style.opacity=seed?'1':'.5';
+      feedBtn.style.cursor=seed?'pointer':'not-allowed';
+      feedBtn.style.background=seed?'var(--ok-dk)':'var(--bg4)';
+      feedBtn.style.color=seed?'var(--ok)':'var(--text3)';
+    }
+
+    var saveBtn=$('#savebtn');
+    if(saveBtn){
+      saveBtn.disabled=!seed;
+      saveBtn.style.cursor=seed?'pointer':'not-allowed';
+    }
+  }
+
+  var oldGo=window.go;
+  window.go=function(name,el){
+    if(typeof oldGo==='function') oldGo(name,el);
+    setTimeout(syncSeedSettingsVisual,30);
+  };
+
+  var oldSelSeed=window.selSeed;
+  window.selSeed=function(el){
+    if(typeof oldSelSeed==='function') oldSelSeed(el);
+    setTimeout(syncSeedSettingsVisual,30);
+  };
+
+  document.addEventListener('DOMContentLoaded',syncSeedSettingsVisual);
+  setTimeout(syncSeedSettingsVisual,50);
+})();
+</script>
+
+
+
+<script>
+/* === DOVLIM V8.1 PATCH v6: FINAL CONTROL CLEAN ===
+   Fixes after final review:
+   - No Arabic warning box on Schedule page.
+   - Time inputs stay editable always.
+   - Seed size is required only for grams, Save meal, and Feed now.
+   - First launch of v6 clears old seed only once, then chosen seed persists.
+   - Home meals stay synced with Schedule times and grams.
+*/
+(function(){
+  function $(q,root){return (root||document).querySelector(q);}
+  function $all(q,root){return Array.from((root||document).querySelectorAll(q));}
+
+  var LS_SEED='smartpro_seed_size';
+  var LS_SEED_OLD='smartpro_seed';
+  var LS_MEALS='dovlim_v81_meals';
+  var LS_IP='smartpro_device_ip';
+  var INIT='dovlim_v6_final_seed_reset_done';
+
+  var defaults=[
+    {id:1,label:'Morning', icon:'🌅', time:'08:00', grams:2.5, enabled:true, seedSize:''},
+    {id:2,label:'Midday', icon:'☀️', time:'12:30', grams:2.0, enabled:true, seedSize:''},
+    {id:3,label:'Evening', icon:'🌆', time:'17:00', grams:2.5, enabled:true, seedSize:''},
+    {id:4,label:'Night', icon:'🌙', time:'21:00', grams:1.5, enabled:false, seedSize:''}
+  ];
+
+  if(!localStorage.getItem(INIT)){
+    localStorage.removeItem(LS_SEED);
+    localStorage.removeItem(LS_SEED_OLD);
+    localStorage.setItem(INIT,'1');
+  }
+
+  function seed(){return (localStorage.getItem(LS_SEED)||localStorage.getItem(LS_SEED_OLD)||'').trim();}
+  function hasSeed(){return !!seed();}
+  function seedLabel(s){return s==='large'?'Large':(s==='medium'?'Medium':(s==='small'?'Small':'Not set'));}
+  function seedIcon(s){return s==='large'?'🌻':(s==='medium'?'🌾':(s==='small'?'🌱':'⚠️'));}
+  function seedFromText(txt){
+    txt=(txt||'').toLowerCase();
+    if(txt.includes('large') || txt.includes('grande') || txt.includes('كبيرة') || txt.includes('🌻')) return 'large';
+    if(txt.includes('medium') || txt.includes('moy') || txt.includes('متوسطة') || txt.includes('🌾')) return 'medium';
+    if(txt.includes('small') || txt.includes('petite') || txt.includes('صغيرة') || txt.includes('🌱')) return 'small';
+    return '';
+  }
+  function loadMeals(){
+    try{
+      var p=JSON.parse(localStorage.getItem(LS_MEALS)||'null');
+      if(Array.isArray(p) && p.length) return defaults.map(function(d,i){return Object.assign({},d,p[i]||{});});
+    }catch(e){}
+    return defaults.map(function(x){return Object.assign({},x);});
+  }
+  function saveMeals(m){localStorage.setItem(LS_MEALS,JSON.stringify(m));}
+  function selectedSlot(){
+    var p=$('#s-schedule .tpill.sel[data-slot]');
+    return p ? parseInt(p.getAttribute('data-slot')||'0',10) : 0;
+  }
+  function apiBase(){
+    var raw=(localStorage.getItem(LS_IP)||($('#deviceIp')?$('#deviceIp').value:'')||'').trim();
+    if(!raw) return '';
+    if(!/^https?:\/\//i.test(raw)) raw='http://'+raw;
+    return raw.replace(/\/+$/,'');
+  }
+  function apiStatus(ok,msg){
+    var dot=$('#apiDot'), txt=$('#apiStatusText');
+    if(dot){dot.classList.toggle('ok',!!ok); dot.classList.toggle('err',!ok);}
+    if(txt) txt.textContent=msg;
+  }
+  function setDose(g){var d=$('#dval'); if(d)d.textContent=(Math.round(g*10)/10).toFixed(1)+' g';}
+  function setControl(el,enabled){
+    if(!el)return;
+    el.disabled=!enabled;
+    el.style.opacity=enabled?'1':'.45';
+    el.style.cursor=enabled?'pointer':'not-allowed';
+  }
+
+  function syncFinal(){
+    var s=seed(), ok=!!s;
+    var meals=loadMeals();
+
+    // Remove old v5 message if any exists from cache/older file
+    var oldWarn=$('#seedRequiredBox');
+    if(oldWarn) oldWarn.remove();
+
+    // Schedule list: time always editable
+    var rows=$all('#s-schedule .slist .sitem');
+    rows.forEach(function(row,i){
+      var m=meals[i]||defaults[i];
+      var inp=$('.timeInput',row);
+      if(inp){ inp.disabled=false; inp.style.pointerEvents='auto'; inp.style.opacity='1'; inp.style.cursor='pointer'; inp.value=m.time; inp.setAttribute('value',m.time); }
+      var meta=$('.smeta',row);
+      if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+(ok?seedLabel(s):'Seed not selected')+' seeds · every day';
+      var tog=$('.tog',row); if(tog){tog.classList.toggle('ton',!!m.enabled); tog.classList.toggle('toff',!m.enabled);}
+    });
+
+    // Add-meal pills synced with schedule times
+    $all('#s-schedule .tpill[data-slot]').forEach(function(p){
+      var i=parseInt(p.getAttribute('data-slot')||'0',10), m=meals[i]||defaults[i];
+      var t=$('.tpill-t',p); if(t)t.textContent=m.time;
+      var l=$('.tpill-l',p); if(l)l.textContent=m.label;
+      p.classList.toggle('hidden',!m.enabled);
+      p.style.pointerEvents='auto'; p.style.opacity='1';
+    });
+    var sel=$('#s-schedule .tpill.sel');
+    if(!sel || sel.classList.contains('hidden')){ if(sel)sel.classList.remove('sel'); var first=$('#s-schedule .tpill:not(.hidden)'); if(first)first.classList.add('sel'); }
+    var sl=selectedSlot(); if(meals[sl]) setDose(meals[sl].grams);
+
+    // Seed indicators
+    var full=ok ? (seedIcon(s)+' '+seedLabel(s)+' seeds ✓') : 'Choose seed size in Settings first';
+    var sched=$('#schedSeed'); if(sched){sched.textContent=full; sched.style.color=ok?'var(--ok)':'var(--warn)';}
+    var feed=$('#feedseed'); if(feed){feed.textContent=full; feed.style.color=ok?'var(--ok)':'var(--warn)';}
+
+    // Settings visual state
+    $all('#seedpicker .sopt').forEach(function(o){o.classList.toggle('sel', ok && seedFromText(o.textContent)===s);});
+
+    // Lock only grams, save and feed. DO NOT lock time.
+    $all('#s-schedule .dbtn').forEach(function(b){setControl(b,ok);});
+    setControl($('#savebtn'),ok);
+    var feedBtn=$('#feedbtn');
+    if(feedBtn){
+      feedBtn.disabled=!ok;
+      feedBtn.style.pointerEvents='auto';
+      feedBtn.style.opacity=ok?'1':'.5';
+      feedBtn.style.cursor=ok?'pointer':'not-allowed';
+      feedBtn.style.background=ok?'var(--ok-dk)':'var(--bg4)';
+      feedBtn.style.color=ok?'var(--ok)':'var(--text3)';
+      var sp=$('#t-feedbtn-txt',feedBtn); if(sp)sp.textContent='Feed now'; else feedBtn.textContent='Feed now';
+    }
+
+    // Home from same meals source
+    var active=meals.filter(function(m){return m.enabled;});
+    var homeRows=$all('#s-home .mrow');
+    homeRows.forEach(function(row,i){
+      var m=active[i];
+      if(!m){row.style.display='none'; return;}
+      row.style.display='flex';
+      var icon=$('.mico',row); if(icon)icon.textContent=m.icon;
+      var name=$('.mname',row); if(name)name.textContent=m.label+' · '+m.time;
+      var dose=$('.mdose',row); if(dose)dose.textContent=(m.grams||0).toFixed(1)+' g · '+(ok?seedLabel(s):'Seed not selected')+' seeds';
+      var badge=$('.badge',row);
+      if(badge){badge.classList.remove('bdone','bnext','bpend'); if(i===0){badge.classList.add('bdone');badge.textContent='Done';} else if(i===1){badge.classList.add('bnext');badge.textContent='Next';} else {badge.classList.add('bpend');badge.textContent='Pending';}}
+    });
+  }
+
+  window.updateScheduleTime=function(inp){
+    var i=parseInt(inp.getAttribute('data-slot')||'0',10);
+    var meals=loadMeals();
+    if(meals[i]){meals[i].time=inp.value; saveMeals(meals);}
+    syncFinal();
+  };
+  window.togBtn=function(btn){
+    btn.classList.toggle('ton'); btn.classList.toggle('toff');
+    var row=btn.closest('.sitem'), rows=$all('#s-schedule .slist .sitem'), i=rows.indexOf(row);
+    var meals=loadMeals(); if(i>=0 && meals[i]){meals[i].enabled=btn.classList.contains('ton'); saveMeals(meals);} syncFinal();
+  };
+  window.selTime=function(el){$all('#s-schedule .tpill').forEach(function(p){p.classList.remove('sel');}); el.classList.add('sel'); var m=loadMeals()[selectedSlot()]; if(m)setDose(m.grams);};
+  window.chgD=function(delta){
+    if(!hasSeed()){apiStatus(false,'Seed size required'); return;}
+    var meals=loadMeals(), i=selectedSlot(); if(!meals[i])return;
+    var v=Math.max(1,Math.min(30,(parseFloat(meals[i].grams)||1)+delta));
+    meals[i].grams=Math.round(v*10)/10; meals[i].seedSize=seed(); saveMeals(meals); syncFinal();
+  };
+  window.selSeed=function(el){
+    var s=seedFromText(el?el.textContent:'');
+    if(!s)return;
+    localStorage.setItem(LS_SEED,s); localStorage.setItem(LS_SEED_OLD,s);
+    var meals=loadMeals(); meals.forEach(function(m){m.seedSize=s;}); saveMeals(meals);
+    apiStatus(true,'Seed size selected: '+s);
+    syncFinal();
+  };
+  window.doSave=async function(btn){
+    if(!hasSeed()){apiStatus(false,'Seed size required'); return;}
+    var old=btn?btn.textContent:'Save meal';
+    if(btn)btn.textContent='Saved';
+    setTimeout(function(){if(btn)btn.textContent=old||'Save meal';},1200);
+    syncFinal();
+  };
+  window.doFeed=async function(btn){
+    if(!hasSeed()){apiStatus(false,'Seed size required'); return;}
+    var base=apiBase();
+    if(!base){apiStatus(false,'Missing Device IP'); alert('Device IP missing. Save ESP32 IP in Settings.'); return;}
+    var meals=loadMeals(), m=meals[selectedSlot()]||{grams:1};
+    if(!confirm('Feed now '+Number(m.grams||1).toFixed(1)+' g?'))return;
+    var old=btn?btn.innerText:'Feed now'; if(btn)btn.innerText='Sending...';
+    try{
+      var res=await fetch(base+'/api/feed',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grams:m.grams,seedSize:seed(),mode:'manual'})});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      if(btn){btn.innerText='Sent'; setTimeout(function(){btn.innerText=old||'Feed now';},1200);}
+      apiStatus(true,'Feed command sent');
+    }catch(e){
+      if(btn){btn.innerText='Failed'; setTimeout(function(){btn.innerText=old||'Feed now';},1400);}
+      apiStatus(false,'Feed failed · '+e.message);
+    }
+  };
+
+  var oldGo=window.go;
+  window.go=function(name,el){ if(typeof oldGo==='function')oldGo(name,el); setTimeout(syncFinal,20); };
+  document.addEventListener('DOMContentLoaded',syncFinal);
+  if(document.readyState!=='loading') setTimeout(syncFinal,20);
+})();
+</script>
+
+
+
+<!-- DOVLIM FIREBASE FINAL START -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const DOVLIM_APP_VERSION = "Dovlim App Firebase Final 1";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
+    authDomain: "dovlim-smart-pro.firebaseapp.com",
+    databaseURL: "https://dovlim-smart-pro-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "dovlim-smart-pro",
+    storageBucket: "dovlim-smart-pro.firebasestorage.app",
+    messagingSenderId: "941701677770",
+    appId: "1:941701677770:web:9cdabbe885589db6bd2a33",
+    measurementId: "G-CQP9LGKKXX"
+  };
+
+  if (!window.firebase) {
+    console.error("Firebase SDK not loaded");
+    return;
+  }
+
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.database();
+  const deviceRef = db.ref("device");
+
+  const DEFAULT_DEVICE = {
+    status: {
+      online: true,
+      appConnected: true,
+      firmware: "8.1.2",
+      battery: 78,
+      wifi: -55,
+      lastUpdate: ""
+    },
+    water: {
+      grams: 720,
+      percent: 72,
+      low: false,
+      pumpRunning: false
+    },
+    food: {
+      grams: 350,
+      percent: 45,
+      low: false,
+      seedType: "not_set"
+    },
+    cage: {
+      temperature: 25,
+      humidity: 71
+    },
+    box: {
+      temperature: 23,
+      humidity: 48
+    },
+    schedule: {
+      meal1: { time: "08:00", grams: 2.5, enabled: true },
+      meal2: { time: "12:30", grams: 2.0, enabled: true },
+      meal3: { time: "17:00", grams: 2.5, enabled: true },
+      meal4: { time: "21:00", grams: 1.5, enabled: false }
+    },
+    commands: {
+      feedNow: false,
+      feedGrams: 0,
+      seedType: "not_set",
+      commandId: "",
+      updatedAt: ""
+    },
+    notifications: {
+      last: ""
+    },
+    app: {
+      version: DOVLIM_APP_VERSION,
+      lastOpen: ""
+    }
+  };
+
+  function nowISO(){ return new Date().toISOString(); }
+  function qs(s,root){ return (root || document).querySelector(s); }
+  function qsa(s,root){ return Array.from((root || document).querySelectorAll(s)); }
+
+  function getSeedType(){
+    return localStorage.getItem("dovlim_seed_size") ||
+           localStorage.getItem("smartpro_seed_size") ||
+           localStorage.getItem("seedSize") ||
+           "not_set";
+  }
+
+  function selectedMealGrams(){
+    const v = qs("#dval");
+    const n = v ? parseFloat(String(v.textContent).replace(",", ".")) : NaN;
+    return Number.isFinite(n) ? n : 2.0;
+  }
+
+  function readMealsFromScreen(){
+    const rows = qsa("#s-schedule .slist .sitem");
+    const out = {};
+    rows.forEach(function(row, i){
+      const inp = qs(".timeInput", row);
+      const meta = qs(".smeta", row);
+      const tog = qs(".tog", row);
+      let grams = 2.0;
+      if (meta) {
+        const m = String(meta.textContent).match(/([0-9]+(?:[\.,][0-9]+)?)\s*g/i);
+        if (m) grams = parseFloat(m[1].replace(",", "."));
+      }
+      out["meal" + (i + 1)] = {
+        time: inp ? inp.value : ["08:00","12:30","17:00","21:00"][i],
+        grams: Number.isFinite(grams) ? grams : 2.0,
+        enabled: tog ? tog.classList.contains("ton") : true
+      };
+    });
+    return out;
+  }
+
+  function setText(sel, text){ const el = qs(sel); if (el) el.textContent = text; }
+  function setBar(selector, percent){
+    const el = qs(selector);
+    if (el) el.style.width = Math.max(0, Math.min(100, Number(percent) || 0)) + "%";
+  }
+
+  async function ensureFirebaseStructure(){
+    const snap = await deviceRef.once("value");
+    const current = snap.val() || {};
+    const updates = {};
+
+    Object.keys(DEFAULT_DEVICE).forEach(function(key){
+      if (current[key] === undefined || current[key] === null) {
+        updates[key] = DEFAULT_DEVICE[key];
+      }
+    });
+
+    updates["status/appConnected"] = true;
+    updates["status/lastUpdate"] = nowISO();
+    updates["app/version"] = DOVLIM_APP_VERSION;
+    updates["app/lastOpen"] = nowISO();
+
+    const seedType = getSeedType();
+    if (seedType !== "not_set") {
+      updates["food/seedType"] = seedType;
+      updates["commands/seedType"] = seedType;
+    }
+
+    await deviceRef.update(updates);
+  }
+
+  function pushScheduleToFirebase(){
+    return deviceRef.child("schedule").update(readMealsFromScreen()).catch(console.error);
+  }
+
+  function pushSeedToFirebase(){
+    const seedType = getSeedType();
+    return deviceRef.update({
+      "food/seedType": seedType,
+      "commands/seedType": seedType,
+      "status/lastUpdate": nowISO()
+    }).catch(console.error);
+  }
+
+  function bindRealtimeStatus(){
+    deviceRef.on("value", function(snapshot){
+      const d = snapshot.val() || {};
+
+      if (d.water) {
+        setText("#s-home .lgrid .lcard:nth-child(1) .lval", String(d.water.percent ?? 0) + "%");
+        setBar("#s-home .lgrid .lcard:nth-child(1) .lbarfill", d.water.percent ?? 0);
+      }
+      if (d.food) {
+        setText("#s-home .lgrid .lcard:nth-child(2) .lval", String(d.food.percent ?? 0) + "%");
+        setBar("#s-home .lgrid .lcard:nth-child(2) .lbarfill", d.food.percent ?? 0);
+      }
+      if (d.box) {
+        const boxVals = qsa("#s-home .erow .ebox:nth-child(1) .emv");
+        if (boxVals[0]) boxVals[0].textContent = String(d.box.temperature ?? "--") + "°";
+        if (boxVals[1]) boxVals[1].textContent = String(d.box.humidity ?? "--") + "%";
+      }
+      if (d.cage) {
+        const cageVals = qsa("#s-home .erow .ebox:nth-child(2) .emv");
+        if (cageVals[0]) cageVals[0].textContent = String(d.cage.temperature ?? "--") + "°";
+        if (cageVals[1]) cageVals[1].textContent = String(d.cage.humidity ?? "--") + "%";
+      }
+    });
+  }
+
+  function overrideAppActions(){
+    const oldUpdateScheduleTime = window.updateScheduleTime;
+    window.updateScheduleTime = function(input){
+      if (typeof oldUpdateScheduleTime === "function") oldUpdateScheduleTime(input);
+      pushScheduleToFirebase();
+    };
+
+    const oldTogBtn = window.togBtn;
+    window.togBtn = function(btn){
+      if (typeof oldTogBtn === "function") oldTogBtn(btn);
+      pushScheduleToFirebase();
+    };
+
+    const oldChgD = window.chgD;
+    window.chgD = function(delta){
+      if (typeof oldChgD === "function") oldChgD(delta);
+      pushScheduleToFirebase();
+    };
+
+    const oldSelSeed = window.selSeed;
+    window.selSeed = function(el){
+      if (typeof oldSelSeed === "function") oldSelSeed(el);
+      pushSeedToFirebase();
+    };
+
+    window.doSave = async function(btn){
+      await pushScheduleToFirebase();
+      await pushSeedToFirebase();
+      if (btn) {
+        const old = btn.textContent || "Save meal";
+        btn.textContent = "Saved";
+        setTimeout(function(){ btn.textContent = old; }, 1200);
+      }
+    };
+
+    window.doFeed = async function(btn){
+      const seedType = getSeedType();
+      if (!seedType || seedType === "not_set") {
+        alert("اختار حجم الحبوب من Settings الأول.");
+        return;
+      }
+      const grams = selectedMealGrams();
+      if (!confirm("Feed now " + grams.toFixed(1) + " g?")) return;
+
+      const old = btn ? (btn.innerText || "Feed now") : "Feed now";
+      if (btn) btn.innerText = "Sending...";
+
+      try {
+        await deviceRef.child("commands").update({
+          feedNow: true,
+          feedGrams: grams,
+          seedType: seedType,
+          commandId: String(Date.now()),
+          updatedAt: nowISO()
+        });
+        if (btn) {
+          btn.innerText = "Sent";
+          setTimeout(function(){ btn.innerText = old; }, 1200);
+        }
+      } catch (e) {
+        if (btn) {
+          btn.innerText = "Failed";
+          setTimeout(function(){ btn.innerText = old; }, 1400);
+        }
+        alert("Firebase command failed: " + e.message);
+      }
+    };
+  }
+
+  async function startDovlimFirebase(){
+    try {
+      await ensureFirebaseStructure();
+      overrideAppActions();
+      bindRealtimeStatus();
+      pushScheduleToFirebase();
+      pushSeedToFirebase();
+      console.log(DOVLIM_APP_VERSION + " connected");
+    } catch (e) {
+      console.error("Dovlim Firebase init failed", e);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startDovlimFirebase);
+  } else {
+    startDovlimFirebase();
+  }
+})();
+</script>
+<!-- DOVLIM FIREBASE FINAL END -->
+
+</body>
+
+</html>
