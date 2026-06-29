@@ -1526,8 +1526,8 @@ window.setLang = function(lang,el){
     const lang=localStorage.getItem('smartpro_lang')||'en'; if($('#proLangSelect')) $('#proLangSelect').value=lang;
     syncAll();
     try{ const last=JSON.parse(localStorage.getItem(LS_STATUS)||'null'); if(last) updateDashboard(last); }catch(e){}
-    setInterval(async()=>{ try{ const d=await apiGet('/api/status'); updateDashboard(d); setApiStatus(true,'Live · '+new Date().toLocaleTimeString()); }catch(e){ setApiStatus(false,'Offline · showing last data'); } },10000);
-  });
+   // Disabled: old API polling conflicts with Firebase realtime status
+// setInterval(async ()=>{ try{ const d=await apiGet('/api/status'); updateDashboard(d); setApiStatus(true,'Live · '+new Date().toLocaleTimeString()); }catch(e){} },10000);
 
   // Immediate init if script loads after DOM already ready
   if(document.readyState!=='loading'){
