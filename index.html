@@ -920,7 +920,32 @@ function chgD(d){
   if(el) el.textContent = dose.toFixed(1) + ' g';
 }
 function doSave(btn){btn.textContent='✓ Saved!';setTimeout(function(){btn.textContent='Save meal';},1500);}
-function doFeed(btn){btn.textContent='✓ Done';setTimeout(function(){btn.textContent='Feed now';},2000);}
+function doFeed(btn){
+  var grams = parseFloat(document.getElementById('dval').textContent) || 2.0;
+  var commandId = Date.now();
+
+  if(btn){
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+  }
+
+  firebase.database().ref("device/commands").update({
+  feedNow: true,
+  feedGrams: grams,
+  feedCommandId: commandId,
+  commandId: String(commandId),
+  updatedAt: new Date().toISOString()
+})
+  }).then(function(){
+    if(btn) btn.textContent = '✓ Sent';
+    setTimeout(function(){
+      if(btn){
+        btn.disabled = false;
+        btn.textContent = 'Feed now';
+      }
+    },2000);
+  });
+}
 
 var cd={
   7:{v:[7.8,8.5,8.0,8.8,8.2,8.9,7.5],l:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']},
