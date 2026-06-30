@@ -1983,7 +1983,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.1 Schedule Read";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.1B Meal Status Fix";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2170,6 +2170,7 @@ window.setLang = function(lang,el){
       setCageSensor(d.cage || {});
       updateHealth(d);
       updateFirmware(d.status || {});
+      if (d.schedule) dovlimRenderHomeMeals(d.schedule);
     });
   }
 
@@ -2240,7 +2241,97 @@ window.setLang = function(lang,el){
     const topMeta = qs("#s-schedule .tb-meta");
     if(topMeta) topMeta.textContent = "4 meals · " + total.toFixed(1).replace(".0","") + " g/day";
 
+    dovlimRenderHomeMeals(schedule);
+
     dovlimScheduleRendering = false;
+  }
+
+
+  // PATCH 2.1B — Home meal status must reflect Firebase execution state.
+  // No meal is marked Done unless Firebase says lastResult SUCCESS for today.
+  function dovlimDayStamp(){
+    const d = new Date();
+    const start = new Date(d.getFullYear(), 0, 0);
+    const diff = d - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
+    return d.getFullYear() * 1000 + day;
+  }
+
+  function dovlimMinutesNow(){
+    const d = new Date();
+    return d.getHours() * 60 + d.getMinutes();
+  }
+
+  function dovlimMinutesFromTime(t){
+    const parts = String(t || "00:00").split(":");
+    return (parseInt(parts[0] || "0", 10) * 60) + parseInt(parts[1] || "0", 10);
+  }
+
+  function dovlimRenderHomeMeals(schedule){
+    schedule = schedule || {};
+    const homeRows = qsa("#s-home .card .mrow");
+    if(!homeRows.length) return;
+
+    const today = dovlimDayStamp();
+    const nowMin = dovlimMinutesNow();
+    let nextIndex = -1;
+    let nextTime = 99999;
+
+    for(let i=0;i<homeRows.length;i++){
+      const key = "meal" + (i + 1);
+      const m = schedule[key] || {};
+      if(m.enabled === false) continue;
+
+      const t = m.time || ["08:00","12:30","17:00","21:00"][i] || "00:00";
+      const mt = dovlimMinutesFromTime(t);
+      const doneToday = Number(m.lastExecutedDay) === today && String(m.lastResult || "").toUpperCase() === "SUCCESS";
+
+      if(!doneToday && mt >= nowMin && mt < nextTime){
+        nextTime = mt;
+        nextIndex = i;
+      }
+    }
+
+    for(let i=0;i<homeRows.length;i++){
+      const key = "meal" + (i + 1);
+      const m = schedule[key] || {};
+      const row = homeRows[i];
+      if(!row) continue;
+
+      const time = m.time || ["08:00","12:30","17:00","21:00"][i] || "--:--";
+      const grams = dovlimSafeNum(m.grams, [2.5,2.0,2.5,1.5][i] || 2);
+      const seed = dovlimNormalizeSeed(m.seedType || "Small");
+      const enabled = m.enabled !== false;
+
+      const name = qs(".mname", row);
+      const dose = qs(".mdose", row);
+      const badge = qs(".badge", row);
+
+      if(name) name.textContent = ["Morning","Midday","Evening","Night"][i] + " · " + time;
+      if(dose) dose.textContent = grams + " g · " + seed + " seeds";
+
+      if(badge){
+        badge.classList.remove("bdone","bnext","bpend");
+
+        if(!enabled){
+          badge.textContent = "Off";
+          badge.classList.add("bpend");
+        }else{
+          const doneToday = Number(m.lastExecutedDay) === today && String(m.lastResult || "").toUpperCase() === "SUCCESS";
+          if(doneToday){
+            badge.textContent = "Done";
+            badge.classList.add("bdone");
+          }else if(i === nextIndex){
+            badge.textContent = "Next";
+            badge.classList.add("bnext");
+          }else{
+            badge.textContent = "Pending";
+            badge.classList.add("bpend");
+          }
+        }
+      }
+    }
   }
 
   function dovlimBindScheduleRead(){
