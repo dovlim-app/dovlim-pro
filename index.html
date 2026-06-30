@@ -2398,7 +2398,130 @@ window.setLang = function(lang,el){
 })();
 </script>
 <!-- DOVLIM APP 1 ONLINE FIX ONLY END -->
+<!-- DOVLIM PATCH 02 - SEED REQUIRED + MANUAL FEED -->
+<script>
+(function(){
+  "use strict";
 
+  var feedLock = false;
+
+  function qs(s){ return document.querySelector(s); }
+  function qsa(s){ return Array.from(document.querySelectorAll(s)); }
+  function id(x){ return document.getElementById(x); }
+
+  function getSeed(){
+    var selected = qs("#seedpicker .sopt.sel .sopt-lb");
+    if(!selected) return "";
+    return selected.textContent.trim();
+  }
+
+  function showSeedMsg(msg, color){
+    var feedseed = id("feedseed");
+    var schedSeed = id("schedSeed");
+    if(feedseed){
+      feedseed.textContent = msg;
+      feedseed.style.color = color || "var(--warn)";
+    }
+    if(schedSeed){
+      schedSeed.textContent = msg;
+      schedSeed.style.color = color || "var(--warn)";
+    }
+  }
+
+  function setButtonsBySeed(){
+    var seed = getSeed();
+    var feedBtn = id("feedbtn");
+    var saveBtn = id("savebtn");
+
+    if(!seed){
+      showSeedMsg("Select seed size in Settings first", "var(--warn)");
+      if(feedBtn){
+        feedBtn.disabled = true;
+        feedBtn.style.opacity = ".5";
+        feedBtn.style.cursor = "not-allowed";
+      }
+      if(saveBtn) saveBtn.disabled = true;
+      return false;
+    }
+
+    showSeedMsg(seed + " seeds ✓", "var(--ok)");
+    if(feedBtn){
+      feedBtn.disabled = false;
+      feedBtn.style.opacity = "1";
+      feedBtn.style.cursor = "pointer";
+      feedBtn.style.background = "var(--ok-dk)";
+      feedBtn.style.color = "var(--ok)";
+    }
+    if(saveBtn) saveBtn.disabled = false;
+    return true;
+  }
+
+  qsa("#seedpicker .sopt").forEach(function(opt){
+    opt.addEventListener("click", function(){
+      setTimeout(setButtonsBySeed, 50);
+    });
+  });
+
+  setTimeout(setButtonsBySeed, 300);
+
+  window.doFeed = function(btn){
+    if(feedLock) return;
+    if(!setButtonsBySeed()) return;
+
+    if(!window.firebase || !firebase.apps || !firebase.apps.length){
+      showSeedMsg("Firebase not ready", "var(--danger)");
+      return;
+    }
+
+    var dval = id("dval");
+    var grams = dval ? parseFloat(dval.textContent) : 2.0;
+    if(!isFinite(grams) || grams <= 0) grams = 2.0;
+
+    var commandId = Date.now();
+    var seed = getSeed();
+
+    feedLock = true;
+    if(btn){
+      btn.disabled = true;
+      btn.style.opacity = ".5";
+    }
+
+    firebase.database().ref("device/water/pumpRunning").once("value").then(function(snap){
+      var pumpRunning = !!snap.val();
+      showSeedMsg(
+        pumpRunning ? "Pump running — feed queued" : "Sending feed command...",
+        pumpRunning ? "var(--warn)" : "var(--blue)"
+      );
+
+      return firebase.database().ref("device/commands").update({
+        feedNow: true,
+        feedGrams: grams,
+        feedCommandId: commandId,
+        commandId: String(commandId),
+        seedType: seed
+      });
+    }).then(function(){
+      showSeedMsg("Feed command sent: " + grams.toFixed(1) + "g", "var(--ok)");
+      setTimeout(function(){
+        feedLock = false;
+        setButtonsBySeed();
+      }, 3000);
+    }).catch(function(e){
+      showSeedMsg("Feed error", "var(--danger)");
+      feedLock = false;
+      setButtonsBySeed();
+    });
+  };
+
+  var oldDoSave = window.doSave;
+  window.doSave = function(btn){
+    if(!setButtonsBySeed()) return;
+    if(typeof oldDoSave === "function") return oldDoSave(btn);
+  };
+
+})();
+</script>
+<!-- END PATCH 02 -->
 </body>
 
 </html>
