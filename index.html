@@ -1983,7 +1983,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 1 Home Firebase";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.1 Schedule Read";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2173,7 +2173,84 @@ window.setLang = function(lang,el){
     });
   }
 
+
+  // PATCH 2.1 — Schedule READ ONLY from Firebase.
+  // This renders meal1..meal4 on the Schedule page without writing sensor/demo data.
+  let dovlimScheduleRendering = false;
+
+  function dovlimSafeNum(v, def){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : (def || 0);
+  }
+
+  function dovlimNormalizeSeed(seed){
+    seed = String(seed || "Small").trim();
+    const low = seed.toLowerCase();
+    if (low.indexOf("large") >= 0 || low.indexOf("كب") >= 0 || low.indexOf("grande") >= 0) return "Large";
+    if (low.indexOf("medium") >= 0 || low.indexOf("متوسط") >= 0 || low.indexOf("moy") >= 0) return "Medium";
+    return "Small";
+  }
+
+  function dovlimRenderSchedule(schedule){
+    dovlimScheduleRendering = true;
+    schedule = schedule || {};
+
+    const rows = qsa("#s-schedule .slist .sitem");
+    const defaults = [
+      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+    ];
+
+    let total = 0;
+
+    for(let i=0;i<4;i++){
+      const key = "meal" + (i + 1);
+      const m = Object.assign({}, defaults[i], schedule[key] || {});
+      const time = m.time || defaults[i].time;
+      const grams = dovlimSafeNum(m.grams, defaults[i].grams);
+      const enabled = m.enabled !== false;
+      const seed = dovlimNormalizeSeed(m.seedType || defaults[i].seedType);
+
+      if(enabled) total += grams;
+
+      const row = rows[i];
+      if(row){
+        const input = qs(".timeInput", row);
+        const meta = qs(".smeta", row);
+        const tog = qs(".tog", row);
+
+        if(input && input.value !== time) input.value = time;
+        if(meta) meta.textContent = grams + " g · " + seed + " seeds · every day";
+
+        if(tog){
+          tog.classList.toggle("ton", enabled);
+          tog.classList.toggle("toff", !enabled);
+        }
+      }
+
+      const pill = qs('#s-schedule .tpill[data-slot="' + i + '"]');
+      if(pill){
+        const t = qs(".tpill-t", pill);
+        if(t) t.textContent = time;
+      }
+    }
+
+    const topMeta = qs("#s-schedule .tb-meta");
+    if(topMeta) topMeta.textContent = "4 meals · " + total.toFixed(1).replace(".0","") + " g/day";
+
+    dovlimScheduleRendering = false;
+  }
+
+  function dovlimBindScheduleRead(){
+    deviceRef.child("schedule").on("value", function(snap){
+      dovlimRenderSchedule(snap.val() || {});
+    });
+  }
+
   function pushScheduleToFirebase(){
+    if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return Promise.resolve();
     return deviceRef.child("schedule").update(readMealsFromScreen()).catch(console.error);
   }
 
@@ -2272,6 +2349,7 @@ window.setLang = function(lang,el){
       await registerAppOnly();
       overrideAppActions();
       bindRealtimeHome();
+      dovlimBindScheduleRead();
       pushSeedToFirebase();
       console.log(DOVLIM_APP_VERSION + " connected");
     } catch (e) {
