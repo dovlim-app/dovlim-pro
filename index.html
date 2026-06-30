@@ -1983,7 +1983,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Firebase Final 2";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 1 Home Firebase";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2006,62 +2006,36 @@ window.setLang = function(lang,el){
   const db = firebase.database();
   const deviceRef = db.ref("device");
 
-  const DEFAULT_DEVICE = {
-    status: {
-      online: true,
-      appConnected: true,
-      firmware: "8.1.2",
-      battery: 78,
-      wifi: -55,
-      lastUpdate: ""
-    },
-    water: {
-      grams: 720,
-      percent: 72,
-      low: false,
-      pumpRunning: false
-    },
-    food: {
-      grams: 350,
-      percent: 45,
-      low: false,
-      seedType: "not_set"
-    },
-    cage: {
-      temperature: 25,
-      humidity: 71
-    },
-    box: {
-      temperature: 23,
-      humidity: 48
-    },
-    schedule: {
-      meal1: { time: "08:00", grams: 2.5, enabled: true },
-      meal2: { time: "12:30", grams: 2.0, enabled: true },
-      meal3: { time: "17:00", grams: 2.5, enabled: true },
-      meal4: { time: "21:00", grams: 1.5, enabled: false }
-    },
-    commands: {
-      feedNow: false,
-      feedGrams: 0,
-      seedType: "not_set",
-      commandId: "",
-      updatedAt: ""
-    },
-    notifications: {
-      last: ""
-    },
-    app: {
-      version: DOVLIM_APP_VERSION,
-      lastOpen: ""
-    }
-  };
-
   function nowISO(){ return new Date().toISOString(); }
   function qs(s,root){ return (root || document).querySelector(s); }
   function qsa(s,root){ return Array.from((root || document).querySelectorAll(s)); }
 
+  function safeNum(v, def){
+    const n = Number(v);
+    return Number.isFinite(n) ? n : (def || 0);
+  }
+
+  function clampPercent(v){
+    return Math.max(0, Math.min(100, Math.round(safeNum(v, 0))));
+  }
+
+  function setText(sel, text){
+    const el = qs(sel);
+    if (el) el.textContent = text;
+  }
+
+  function setAllText(sel, text){
+    qsa(sel).forEach(function(el){ el.textContent = text; });
+  }
+
+  function setBar(selector, percent){
+    const el = qs(selector);
+    if (el) el.style.width = clampPercent(percent) + "%";
+  }
+
   function getSeedType(){
+    const selected = qs("#seedpicker .sopt.sel .sopt-lb");
+    if (selected && selected.textContent.trim()) return selected.textContent.trim();
     return localStorage.getItem("dovlim_seed_size") ||
            localStorage.getItem("smartpro_seed_size") ||
            localStorage.getItem("seedSize") ||
@@ -2089,52 +2063,114 @@ window.setLang = function(lang,el){
       out["meal" + (i + 1)] = {
         time: inp ? inp.value : ["08:00","12:30","17:00","21:00"][i],
         grams: Number.isFinite(grams) ? grams : 2.0,
-        enabled: tog ? tog.classList.contains("ton") : true
+        enabled: tog ? tog.classList.contains("ton") : true,
+        seedType: getSeedType() === "not_set" ? "Small" : getSeedType()
       };
     });
     return out;
   }
 
-  function setText(sel, text){ const el = qs(sel); if (el) el.textContent = text; }
-  function setBar(selector, percent){
-    const el = qs(selector);
-    if (el) el.style.width = Math.max(0, Math.min(100, Number(percent) || 0)) + "%";
-  }
-
-  function addMissingDefaults(defaultObj, currentObj, prefix, updates){
-    Object.keys(defaultObj).forEach(function(key){
-      const path = prefix ? prefix + "/" + key : key;
-      const defVal = defaultObj[key];
-      const curVal = currentObj ? currentObj[key] : undefined;
-
-      if (defVal && typeof defVal === "object" && !Array.isArray(defVal)) {
-        addMissingDefaults(defVal, curVal || {}, path, updates);
-      } else if (curVal === undefined || curVal === null) {
-        updates[path] = defVal;
-      }
+  async function registerAppOnly(){
+    // Important: app must not write fake sensor/status values.
+    await deviceRef.update({
+      "app/version": DOVLIM_APP_VERSION,
+      "app/lastOpen": nowISO()
     });
   }
 
-  async function ensureFirebaseStructure(){
-    const snap = await deviceRef.once("value");
-    const current = snap.val() || {};
-    const updates = {};
+  function setOnlineStatus(status){
+    const online = !!(status && (status.online || status.espConnected));
+    qsa("#t-online,.online span").forEach(function(el){
+      el.textContent = online ? "Online" : "Offline";
+      el.style.color = online ? "var(--ok)" : "var(--danger)";
+    });
+    const dot = qs(".online .dot");
+    if (dot) dot.style.background = online ? "var(--ok)" : "var(--danger)";
+    return online;
+  }
 
-    addMissingDefaults(DEFAULT_DEVICE, current, "", updates);
+  function setHomeLevel(cardIndex, data, type){
+    const p = clampPercent(data && data.percent);
+    const grams = safeNum(data && data.grams, 0);
+    const card = qs("#s-home .lgrid .lcard:nth-child(" + cardIndex + ")");
+    if (!card) return;
 
-    updates["status/online"] = true;
-    updates["status/appConnected"] = true;
-    updates["status/lastUpdate"] = nowISO();
-    updates["app/version"] = DOVLIM_APP_VERSION;
-    updates["app/lastOpen"] = nowISO();
+    const val = qs(".lval", card);
+    const bar = qs(".lbarfill", card);
+    const sub = qs(".lsub", card);
 
-    const seedType = getSeedType();
-    if (seedType !== "not_set") {
-      updates["food/seedType"] = seedType;
-      updates["commands/seedType"] = seedType;
+    const color = type === "water" ? "var(--blue)" : (p <= 20 ? "var(--danger)" : "var(--warn)");
+    if (val) {
+      val.style.color = color;
+      val.innerHTML = p + '<span style="font-size:14px;color:var(--text3)">%</span>';
     }
+    if (bar) {
+      bar.style.width = p + "%";
+      bar.style.background = color;
+    }
+    if (sub) sub.textContent = Math.round(grams) + " g";
+  }
 
-    await deviceRef.update(updates);
+  function setCageSensor(cage){
+    const vals = qsa("#s-home .erow .ebox:nth-child(2) .emv");
+    const temp = cage && cage.temperature !== undefined ? safeNum(cage.temperature, 0).toFixed(1) + "°" : "--";
+    const hum = cage && cage.humidity !== undefined ? Math.round(safeNum(cage.humidity, 0)) + "%" : "--";
+    if (vals[0]) vals[0].textContent = temp;
+    if (vals[1]) vals[1].textContent = hum;
+
+    const title = qs("#s-home .erow .ebox:nth-child(2) .etitle");
+    if (title) title.textContent = "🐦 CAGE SENSOR";
+
+    const badge = qs("#s-home .erow .ebox:nth-child(2) .ebadge");
+    if (badge) badge.style.display = "none";
+  }
+
+  function updateHealth(d){
+    let score = 100;
+    if (!d.status || !(d.status.online || d.status.espConnected)) score -= 25;
+    if (d.food && d.food.low) score -= 20;
+    if (d.water && d.water.low) score -= 20;
+    if (d.cage && safeNum(d.cage.humidity, 0) > 75) score -= 15;
+    if (d.cage && safeNum(d.cage.temperature, 0) > 34) score -= 15;
+    score = Math.max(0, Math.min(100, score));
+
+    const hnum = qs(".hnum");
+    if (hnum) hnum.textContent = score;
+
+    const temp = d.cage && d.cage.temperature !== undefined ? safeNum(d.cage.temperature, 0).toFixed(1) + "°C" : "--";
+    const hum = d.cage && d.cage.humidity !== undefined ? Math.round(safeNum(d.cage.humidity, 0)) + "% RH" : "--";
+    setText("#t-health-sub", "Firebase live · " + temp + " · " + hum);
+
+    const badge = qs("#t-health-badge");
+    if (badge) {
+      if (score >= 80) {
+        badge.textContent = "✓ All conditions normal";
+        badge.style.color = "var(--ok)";
+        badge.style.background = "rgba(34,168,116,.15)";
+      } else {
+        badge.textContent = "⚠ Check device";
+        badge.style.color = "var(--warn)";
+        badge.style.background = "rgba(232,151,42,.15)";
+      }
+    }
+  }
+
+  function updateFirmware(status){
+    const fw = status && status.firmware ? status.firmware : "--";
+    const settingsFw = qs("#t-update-sub");
+    if (settingsFw) settingsFw.textContent = "FW " + fw;
+  }
+
+  function bindRealtimeHome(){
+    deviceRef.on("value", function(snapshot){
+      const d = snapshot.val() || {};
+      setOnlineStatus(d.status || {});
+      setHomeLevel(1, d.water || {}, "water");
+      setHomeLevel(2, d.food || {}, "food");
+      setCageSensor(d.cage || {});
+      updateHealth(d);
+      updateFirmware(d.status || {});
+    });
   }
 
   function pushScheduleToFirebase(){
@@ -2143,39 +2179,12 @@ window.setLang = function(lang,el){
 
   function pushSeedToFirebase(){
     const seedType = getSeedType();
+    if (!seedType || seedType === "not_set") return Promise.resolve();
     return deviceRef.update({
       "food/seedType": seedType,
       "commands/seedType": seedType,
-      "status/lastUpdate": nowISO()
+      "app/lastOpen": nowISO()
     }).catch(console.error);
-  }
-
-  function bindRealtimeStatus(){
-    deviceRef.on("value", function(snapshot){
-      const d = snapshot.val() || {};
-
-      const onlineText = d.status && (d.status.online || d.status.appConnected || d.status.espConnected) ? "Online" : "Hors ligne";
-      setText("#t-online", onlineText);
-
-      if (d.water) {
-        setText("#s-home .lgrid .lcard:nth-child(1) .lval", String(d.water.percent ?? 0) + "%");
-        setBar("#s-home .lgrid .lcard:nth-child(1) .lbarfill", d.water.percent ?? 0);
-      }
-      if (d.food) {
-        setText("#s-home .lgrid .lcard:nth-child(2) .lval", String(d.food.percent ?? 0) + "%");
-        setBar("#s-home .lgrid .lcard:nth-child(2) .lbarfill", d.food.percent ?? 0);
-      }
-      if (d.box) {
-        const boxVals = qsa("#s-home .erow .ebox:nth-child(1) .emv");
-        if (boxVals[0]) boxVals[0].textContent = String(d.box.temperature ?? "--") + "°";
-        if (boxVals[1]) boxVals[1].textContent = String(d.box.humidity ?? "--") + "%";
-      }
-      if (d.cage) {
-        const cageVals = qsa("#s-home .erow .ebox:nth-child(2) .emv");
-        if (cageVals[0]) cageVals[0].textContent = String(d.cage.temperature ?? "--") + "°";
-        if (cageVals[1]) cageVals[1].textContent = String(d.cage.humidity ?? "--") + "%";
-      }
-    });
   }
 
   function overrideAppActions(){
@@ -2212,47 +2221,57 @@ window.setLang = function(lang,el){
         setTimeout(function(){ btn.textContent = old; }, 1200);
       }
     };
-
-    window.doFeed = async function(btn){
-      const seedType = getSeedType();
-      if (!seedType || seedType === "not_set") {
-        alert("اختار حجم الحبوب من Settings الأول.");
-        return;
-      }
-      const grams = selectedMealGrams();
-      if (!confirm("Feed now " + grams.toFixed(1) + " g?")) return;
-
-      const old = btn ? (btn.innerText || "Feed now") : "Feed now";
-      if (btn) btn.innerText = "Sending...";
-
-      try {
-        await deviceRef.child("commands").update({
-          feedNow: true,
-          feedGrams: grams,
-          seedType: seedType,
-          commandId: String(Date.now()),
-          updatedAt: nowISO()
-        });
-        if (btn) {
-          btn.innerText = "Sent";
-          setTimeout(function(){ btn.innerText = old; }, 1200);
-        }
-      } catch (e) {
-        if (btn) {
-          btn.innerText = "Failed";
-          setTimeout(function(){ btn.innerText = old; }, 1400);
-        }
-        alert("Firebase command failed: " + e.message);
-      }
-    };
   }
+
+  // Camera reserved: present now, active only when ESP32-CAM IP is saved.
+  window.openCam = function(){
+    qsa(".screen").forEach(function(s){ s.classList.remove("on"); });
+    qsa(".ni").forEach(function(n){ n.classList.remove("on"); });
+    const screen = qs("#s-camera");
+    if (screen) screen.classList.add("on");
+
+    const input = qs("#camip");
+    let ip = input ? input.value.trim() : "";
+    if (!ip) ip = localStorage.getItem("dovlim_cam_ip") || "";
+
+    const img = qs("#camImg");
+    const ph = qs("#camPh");
+
+    if (ip) {
+      if (img) {
+        img.src = "http://" + ip + "/stream";
+        img.style.display = "block";
+      }
+      if (ph) ph.style.display = "none";
+    } else {
+      if (img) {
+        img.removeAttribute("src");
+        img.style.display = "none";
+      }
+      if (ph) {
+        ph.style.display = "block";
+        ph.innerHTML = "<div style='font-size:36px;margin-bottom:10px'>📷</div><div>Camera reserved<br>Enter ESP32-CAM IP in Settings</div>";
+      }
+    }
+  };
+
+  window.saveCam = function(){
+    const input = qs("#camip");
+    if (!input) return;
+    const ip = input.value.trim();
+    if (!ip) {
+      alert("Enter camera IP first");
+      return;
+    }
+    localStorage.setItem("dovlim_cam_ip", ip);
+    alert("Camera IP saved: " + ip);
+  };
 
   async function startDovlimFirebase(){
     try {
-      await ensureFirebaseStructure();
+      await registerAppOnly();
       overrideAppActions();
-      bindRealtimeStatus();
-      pushScheduleToFirebase();
+      bindRealtimeHome();
       pushSeedToFirebase();
       console.log(DOVLIM_APP_VERSION + " connected");
     } catch (e) {
