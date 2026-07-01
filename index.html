@@ -311,7 +311,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     <div class="card"><div class="clbl" id="t-addmeal-lbl">Add Meal</div><div class="cbody">
       <div style="background:var(--bg4);border-radius:var(--rx);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <span style="font-size:13px;color:var(--text2)" id="t-seedsize-display-lbl">Seed size</span>
-        <span id="schedSeed" style="font-size:13px;font-weight:500;color:var(--warn)">Not set — go to Settings</span>
+        <span id="schedSeed" style="font-size:13px;font-weight:500;color:var(--warn)">Select seed type first</span>
       </div>
       <div class="slbl" id="t-time-lbl">TIME</div>
       <div class="tgrid">
@@ -521,7 +521,7 @@ var T={
     insideBox:'📦 INSIDE BOX',cageAir:'🐦 CAGE AIR',temp:'Temp',humidity:'Humidity',
     camTitle:'Live Camera',camSub:'Motion triggered · 3 events today',
     todayMeals:"Today's Meals",done:'Done',next:'Next',pending:'Pending',
-    addMeal:'Add Meal',seedSize:'Seed size',notSet:'Not set — go to Settings',
+    addMeal:'Add Meal',seedSize:'Seed size',notSet:'Select seed type first',
     timeLabel:'TIME',doseLabel:'DOSE',gramsPerMeal:'Grams per meal',saveMeal:'Save meal',
     manualFeed:'Manual Feed',dispenseNow:'Dispense now',seedColon:'Seed:',notSetFeed:'not set — select in Settings',feedNow:'Feed now',
     activeAlerts:'Active',todayAlerts:'Today',
@@ -1373,7 +1373,7 @@ window.setLang = function(lang,el){
 
     // Seed text + enable buttons: seed type is mandatory before schedule/feed editing
     const hasSeed = !!seed;
-    const full = hasSeed ? (seedIcon(seed)+' '+seedLabel(seed)+' seeds ✓') : 'Not set — go to Settings';
+    const full = hasSeed ? (seedIcon(seed)+' '+seedLabel(seed)+' seeds ✓') : 'Select seed type first';
     const schedSeed=$('#schedSeed'); if(schedSeed){ schedSeed.textContent=full; schedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
     const feedSeed=$('#feedseed'); if(feedSeed){ feedSeed.textContent=hasSeed?full:'not set — select in Settings'; feedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
     const feedBtn=$('#feedbtn'); if(feedBtn){
@@ -1630,7 +1630,7 @@ window.setLang = function(lang,el){
     var fs=$('#feedseed');
     var sched=$('#schedSeed');
     if(fs){ fs.textContent=seed ? (seedLabel(seed)+' ✓') : 'not set — select in Settings'; fs.style.color=seed?'var(--ok)':'var(--warn)'; }
-    if(sched){ sched.textContent=seed ? (seedLabel(seed)+' ✓') : 'Not set — go to Settings'; sched.style.color=seed?'var(--ok)':'var(--warn)'; }
+    if(sched){ sched.textContent=seed ? (seedLabel(seed)+' ✓') : 'Select seed type first'; sched.style.color=seed?'var(--ok)':'var(--warn)'; }
     if(btn){
       btn.disabled=!seed;
       btn.style.pointerEvents='auto';
@@ -1745,7 +1745,7 @@ window.setLang = function(lang,el){
 
     var sched=$('#schedSeed');
     if(sched){
-      sched.textContent=seed ? (label(seed)+' ✓') : 'Not set — go to Settings';
+      sched.textContent=seed ? (label(seed)+' ✓') : 'Select seed type first';
       sched.style.color=seed ? 'var(--ok)' : 'var(--warn)';
     }
 
@@ -1987,14 +1987,14 @@ window.setLang = function(lang,el){
 
 
 
-<!-- DOVLIM FIREBASE FINAL START -->
+<!-- DOVLI<!-- DOVLIM FIREBASE FINAL START -->
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script>
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 5 Settings Firebase";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 6 Alerts Live";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2193,6 +2193,7 @@ window.setLang = function(lang,el){
   function bindRealtimeHome(){
     deviceRef.on("value", function(snapshot){
       const d = snapshot.val() || {};
+      dovlimLastDeviceData = d;
       setOnlineStatus(d.status || {});
       setHomeLevel(1, d.water || {}, "water");
       setHomeLevel(2, d.food || {}, "food");
@@ -2200,6 +2201,7 @@ window.setLang = function(lang,el){
       updateHealth(d);
       updateFirmware(d.status || {});
       if (d.schedule) dovlimRenderHomeMeals(d.schedule);
+      dovlimRenderAlertsLive();
     });
   }
 
@@ -2782,6 +2784,90 @@ window.setLang = function(lang,el){
     }
   }
 
+
+  // PATCH 6 — Alerts page live from Firebase, no demo rows.
+  let dovlimLastDeviceData = null;
+  let dovlimLastSettingsData = null;
+
+  function dovlimAlertDot(color){
+    return '<div class="adot" style="background:' + color + '"></div>';
+  }
+
+  function dovlimAlertItem(color, title, sub, time){
+    return '<div class="aitem">' +
+      dovlimAlertDot(color) +
+      '<div style="flex:1"><div class="atitle">' + title + '</div><div class="asub">' + sub + '</div></div>' +
+      '<span class="atime">' + (time || 'now') + '</span>' +
+    '</div>';
+  }
+
+  function dovlimMealStatusForAlert(meal){
+    const today = (typeof dovlimDayStamp === "function") ? dovlimDayStamp() : 0;
+    if(!meal) return "Pending";
+    if(meal.enabled === false) return "Off";
+    if(Number(meal.lastExecutedDay) === today || String(meal.lastExecutedDay || "") === String(today)) return "Done";
+    return "Pending";
+  }
+
+  function dovlimRenderAlertsLive(){
+    const d = dovlimLastDeviceData || {};
+    const settings = dovlimLastSettingsData || {};
+    const schedule = d.schedule || window.dovlimLastSchedule || {};
+
+    const humidityMax = dovlimClamp(settings.humidityMax, 50, 85, 65);
+    const temperatureMax = dovlimClamp(settings.temperatureMax, 25, 42, 32);
+    const lowFoodPercent = dovlimClamp(settings.lowFoodPercent, 10, 40, 20);
+
+    const active = [];
+    const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : null;
+    const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : null;
+    const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : null;
+    const waterLow = d.water && d.water.low === true;
+    const foodLow = d.food && d.food.low === true;
+
+    if(Number.isFinite(cageHum) && cageHum > humidityMax){
+      active.push(dovlimAlertItem('var(--warn)', 'High humidity — cage air', Math.round(cageHum) + '% detected · Max ' + humidityMax + '%', 'now'));
+    }
+    if(Number.isFinite(cageTemp) && cageTemp > temperatureMax){
+      active.push(dovlimAlertItem('var(--warn)', 'High temperature — cage air', cageTemp.toFixed(1) + '°C detected · Max ' + temperatureMax + '°C', 'now'));
+    }
+    if((Number.isFinite(foodPercent) && foodPercent <= lowFoodPercent) || foodLow){
+      active.push(dovlimAlertItem('var(--danger)', 'Low seeds', 'Food level below ' + lowFoodPercent + '%', 'now'));
+    }
+    if(waterLow){
+      active.push(dovlimAlertItem('var(--danger)', 'Low water', 'Water level is low', 'now'));
+    }
+
+    if(active.length === 0){
+      active.push(dovlimAlertItem('var(--ok)', 'No active alerts', 'All limits are normal', 'now'));
+    }
+
+    const meals = [];
+    const names = ['Morning','Midday','Evening','Night'];
+    for(let i=0;i<4;i++){
+      const m = schedule['meal' + (i+1)] || {};
+      const time = m.time || ['08:00','12:30','17:00','21:00'][i];
+      const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
+      const seed = (typeof dovlimNormalizeSeed === "function") ? dovlimNormalizeSeed(m.seedType || 'Small') : (m.seedType || 'Small');
+      const st = dovlimMealStatusForAlert(m);
+      const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
+      const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
+      const sub = grams + 'g · ' + seed + ' · ' + names[i];
+      meals.push(dovlimAlertItem(color, title, sub, time));
+    }
+
+    const alertsC = qs("#s-alerts .c");
+    if(!alertsC) return;
+
+    alertsC.innerHTML =
+      '<div class="card"><div class="clbl" id="t-active-lbl">Active</div><div class="cbody" style="padding-top:8px">' +
+      active.join('') +
+      '</div></div>' +
+      '<div class="card"><div class="clbl" id="t-today-lbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
+      meals.join('') +
+      '</div></div>';
+  }
+
   async function startDovlimFirebase(){
     try {
       await registerAppOnly();
@@ -2803,13 +2889,7 @@ window.setLang = function(lang,el){
   }
 })();
 </script>
-<!-- DOVLIM FIREBASE FINAL END -->
-
-
-
-
-
-<!-- DOVLIM FINAL BASE FIX START -->
+<!-- DOVLIM FIREBASE FINAL END --> DOVLIM FINAL BASE FIX START -->
 <style>
 /* One real DHT sensor only: remove Inside Box, keep Cage sensor. */
 #s-home .erow .ebox:first-child{display:none!important;}
