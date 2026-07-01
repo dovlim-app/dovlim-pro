@@ -1994,7 +1994,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 8 Threshold Sync Final";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 9 Home Health Thresholds";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2198,7 +2198,7 @@ window.setLang = function(lang,el){
       setHomeLevel(1, d.water || {}, "water");
       setHomeLevel(2, d.food || {}, "food");
       setCageSensor(d.cage || {});
-      updateHealth(d);
+      dovlimUpdateHomeHealthFinal(d);
       updateFirmware(d.status || {});
       if (d.schedule) dovlimRenderHomeMeals(d.schedule);
       dovlimRenderAllLive();
@@ -2761,6 +2761,7 @@ window.setLang = function(lang,el){
         if(hv) hv.textContent = v + "%";
         dovlimSaveSetting("humidityMax", v);
         dovlimRenderAllLive();
+        if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
 
@@ -2772,6 +2773,7 @@ window.setLang = function(lang,el){
         if(tv) tv.textContent = v + "°C";
         dovlimSaveSetting("temperatureMax", v);
         dovlimRenderAllLive();
+        if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
 
@@ -2783,6 +2785,7 @@ window.setLang = function(lang,el){
         if(fv) fv.textContent = v + "%";
         dovlimSaveSetting("lowFoodPercent", v);
         dovlimRenderAllLive();
+        if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
   }
@@ -3117,6 +3120,82 @@ window.setLang = function(lang,el){
   function dovlimRenderAllLive(){
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error("Stats render failed", e); }
+  }
+
+
+  // PATCH 9 — Home Health Score follows the same Settings thresholds.
+  function dovlimUpdateHomeHealthFinal(d){
+    d = d || {};
+    const settings = (typeof dovlimGetSettingsFinal === "function") ? dovlimGetSettingsFinal() : {
+      humidityMax:65,
+      temperatureMax:32,
+      lowFoodPercent:20
+    };
+
+    const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
+    const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
+    const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
+
+    let score = 100;
+    let problems = [];
+
+    if(!d.status || !(d.status.online || d.status.espConnected)){
+      score -= 25;
+      problems.push("Device offline");
+    }
+
+    if(Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
+      score -= 20;
+      problems.push("High temp");
+    }
+
+    if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
+      score -= 20;
+      problems.push("High humidity");
+    }
+
+    if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
+      score -= 15;
+      problems.push("Low seeds");
+    }
+
+    if(d.water && d.water.low === true){
+      score -= 15;
+      problems.push("Low water");
+    }
+
+    score = Math.max(0, Math.min(100, score));
+
+    const hnum = qs(".hnum");
+    if(hnum) hnum.textContent = score;
+
+    const tempTxt = Number.isFinite(cageTemp) ? cageTemp.toFixed(1) + "°C" : "--";
+    const humTxt = Number.isFinite(cageHum) ? Math.round(cageHum) + "% RH" : "--";
+
+    const hsub = qs("#t-health-sub");
+    if(hsub) hsub.textContent = "Firebase live · " + tempTxt + " · " + humTxt;
+
+    const badge = qs("#t-health-badge");
+    if(badge){
+      if(problems.length === 0){
+        badge.textContent = "✓ All conditions normal";
+        badge.style.color = "var(--ok)";
+        badge.style.background = "rgba(34,168,116,.15)";
+      }else{
+        badge.textContent = "⚠ " + problems.join(" · ");
+        badge.style.color = "var(--warn)";
+        badge.style.background = "rgba(232,151,42,.15)";
+      }
+    }
+
+    const hcard = qs("#s-home .hcard");
+    if(hcard){
+      if(problems.length === 0){
+        hcard.style.borderColor = "rgba(74,144,217,.2)";
+      }else{
+        hcard.style.borderColor = "rgba(232,151,42,.45)";
+      }
+    }
   }
 
   async function startDovlimFirebase(){
