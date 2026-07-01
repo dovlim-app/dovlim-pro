@@ -1995,7 +1995,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 12 Water Circulation Card";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 13 Stats Cleanup";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -3008,6 +3008,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error(e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error(e); }
@@ -3145,6 +3146,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error("Stats render failed", e); }
@@ -3315,6 +3317,37 @@ window.setLang = function(lang,el){
         row.style.display = "none";
       }
     });
+  }
+
+
+  // PATCH 13 — Statistics cleanup.
+  // Keep: Current Seeds, Current Water, Seed Consumption 7d, Environment, Device Health.
+  // Hide: Water Consumption chart, 30d/90d tabs.
+  function dovlimStatsCleanup(){
+    const stats = qs("#s-stats");
+    if(!stats) return;
+
+    // Hide 30d and 90d buttons, keep 7d only.
+    qsa("#s-stats .tabs .tab").forEach(function(tab){
+      const t = String(tab.textContent || "").trim().toLowerCase();
+      if(t === "30d" || t === "90d" || t === "30j" || t === "90j" || t === "30أ" || t === "90أ"){
+        tab.style.display = "none";
+      }
+    });
+
+    // Hide water consumed chart card.
+    const waterLbl = qs("#t-water-chart-lbl");
+    if(waterLbl){
+      const card = waterLbl.closest(".card");
+      if(card) card.style.display = "none";
+    }
+
+    // Ensure seed chart label is clear.
+    const seedLbl = qs("#t-seed-chart-lbl");
+    if(seedLbl) seedLbl.textContent = "Seed Consumption (7 days)";
+
+    // Pump row is already removed by Patch 12, keep it hidden.
+    dovlimCleanStatsPumpRow();
   }
 
   async function startDovlimFirebase(){
