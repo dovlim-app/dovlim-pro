@@ -1994,7 +1994,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 6 Alerts Live";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 7 Alerts Stats Live";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2201,7 +2201,7 @@ window.setLang = function(lang,el){
       updateHealth(d);
       updateFirmware(d.status || {});
       if (d.schedule) dovlimRenderHomeMeals(d.schedule);
-      dovlimRenderAlertsLive();
+      dovlimRenderAllLive();
     });
   }
 
@@ -2866,6 +2866,121 @@ window.setLang = function(lang,el){
       '<div class="card"><div class="clbl" id="t-today-lbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
       meals.join('') +
       '</div></div>';
+  }
+
+
+  // PATCH 7 — strict Alerts + Stats Live from Firebase.
+  // This overrides demo statistics and forces alerts to use current settings.
+  function dovlimGetSettings(){
+    const s = dovlimLastSettingsData || {};
+    return {
+      humidityMax: dovlimClamp(s.humidityMax, 50, 85, 65),
+      temperatureMax: dovlimClamp(s.temperatureMax, 25, 42, 32),
+      lowFoodPercent: dovlimClamp(s.lowFoodPercent, 10, 40, 20)
+    };
+  }
+
+  function dovlimRenderAlertsStrict(){
+    const d = dovlimLastDeviceData || {};
+    const settings = dovlimGetSettings();
+    const schedule = d.schedule || window.dovlimLastSchedule || {};
+
+    const active = [];
+    const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
+    const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
+    const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
+    const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
+
+    if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
+      active.push(dovlimAlertItem('var(--warn)', 'High humidity — cage air', Math.round(cageHum) + '% detected · Max ' + settings.humidityMax + '%', 'now'));
+    }
+    if(Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
+      active.push(dovlimAlertItem('var(--warn)', 'High temperature — cage air', cageTemp.toFixed(1) + '°C detected · Max ' + settings.temperatureMax + '°C', 'now'));
+    }
+    if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
+      active.push(dovlimAlertItem('var(--danger)', 'Low seeds', Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
+    }
+    if(d.water && d.water.low === true){
+      active.push(dovlimAlertItem('var(--danger)', 'Low water', Number.isFinite(waterPercent) ? Math.round(waterPercent) + '% detected' : 'Water level is low', 'now'));
+    }
+
+    if(active.length === 0){
+      active.push(dovlimAlertItem('var(--ok)', 'No active alerts', 'All current limits are normal', 'now'));
+    }
+
+    const names = ['Morning','Midday','Evening','Night'];
+    const meals = [];
+    for(let i=0;i<4;i++){
+      const m = schedule['meal' + (i+1)] || {};
+      const time = m.time || ['08:00','12:30','17:00','21:00'][i];
+      const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
+      const seed = (typeof dovlimNormalizeSeed === "function") ? dovlimNormalizeSeed(m.seedType || 'Small') : (m.seedType || 'Small');
+      const st = dovlimMealStatusForAlert(m);
+      const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
+      const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
+      meals.push(dovlimAlertItem(color, title, grams + 'g · ' + seed + ' · ' + names[i], time));
+    }
+
+    const alertsC = qs("#s-alerts .c");
+    if(alertsC){
+      alertsC.innerHTML =
+        '<div class="card"><div class="clbl">Active</div><div class="cbody" style="padding-top:8px">' +
+        active.join('') +
+        '</div></div>' +
+        '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
+        meals.join('') +
+        '</div></div>';
+    }
+  }
+
+  function dovlimRenderStatsLive(){
+    const d = dovlimLastDeviceData || {};
+    const settings = dovlimGetSettings();
+
+    const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
+    const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
+    const foodGrams = d.food && d.food.grams !== undefined ? Number(d.food.grams) : NaN;
+    const waterGrams = d.water && d.water.grams !== undefined ? Number(d.water.grams) : NaN;
+
+    const avgSeedVal = qs("#s-stats .lgrid .lcard:nth-child(1) .lval");
+    const avgWaterVal = qs("#s-stats .lgrid .lcard:nth-child(2) .lval");
+    const avgSeedSub = qs("#s-stats #t-vs-week");
+    const avgWaterSub = qs("#s-stats #t-normal-range");
+
+    if(avgSeedVal) avgSeedVal.innerHTML = (Number.isFinite(foodGrams) ? Math.round(foodGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
+    if(avgWaterVal) avgWaterVal.innerHTML = (Number.isFinite(waterGrams) ? Math.round(waterGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
+    if(avgSeedSub) avgSeedSub.textContent = 'Current stock';
+    if(avgWaterSub) avgWaterSub.textContent = 'Current water';
+
+    const envBox = qs("#s-stats #t-env-lbl + .cbody");
+    if(envBox){
+      const tempTxt = Number.isFinite(cageTemp) ? cageTemp.toFixed(1) + '°C' : '--';
+      const humTxt = Number.isFinite(cageHum) ? Math.round(cageHum) + '%' : '--';
+      const tempHigh = Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax;
+      const humHigh = Number.isFinite(cageHum) && cageHum > settings.humidityMax;
+      const statusTxt = (tempHigh || humHigh) ? '⚠ High' : '✓ OK';
+      const statusColor = (tempHigh || humHigh) ? 'var(--warn)' : 'var(--ok)';
+      const subTxt = (tempHigh ? 'Temp high' : '') + (tempHigh && humHigh ? ' · ' : '') + (humHigh ? 'Humidity high' : '');
+      envBox.innerHTML =
+        '<div style="background:var(--bg3);border-radius:var(--rx);padding:10px 12px">' +
+        '<div style="font-size:10px;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">🐦 CAGE SENSOR</div>' +
+        '<div style="display:flex;gap:16px">' +
+        '<div><div class="stval" style="color:var(--teal)">' + tempTxt + '</div><div style="font-size:11px;color:var(--text3)">Temp now</div></div>' +
+        '<div><div class="stval" style="color:' + (humHigh ? 'var(--warn)' : 'var(--blue)') + '">' + humTxt + '</div><div style="font-size:11px;color:var(--text3)">Humidity now</div></div>' +
+        '<div><div class="stval" style="color:' + statusColor + '">' + statusTxt + '</div><div style="font-size:11px;color:var(--text3)">' + (subTxt || 'Normal') + '</div></div>' +
+        '</div></div>';
+    }
+
+    const deviceRows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow .stval");
+    if(deviceRows[0]) deviceRows[0].textContent = '--';
+    if(deviceRows[1]) deviceRows[1].textContent = '--';
+    if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
+    if(deviceRows[3]) deviceRows[3].textContent = d.status && (d.status.online || d.status.espConnected) ? 'Online' : 'Offline';
+  }
+
+  function dovlimRenderAllLive(){
+    try{ dovlimRenderAlertsStrict(); }catch(e){ console.error(e); }
+    try{ dovlimRenderStatsLive(); }catch(e){ console.error(e); }
   }
 
   async function startDovlimFirebase(){
