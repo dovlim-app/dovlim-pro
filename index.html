@@ -1995,7 +1995,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 11 Seed Sync Alerts Final";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 12 Water Circulation Card";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2957,7 +2957,8 @@ window.setLang = function(lang,el){
         '</div></div>' +
         '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
         meals.join('') +
-        '</div></div>';
+        '</div></div>' +
+        dovlimWaterCirculationCard();
     }
   }
 
@@ -3007,6 +3008,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error(e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error(e); }
   }
@@ -3091,7 +3093,8 @@ window.setLang = function(lang,el){
         '</div></div>' +
         '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
         meals.join('') +
-        '</div></div>';
+        '</div></div>' +
+        dovlimWaterCirculationCard();
     }
   }
 
@@ -3142,6 +3145,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error("Stats render failed", e); }
   }
@@ -3263,6 +3267,54 @@ window.setLang = function(lang,el){
         ? "Select seed type before saving any meal"
         : "Each meal keeps its saved seed type";
     }
+  }
+
+
+  // PATCH 12 — Water circulation value card + remove pump cycles from Stats.
+  function dovlimFormatPumpTime(value){
+    if(!value) return "Not recorded yet";
+    const s = String(value);
+    if(/^\d{4}-\d{2}-\d{2}T/.test(s)){
+      const d = new Date(s);
+      if(!isNaN(d.getTime())){
+        const hh = String(d.getHours()).padStart(2, "0");
+        const mm = String(d.getMinutes()).padStart(2, "0");
+        const today = new Date();
+        const sameDay = d.getFullYear() === today.getFullYear() &&
+                        d.getMonth() === today.getMonth() &&
+                        d.getDate() === today.getDate();
+        return (sameDay ? "Today " : "") + hh + ":" + mm;
+      }
+    }
+    return s;
+  }
+
+  function dovlimWaterCirculationCard(){
+    const d = dovlimLastDeviceData || {};
+    const water = d.water || {};
+    const last = dovlimFormatPumpTime(water.lastPumpTime);
+    const status = water.lastPumpStatus || water.pumpStatus || "Waiting...";
+    const next = water.nextPumpTime || "--";
+    const stLow = String(status).toLowerCase();
+    const statusColor = stLow.indexOf("complete") >= 0 ? "var(--ok)" :
+                        stLow.indexOf("fail") >= 0 ? "var(--danger)" :
+                        "var(--text3)";
+
+    return '<div class="card"><div class="clbl">Water circulation</div><div class="cbody" style="padding-top:8px">' +
+      '<div class="strow"><span class="stlbl">💧 Last cycle</span><span class="stval">' + last + '</span></div>' +
+      '<div class="strow"><span class="stlbl">Status</span><span class="stval" style="color:' + statusColor + '">' + status + '</span></div>' +
+      '<div class="strow"><span class="stlbl">Next cycle</span><span class="stval">' + next + '</span></div>' +
+    '</div></div>';
+  }
+
+  function dovlimCleanStatsPumpRow(){
+    const rows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow");
+    rows.forEach(function(row){
+      const t = row.textContent || "";
+      if(t.indexOf("Pump cycles") >= 0 || t.indexOf("دورات المضخة") >= 0 || t.indexOf("Cycles pompe") >= 0){
+        row.style.display = "none";
+      }
+    });
   }
 
   async function startDovlimFirebase(){
