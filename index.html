@@ -428,7 +428,8 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     <div class="card"><div class="clbl" id="t-thresh-lbl">Alert Thresholds</div>
       <div class="swrap"><div class="shead"><span id="t-hum-lbl">Max cage humidity</span><strong id="hv">65%</strong></div><input type="range" min="50" max="85" value="65" step="5" oninput="document.getElementById('hv').textContent=this.value+'%'"></div>
       <div class="swrap"><div class="shead"><span id="t-temp-lbl2">Max cage temperature</span><strong id="tv">32°C</strong></div><input type="range" min="25" max="42" value="32" step="1" oninput="document.getElementById('tv').textContent=this.value+'°C'"></div>
-      <div class="swrap" style="padding-bottom:14px"><div class="shead"><span id="t-food-lbl">Low food alert</span><strong id="fv">20%</strong></div><input type="range" min="10" max="40" value="20" step="5" oninput="document.getElementById('fv').textContent=this.value+'%'"></div>
+      <div class="swrap"><div class="shead"><span id="t-food-lbl">Low food alert</span><strong id="fv">20%</strong></div><input type="range" min="10" max="40" value="20" step="5" oninput="document.getElementById('fv').textContent=this.value+'%'"></div>
+      <div class="swrap" style="padding-bottom:14px"><div class="shead"><span id="t-water-low-lbl">Low water alert</span><strong id="wv">20%</strong></div><input type="range" min="5" max="40" value="20" step="5" oninput="document.getElementById('wv').textContent=this.value+'%'"></div>
     </div>
     <div class="card"><div class="clbl" id="t-notif-lbl">Notifications</div>
       <div class="srow"><div class="srowico" style="background:#0d1829">💧</div><div style="flex:1"><div class="stitle" id="t-notif1">Low water</div><div class="ssub" id="t-notif1-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
@@ -1994,7 +1995,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 9 Home Health Thresholds";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 10 Low Water User Threshold";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2710,22 +2711,27 @@ window.setLang = function(lang,el){
     const humidityMax = dovlimClamp(settings.humidityMax, 50, 85, 65);
     const temperatureMax = dovlimClamp(settings.temperatureMax, 25, 42, 32);
     const lowFoodPercent = dovlimClamp(settings.lowFoodPercent, 10, 40, 20);
+    const lowWaterPercent = dovlimClamp(settings.lowWaterPercent, 5, 40, 20);
 
     const humInput = qs('#s-settings input[type="range"][min="50"][max="85"]');
     const tempInput = qs('#s-settings input[type="range"][min="25"][max="42"]');
     const foodInput = qs('#s-settings input[type="range"][min="10"][max="40"]');
+    const waterInput = qs('#s-settings input[type="range"][min="5"][max="40"]');
 
     if(humInput) humInput.value = humidityMax;
     if(tempInput) tempInput.value = temperatureMax;
     if(foodInput) foodInput.value = lowFoodPercent;
+    if(waterInput) waterInput.value = lowWaterPercent;
 
     const hv = qs("#hv");
     const tv = qs("#tv");
     const fv = qs("#fv");
+    const wv = qs("#wv");
 
     if(hv) hv.textContent = humidityMax + "%";
     if(tv) tv.textContent = temperatureMax + "°C";
     if(fv) fv.textContent = lowFoodPercent + "%";
+    if(wv) wv.textContent = lowWaterPercent + "%";
 
     dovlimSettingsRendering = false;
   }
@@ -2784,6 +2790,19 @@ window.setLang = function(lang,el){
         const fv = qs("#fv");
         if(fv) fv.textContent = v + "%";
         dovlimSaveSetting("lowFoodPercent", v);
+        dovlimRenderAllLive();
+        if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
+      });
+    }
+
+    const waterInput = qs('#s-settings input[type="range"][min="5"][max="40"]');
+    if(waterInput && !waterInput.dataset.dovlimBound){
+      waterInput.dataset.dovlimBound = "1";
+      waterInput.addEventListener("input", function(){
+        const v = dovlimClamp(this.value, 5, 40, 20);
+        const wv = qs("#wv");
+        if(wv) wv.textContent = v + "%";
+        dovlimSaveSetting("lowWaterPercent", v);
         dovlimRenderAllLive();
         if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
@@ -2906,8 +2925,8 @@ window.setLang = function(lang,el){
     if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
       active.push(dovlimAlertItem('var(--danger)', 'Low seeds', Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
     }
-    if(d.water && d.water.low === true){
-      active.push(dovlimAlertItem('var(--danger)', 'Low water', Number.isFinite(waterPercent) ? Math.round(waterPercent) + '% detected' : 'Water level is low', 'now'));
+    if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
+      active.push(dovlimAlertItem('var(--danger)', 'Low water', Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
     }
 
     if(active.length === 0){
@@ -3003,6 +3022,7 @@ window.setLang = function(lang,el){
     const uiHumidity = dovlimParseVisibleNumber("#hv", NaN);
     const uiTemp = dovlimParseVisibleNumber("#tv", NaN);
     const uiFood = dovlimParseVisibleNumber("#fv", NaN);
+    const uiWater = dovlimParseVisibleNumber("#wv", NaN);
 
     const d = dovlimLastDeviceData || {};
     const fb = d.settings || dovlimLastSettingsData || {};
@@ -3010,7 +3030,8 @@ window.setLang = function(lang,el){
     return {
       humidityMax: dovlimClamp(Number.isFinite(uiHumidity) ? uiHumidity : fb.humidityMax, 50, 85, 65),
       temperatureMax: dovlimClamp(Number.isFinite(uiTemp) ? uiTemp : fb.temperatureMax, 25, 42, 32),
-      lowFoodPercent: dovlimClamp(Number.isFinite(uiFood) ? uiFood : fb.lowFoodPercent, 10, 40, 20)
+      lowFoodPercent: dovlimClamp(Number.isFinite(uiFood) ? uiFood : fb.lowFoodPercent, 10, 40, 20),
+      lowWaterPercent: dovlimClamp(Number.isFinite(uiWater) ? uiWater : fb.lowWaterPercent, 5, 40, 20)
     };
   }
 
@@ -3037,8 +3058,8 @@ window.setLang = function(lang,el){
       active.push(dovlimAlertItem('var(--danger)', 'Low seeds', Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
     }
 
-    if(d.water && d.water.low === true){
-      active.push(dovlimAlertItem('var(--danger)', 'Low water', Number.isFinite(waterPercent) ? Math.round(waterPercent) + '% detected' : 'Water level is low', 'now'));
+    if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
+      active.push(dovlimAlertItem('var(--danger)', 'Low water', Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
     }
 
     if(active.length === 0){
@@ -3159,7 +3180,8 @@ window.setLang = function(lang,el){
       problems.push("Low seeds");
     }
 
-    if(d.water && d.water.low === true){
+    const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
+    if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
       score -= 15;
       problems.push("Low water");
     }
