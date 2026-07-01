@@ -331,9 +331,19 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       </div>
       <button class="savebtn" id="savebtn" disabled onclick="doSave(this)"><span id="t-savemeal">Save meal</span></button>
     </div></div>
-    <div class="card"><div class="clbl" id="t-manfeed-lbl">Manual Feed</div><div class="cbody" style="display:flex;align-items:center;gap:12px">
-      <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)" id="t-dispense-lbl">Dispense now</div><div style="font-size:12px;margin-top:2px"><span id="t-feednow-seed-lbl">Seed:</span> <span id="feedseed" style="color:var(--warn)">not set — select in Settings</span></div></div>
-      <button id="feedbtn" disabled onclick="doFeed(this)" style="background:var(--bg4);color:var(--text3);border:none;border-radius:var(--rx);padding:11px 18px;font-size:14px;font-weight:500;cursor:not-allowed;font-family:'Inter',sans-serif;opacity:.5;flex-shrink:0;white-space:nowrap;"><span id="t-feedbtn-txt">Feed now</span></button>
+    <div class="card"><div class="clbl" id="t-manfeed-lbl">Manual Feed</div><div class="cbody" style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="flex:1"><div style="font-size:14px;font-weight:500;color:var(--text)" id="t-dispense-lbl">Dispense now</div><div style="font-size:12px;margin-top:2px"><span id="t-feednow-seed-lbl">Seed:</span> <span id="feedseed" style="color:var(--warn)">not set — select in Settings</span></div></div>
+        <button id="feedbtn" disabled onclick="doFeed(this)" style="background:var(--bg4);color:var(--text3);border:none;border-radius:var(--rx);padding:11px 18px;font-size:14px;font-weight:500;cursor:not-allowed;font-family:'Inter',sans-serif;opacity:.5;flex-shrink:0;white-space:nowrap;"><span id="t-feedbtn-txt">Feed now</span></button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:var(--rx);padding:10px 12px;border:.5px solid var(--border)">
+        <span style="font-size:13px;color:var(--text2)">Manual grams</span>
+        <div class="dctrl">
+          <button class="dbtn" onclick="chgManualFeed(-0.5)">−</button>
+          <span class="dval" id="manualFeedVal">2.0 g</span>
+          <button class="dbtn" onclick="chgManualFeed(0.5)">+</button>
+        </div>
+      </div>
     </div></div>
   </div>
 </div>
@@ -1984,7 +1994,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.3 Meal Status Final";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 3 Manual Feed Independent 50g";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2392,6 +2402,33 @@ window.setLang = function(lang,el){
     }).catch(console.error);
   }
 
+
+  let dovlimManualFeedGrams = 2.0;
+
+  function dovlimClampManualGrams(v){
+    v = Number(v);
+    if(!Number.isFinite(v)) v = 2.0;
+    if(v < 0.5) v = 0.5;
+    if(v > 50) v = 50;
+    return Math.round(v * 10) / 10;
+  }
+
+  function dovlimRenderManualFeedGrams(){
+    const el = qs("#manualFeedVal");
+    if(el) el.textContent = dovlimManualFeedGrams.toFixed(1) + " g";
+  }
+
+  window.chgManualFeed = function(delta){
+    dovlimManualFeedGrams = dovlimClampManualGrams(dovlimManualFeedGrams + Number(delta || 0));
+    localStorage.setItem("dovlim_manual_feed_grams", String(dovlimManualFeedGrams));
+    dovlimRenderManualFeedGrams();
+  };
+
+  function dovlimLoadManualFeedGrams(){
+    dovlimManualFeedGrams = dovlimClampManualGrams(localStorage.getItem("dovlim_manual_feed_grams") || 2.0);
+    dovlimRenderManualFeedGrams();
+  }
+
   let dovlimSelectedSlot = 0;
 
   function dovlimUpdateEditorFromSlot(slot){
@@ -2491,6 +2528,42 @@ window.setLang = function(lang,el){
         const old = btn.textContent || "Save meal";
         btn.textContent = "Saved";
         setTimeout(function(){ btn.textContent = old; }, 1200);
+      }
+    };
+
+    window.doFeed = async function(btn){
+      const seedType = getSeedType();
+      const grams = dovlimClampManualGrams(dovlimManualFeedGrams);
+      const commandId = String(Date.now());
+
+      if(btn){
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+      }
+
+      try{
+        await deviceRef.child("commands").update({
+          feedNow: true,
+          feedGrams: grams,
+          feedCommandId: commandId,
+          commandId: commandId,
+          seedType: seedType
+        });
+
+        if(btn) btn.textContent = "Sent";
+        setTimeout(function(){
+          if(btn){
+            btn.disabled = false;
+            btn.textContent = "Feed now";
+          }
+        }, 2000);
+      }catch(e){
+        console.error(e);
+        if(btn){
+          btn.disabled = false;
+          btn.textContent = "Feed now";
+        }
+        alert("Feed command failed");
       }
     };
   }
