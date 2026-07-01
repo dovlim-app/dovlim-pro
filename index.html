@@ -300,7 +300,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 
 <!-- SCHEDULE -->
 <div class="screen" id="s-schedule">
-  <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">Active meals: 3 / 4</div></div>
+  <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">Active meals: 0 / 4</div></div>
   <div class="c">
     <div class="slist">
       <div class="sitem"><div class="sico">🌅</div><div style="flex:1"><input class="timeInput" data-slot="0" type="time" value="08:00" onchange="updateScheduleTime(this)"><div class="smeta">2.5 g · Small seeds · every day</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
@@ -360,14 +360,6 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="aitem"><div class="adot" style="background:var(--ok)"></div><div style="flex:1"><div class="atitle" id="t-alrt-meal2">Meal distributed</div><div class="asub" id="t-alrt-meal2-sub">2.0g dispensed · Midday schedule</div></div><span class="atime">12:30</span></div>
       <div class="aitem"><div class="adot" style="background:var(--blue)"></div><div style="flex:1"><div class="atitle" id="t-alrt-solar">Solar charging active</div><div class="asub" id="t-alrt-solar-sub">Battery at 78%</div></div><span class="atime">14:00</span></div>
       <div class="aitem"><div class="adot" style="background:var(--text3)"></div><div style="flex:1"><div class="atitle" id="t-alrt-pump">Water pump cycle</div><div class="asub" id="t-alrt-pump-sub">Circulation completed</div></div><span class="atime">09:00</span></div>
-    </div></div>
-  </div>
-</div>
-
-    <div class="card"><div class="clbl">Food refill</div><div class="cbody" style="padding-top:8px">
-      <div class="strow"><span class="stlbl">🌾 Last refill</span><span class="stval">Not recorded yet</span></div>
-      <div class="strow"><span class="stlbl">Status</span><span class="stval">Waiting...</span></div>
-      <div class="strow"><span class="stlbl">Recommendation</span><span class="stval">--</span></div>
     </div></div>
   </div>
 </div>
@@ -2003,7 +1995,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 13 Stats Cleanup";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 14 UI Notes D1 D2 D3";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2966,7 +2958,8 @@ window.setLang = function(lang,el){
         '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
         meals.join('') +
         '</div></div>' +
-        dovlimWaterCirculationCard();
+        dovlimWaterCirculationCard() +
+        dovlimFoodRefillCard();
     }
   }
 
@@ -3016,6 +3009,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error(e); }
@@ -3103,7 +3097,8 @@ window.setLang = function(lang,el){
         '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
         meals.join('') +
         '</div></div>' +
-        dovlimWaterCirculationCard();
+        dovlimWaterCirculationCard() +
+        dovlimFoodRefillCard();
     }
   }
 
@@ -3154,6 +3149,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
@@ -3356,6 +3352,48 @@ window.setLang = function(lang,el){
 
     // Pump row is already removed by Patch 12, keep it hidden.
     dovlimCleanStatsPumpRow();
+  }
+
+
+  // PATCH 14 — D1/D2/D3 only.
+  // D1: Schedule subtitle = Active meals X / 4.
+  // D2: Alerts subtitle = Latest updates.
+  // D3: Food refill card in Alerts only.
+  function dovlimUpdateScheduleSubtitle(){
+    const meta = qs("#s-schedule .tb .tb-meta");
+    if(!meta) return;
+
+    const d = dovlimLastDeviceData || {};
+    const schedule = d.schedule || window.dovlimLastSchedule || {};
+    let active = 0;
+
+    for(let i=1;i<=4;i++){
+      const m = schedule["meal" + i] || {};
+      if(m.enabled !== false) active++;
+    }
+
+    meta.textContent = "Active meals: " + active + " / 4";
+  }
+
+  function dovlimFoodRefillCard(){
+    const d = dovlimLastDeviceData || {};
+    const food = d.food || {};
+
+    const last = food.lastRefillTime ? dovlimFormatPumpTime(food.lastRefillTime) : "Not recorded yet";
+    const status = food.lastRefillStatus || "Waiting...";
+    const recommendation = food.refillRecommendation || "--";
+
+    return '<div class="card"><div class="clbl">Food refill</div><div class="cbody" style="padding-top:8px">' +
+      '<div class="strow"><span class="stlbl">🌾 Last refill</span><span class="stval">' + last + '</span></div>' +
+      '<div class="strow"><span class="stlbl">Status</span><span class="stval">' + status + '</span></div>' +
+      '<div class="strow"><span class="stlbl">Recommendation</span><span class="stval">' + recommendation + '</span></div>' +
+    '</div></div>';
+  }
+
+  function dovlimPatch14UI(){
+    const alertMeta = qs("#s-alerts .tb .tb-meta");
+    if(alertMeta) alertMeta.textContent = "Latest updates";
+    dovlimUpdateScheduleSubtitle();
   }
 
   async function startDovlimFirebase(){
