@@ -279,9 +279,10 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div>
     <div class="camcard" onclick="openCam()"><div class="camth">📷<div class="camdot"></div></div><div style="flex:1"><div class="camtitle" id="t-cam-title">Live Camera</div><div class="camsub" id="t-cam-sub">Motion triggered · 3 events today</div></div><span style="color:var(--text3);font-size:20px">›</span></div>
     <div class="card"><div class="clbl" id="t-meals-lbl">Today's Meals</div><div class="cbody" style="padding-top:8px">
-      <div class="mrow"><div class="mico">🌅</div><div style="flex:1"><div class="mname" id="t-m1-name">Morning · 08:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bdone" id="t-badge-done">Done</span></div>
-      <div class="mrow"><div class="mico">☀️</div><div style="flex:1"><div class="mname" id="t-m2-name">Midday · 12:30</div><div class="mdose">2.0 g · Small seeds</div></div><span class="badge bnext" id="t-badge-next">Next</span></div>
-      <div class="mrow"><div class="mico">🌆</div><div style="flex:1"><div class="mname">Evening · 17:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bpend" id="t-badge-pend">Pending</span></div>
+      <div class="mrow"><div class="mico">🌅</div><div style="flex:1"><div class="mname" id="t-m1-name">Morning · 08:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bpend" id="t-badge-m1">Pending</span></div>
+      <div class="mrow"><div class="mico">☀️</div><div style="flex:1"><div class="mname" id="t-m2-name">Midday · 12:30</div><div class="mdose">2.0 g · Small seeds</div></div><span class="badge bpend" id="t-badge-m2">Pending</span></div>
+      <div class="mrow"><div class="mico">🌆</div><div style="flex:1"><div class="mname" id="t-m3-name">Evening · 17:00</div><div class="mdose">2.5 g · Small seeds</div></div><span class="badge bpend" id="t-badge-m3">Pending</span></div>
+      <div class="mrow"><div class="mico">🌙</div><div style="flex:1"><div class="mname" id="t-m4-name">Night · 21:00</div><div class="mdose">1.5 g · Small seeds</div></div><span class="badge bpend" id="t-badge-m4">Pending</span></div>
     </div></div>
   </div>
 </div>
@@ -1983,7 +1984,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.1B Meal Status Fix";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.2 Schedule Write + Meal4";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2051,20 +2052,38 @@ window.setLang = function(lang,el){
   function readMealsFromScreen(){
     const rows = qsa("#s-schedule .slist .sitem");
     const out = {};
+    const defaults = [
+      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+    ];
+
     rows.forEach(function(row, i){
       const inp = qs(".timeInput", row);
       const meta = qs(".smeta", row);
       const tog = qs(".tog", row);
-      let grams = 2.0;
+      let grams = defaults[i] ? defaults[i].grams : 2.0;
+      let seedType = getSeedType();
+
       if (meta) {
-        const m = String(meta.textContent).match(/([0-9]+(?:[\.,][0-9]+)?)\s*g/i);
+        const text = String(meta.textContent || "");
+        const m = text.match(/([0-9]+(?:[\.,][0-9]+)?)\s*g/i);
         if (m) grams = parseFloat(m[1].replace(",", "."));
+        if (text.toLowerCase().indexOf("large") >= 0) seedType = "Large";
+        else if (text.toLowerCase().indexOf("medium") >= 0) seedType = "Medium";
+        else if (text.toLowerCase().indexOf("small") >= 0) seedType = "Small";
       }
+
       out["meal" + (i + 1)] = {
-        time: inp ? inp.value : ["08:00","12:30","17:00","21:00"][i],
-        grams: Number.isFinite(grams) ? grams : 2.0,
-        enabled: tog ? tog.classList.contains("ton") : true,
-        seedType: getSeedType() === "not_set" ? "Small" : getSeedType()
+        time: inp && inp.value ? inp.value : defaults[i].time,
+        grams: Number.isFinite(grams) ? grams : defaults[i].grams,
+        enabled: tog ? tog.classList.contains("ton") : defaults[i].enabled,
+        seedType: normalizeSeed(seedType),
+        // IMPORTANT:
+        // Do not reset lastExecutedDay here. ESP32 owns it.
+        // If user wants same meal to run again after it already ran today,
+        // change command/meal to another slot or reset lastExecutedDay in Firebase manually.
       };
     });
     return out;
@@ -2195,6 +2214,7 @@ window.setLang = function(lang,el){
   function dovlimRenderSchedule(schedule){
     dovlimScheduleRendering = true;
     schedule = schedule || {};
+    window.dovlimLastSchedule = schedule;
 
     const rows = qsa("#s-schedule .slist .sitem");
     const defaults = [
@@ -2242,6 +2262,7 @@ window.setLang = function(lang,el){
     if(topMeta) topMeta.textContent = "4 meals · " + total.toFixed(1).replace(".0","") + " g/day";
 
     dovlimRenderHomeMeals(schedule);
+    dovlimUpdateEditorFromSlot(dovlimSelectedSlot || 0);
 
     dovlimScheduleRendering = false;
   }
@@ -2355,33 +2376,100 @@ window.setLang = function(lang,el){
     }).catch(console.error);
   }
 
+  let dovlimSelectedSlot = 0;
+
+  function dovlimUpdateEditorFromSlot(slot){
+    dovlimSelectedSlot = Math.max(0, Math.min(3, Number(slot) || 0));
+    const key = "meal" + (dovlimSelectedSlot + 1);
+    const schedule = window.dovlimLastSchedule || {};
+    const meal = schedule[key] || {};
+    const defaults = [
+      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+    ];
+    const d = defaults[dovlimSelectedSlot];
+
+    const dval = qs("#dval");
+    if(dval) dval.textContent = dovlimSafeNum(meal.grams, d.grams) + " g";
+
+    qsa("#s-schedule .tpill").forEach(function(p){
+      p.classList.toggle("sel", Number(p.getAttribute("data-slot")) === dovlimSelectedSlot);
+    });
+
+    const schedSeed = qs("#schedSeed");
+    if(schedSeed) schedSeed.textContent = dovlimNormalizeSeed(meal.seedType || d.seedType);
+  }
+
+  async function dovlimWriteMeal(slot, patch){
+    if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return;
+    slot = Math.max(0, Math.min(3, Number(slot) || 0));
+    const key = "meal" + (slot + 1);
+    const row = qsa("#s-schedule .slist .sitem")[slot];
+    const defaults = [
+      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
+      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+    ];
+    const base = Object.assign({}, defaults[slot], (window.dovlimLastSchedule && window.dovlimLastSchedule[key]) || {});
+    const inp = row ? qs(".timeInput", row) : null;
+    const tog = row ? qs(".tog", row) : null;
+
+    const meal = Object.assign({}, base, {
+      time: inp && inp.value ? inp.value : base.time,
+      enabled: tog ? tog.classList.contains("ton") : base.enabled,
+      seedType: dovlimNormalizeSeed(base.seedType || getSeedType())
+    }, patch || {});
+
+    await deviceRef.child("schedule").child(key).update(meal);
+    console.log("Schedule meal saved", key, meal);
+  }
+
   function overrideAppActions(){
     const oldUpdateScheduleTime = window.updateScheduleTime;
     window.updateScheduleTime = function(input){
       if (typeof oldUpdateScheduleTime === "function") oldUpdateScheduleTime(input);
-      pushScheduleToFirebase();
+      const slot = Number(input && input.getAttribute("data-slot"));
+      dovlimWriteMeal(slot, {time: input.value});
     };
 
     const oldTogBtn = window.togBtn;
     window.togBtn = function(btn){
       if (typeof oldTogBtn === "function") oldTogBtn(btn);
-      pushScheduleToFirebase();
+      const row = btn ? btn.closest(".sitem") : null;
+      const rows = qsa("#s-schedule .slist .sitem");
+      const slot = rows.indexOf(row);
+      if(slot >= 0) dovlimWriteMeal(slot, {enabled: btn.classList.contains("ton")});
     };
 
     const oldChgD = window.chgD;
     window.chgD = function(delta){
       if (typeof oldChgD === "function") oldChgD(delta);
-      pushScheduleToFirebase();
+      const grams = selectedMealGrams();
+      dovlimWriteMeal(dovlimSelectedSlot, {grams: grams});
     };
 
     const oldSelSeed = window.selSeed;
     window.selSeed = function(el){
       if (typeof oldSelSeed === "function") oldSelSeed(el);
+      const seedType = normalizeSeed(el ? el.textContent : getSeedType());
+      dovlimWriteMeal(dovlimSelectedSlot, {seedType: seedType});
       pushSeedToFirebase();
     };
 
+    const oldSelTime = window.selTime;
+    window.selTime = function(el){
+      if (typeof oldSelTime === "function") oldSelTime(el);
+      const slot = Number(el && el.getAttribute("data-slot"));
+      dovlimUpdateEditorFromSlot(slot);
+    };
+
     window.doSave = async function(btn){
-      await pushScheduleToFirebase();
+      const grams = selectedMealGrams();
+      const seedType = getSeedType();
+      await dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seedType});
       await pushSeedToFirebase();
       if (btn) {
         const old = btn.textContent || "Save meal";
