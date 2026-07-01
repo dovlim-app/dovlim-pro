@@ -1995,7 +1995,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 10 Low Water User Threshold";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 11 Seed Sync Alerts Final";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2276,6 +2276,7 @@ window.setLang = function(lang,el){
 
     dovlimRenderHomeMeals(schedule);
     dovlimUpdateEditorFromSlot(dovlimSelectedSlot || 0);
+    dovlimShowSeedRequirementIfNeeded();
 
     dovlimScheduleRendering = false;
   }
@@ -2537,6 +2538,7 @@ window.setLang = function(lang,el){
     if(!window.dovlimLastSchedule) window.dovlimLastSchedule = {};
     window.dovlimLastSchedule[key] = Object.assign({}, window.dovlimLastSchedule[key] || {}, meal);
     dovlimUpdateEditorFromSlot(slot);
+    dovlimShowSeedRequirementIfNeeded();
     console.log("Schedule meal saved", key, meal);
     return true;
   }
@@ -2584,6 +2586,7 @@ window.setLang = function(lang,el){
       if (typeof oldSelTime === "function") oldSelTime(el);
       const slot = Number(el && el.getAttribute("data-slot"));
       dovlimUpdateEditorFromSlot(slot);
+    dovlimShowSeedRequirementIfNeeded();
     };
 
     window.doSave = async function(btn){
@@ -2873,7 +2876,7 @@ window.setLang = function(lang,el){
       const m = schedule['meal' + (i+1)] || {};
       const time = m.time || ['08:00','12:30','17:00','21:00'][i];
       const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
-      const seed = (typeof dovlimNormalizeSeed === "function") ? dovlimNormalizeSeed(m.seedType || 'Small') : (m.seedType || 'Small');
+      const seed = dovlimMealSeedFinal(i, m) || 'Select seed';
       const st = dovlimMealStatusForAlert(m);
       const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
       const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
@@ -2939,7 +2942,7 @@ window.setLang = function(lang,el){
       const m = schedule['meal' + (i+1)] || {};
       const time = m.time || ['08:00','12:30','17:00','21:00'][i];
       const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
-      const seed = (typeof dovlimNormalizeSeed === "function") ? dovlimNormalizeSeed(m.seedType || 'Small') : (m.seedType || 'Small');
+      const seed = dovlimMealSeedFinal(i, m) || 'Select seed';
       const st = dovlimMealStatusForAlert(m);
       const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
       const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
@@ -3073,7 +3076,7 @@ window.setLang = function(lang,el){
       const m = schedule['meal' + (i+1)] || {};
       const time = m.time || ['08:00','12:30','17:00','21:00'][i];
       const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
-      const seed = (typeof dovlimNormalizeSeed === "function") ? dovlimNormalizeSeed(m.seedType || 'Small') : (m.seedType || 'Small');
+      const seed = dovlimMealSeedFinal(i, m) || 'Select seed';
       const st = dovlimMealStatusForAlert(m);
       const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
       const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
@@ -3217,6 +3220,48 @@ window.setLang = function(lang,el){
       }else{
         hcard.style.borderColor = "rgba(232,151,42,.45)";
       }
+    }
+  }
+
+
+  // PATCH 11 — Seed sync final.
+  // Alerts must show the same seed type visible in Schedule.
+  function dovlimSeedFromScheduleRow(slot, fallback){
+    const row = qsa("#s-schedule .slist .sitem")[slot];
+    if(row){
+      const meta = qs(".smeta", row);
+      const t = String(meta ? meta.textContent : "").toLowerCase();
+      if(t.indexOf("large") >= 0 || t.indexOf("كبير") >= 0) return "Large";
+      if(t.indexOf("medium") >= 0 || t.indexOf("متوسط") >= 0 || t.indexOf("وسط") >= 0) return "Medium";
+      if(t.indexOf("small") >= 0 || t.indexOf("صغير") >= 0) return "Small";
+    }
+    return fallback ? dovlimNormalizeSeed(fallback) : "";
+  }
+
+  function dovlimMealSeedFinal(slot, meal){
+    meal = meal || {};
+    const rowSeed = dovlimSeedFromScheduleRow(slot, "");
+    if(rowSeed) return rowSeed;
+    if(meal.seedType) return dovlimNormalizeSeed(meal.seedType);
+    return "";
+  }
+
+  function dovlimAnyMealMissingSeed(schedule){
+    schedule = schedule || {};
+    for(let i=0;i<4;i++){
+      const m = schedule["meal" + (i+1)] || {};
+      if(!m.seedType) return true;
+    }
+    return false;
+  }
+
+  function dovlimShowSeedRequirementIfNeeded(){
+    const schedule = window.dovlimLastSchedule || {};
+    const hint = qs("#t-seedsize-hint");
+    if(hint){
+      hint.textContent = dovlimAnyMealMissingSeed(schedule)
+        ? "Select seed type before saving any meal"
+        : "Each meal keeps its saved seed type";
     }
   }
 
