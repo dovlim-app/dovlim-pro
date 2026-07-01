@@ -1994,7 +1994,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 4 Seed Per Meal Locked";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 5 Settings Firebase";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2688,11 +2688,106 @@ window.setLang = function(lang,el){
 
   let dovlimMealStatusTimer = null;
 
+
+  // PATCH 5 — Settings sliders <-> Firebase.
+  // device/settings/humidityMax
+  // device/settings/temperatureMax
+  // device/settings/lowFoodPercent
+  let dovlimSettingsRendering = false;
+
+  function dovlimClamp(v, min, max, def){
+    v = Number(v);
+    if(!Number.isFinite(v)) v = def;
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function dovlimApplySettingsToUI(settings){
+    dovlimSettingsRendering = true;
+    settings = settings || {};
+
+    const humidityMax = dovlimClamp(settings.humidityMax, 50, 85, 65);
+    const temperatureMax = dovlimClamp(settings.temperatureMax, 25, 42, 32);
+    const lowFoodPercent = dovlimClamp(settings.lowFoodPercent, 10, 40, 20);
+
+    const humInput = qs('#s-settings input[type="range"][min="50"][max="85"]');
+    const tempInput = qs('#s-settings input[type="range"][min="25"][max="42"]');
+    const foodInput = qs('#s-settings input[type="range"][min="10"][max="40"]');
+
+    if(humInput) humInput.value = humidityMax;
+    if(tempInput) tempInput.value = temperatureMax;
+    if(foodInput) foodInput.value = lowFoodPercent;
+
+    const hv = qs("#hv");
+    const tv = qs("#tv");
+    const fv = qs("#fv");
+
+    if(hv) hv.textContent = humidityMax + "%";
+    if(tv) tv.textContent = temperatureMax + "°C";
+    if(fv) fv.textContent = lowFoodPercent + "%";
+
+    dovlimSettingsRendering = false;
+  }
+
+  async function dovlimSaveSetting(key, value){
+    if(dovlimSettingsRendering) return;
+    const payload = {};
+    payload[key] = value;
+    payload.updatedAt = nowISO();
+
+    try{
+      await deviceRef.child("settings").update(payload);
+      console.log("Setting saved", key, value);
+    }catch(e){
+      console.error("Setting save failed", e);
+    }
+  }
+
+  function dovlimBindSettings(){
+    deviceRef.child("settings").on("value", function(snap){
+      dovlimApplySettingsToUI(snap.val() || {});
+    });
+
+    const humInput = qs('#s-settings input[type="range"][min="50"][max="85"]');
+    const tempInput = qs('#s-settings input[type="range"][min="25"][max="42"]');
+    const foodInput = qs('#s-settings input[type="range"][min="10"][max="40"]');
+
+    if(humInput && !humInput.dataset.dovlimBound){
+      humInput.dataset.dovlimBound = "1";
+      humInput.addEventListener("input", function(){
+        const v = dovlimClamp(this.value, 50, 85, 65);
+        const hv = qs("#hv");
+        if(hv) hv.textContent = v + "%";
+        dovlimSaveSetting("humidityMax", v);
+      });
+    }
+
+    if(tempInput && !tempInput.dataset.dovlimBound){
+      tempInput.dataset.dovlimBound = "1";
+      tempInput.addEventListener("input", function(){
+        const v = dovlimClamp(this.value, 25, 42, 32);
+        const tv = qs("#tv");
+        if(tv) tv.textContent = v + "°C";
+        dovlimSaveSetting("temperatureMax", v);
+      });
+    }
+
+    if(foodInput && !foodInput.dataset.dovlimBound){
+      foodInput.dataset.dovlimBound = "1";
+      foodInput.addEventListener("input", function(){
+        const v = dovlimClamp(this.value, 10, 40, 20);
+        const fv = qs("#fv");
+        if(fv) fv.textContent = v + "%";
+        dovlimSaveSetting("lowFoodPercent", v);
+      });
+    }
+  }
+
   async function startDovlimFirebase(){
     try {
       await registerAppOnly();
       overrideAppActions();
       bindRealtimeHome();
+      dovlimBindSettings();
       dovlimBindScheduleRead();
       pushSeedToFirebase();
       console.log(DOVLIM_APP_VERSION + " connected");
