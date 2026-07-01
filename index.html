@@ -300,7 +300,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 
 <!-- SCHEDULE -->
 <div class="screen" id="s-schedule">
-  <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">4 meals · 8.5 g/day</div></div>
+  <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">Active meals: 3 / 4</div></div>
   <div class="c">
     <div class="slist">
       <div class="sitem"><div class="sico">🌅</div><div style="flex:1"><input class="timeInput" data-slot="0" type="time" value="08:00" onchange="updateScheduleTime(this)"><div class="smeta">2.5 g · Small seeds · every day</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
@@ -350,7 +350,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 
 <!-- ALERTS -->
 <div class="screen" id="s-alerts">
-  <div class="tb"><h1 id="t-alerts-h">Alerts</h1><div class="tb-meta">Last 24 hours</div></div>
+  <div class="tb"><h1 id="t-alerts-h">Alerts</h1><div class="tb-meta">Latest updates</div></div>
   <div class="c">
     <div class="card"><div class="clbl" id="t-active-lbl">Active</div><div class="cbody" style="padding-top:8px">
       <div class="aitem"><div class="adot" style="background:var(--warn)"></div><div style="flex:1"><div class="atitle" id="t-alert1-title">High humidity — cage air</div><div class="asub" id="t-alert1-sub">71% detected · Max 65% · Clean cage soon</div></div><span class="atime">now</span></div>
@@ -360,6 +360,14 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="aitem"><div class="adot" style="background:var(--ok)"></div><div style="flex:1"><div class="atitle" id="t-alrt-meal2">Meal distributed</div><div class="asub" id="t-alrt-meal2-sub">2.0g dispensed · Midday schedule</div></div><span class="atime">12:30</span></div>
       <div class="aitem"><div class="adot" style="background:var(--blue)"></div><div style="flex:1"><div class="atitle" id="t-alrt-solar">Solar charging active</div><div class="asub" id="t-alrt-solar-sub">Battery at 78%</div></div><span class="atime">14:00</span></div>
       <div class="aitem"><div class="adot" style="background:var(--text3)"></div><div style="flex:1"><div class="atitle" id="t-alrt-pump">Water pump cycle</div><div class="asub" id="t-alrt-pump-sub">Circulation completed</div></div><span class="atime">09:00</span></div>
+    </div></div>
+  </div>
+</div>
+
+    <div class="card"><div class="clbl">Food refill</div><div class="cbody" style="padding-top:8px">
+      <div class="strow"><span class="stlbl">🌾 Last refill</span><span class="stval">Not recorded yet</span></div>
+      <div class="strow"><span class="stlbl">Status</span><span class="stval">Waiting...</span></div>
+      <div class="strow"><span class="stlbl">Recommendation</span><span class="stval">--</span></div>
     </div></div>
   </div>
 </div>
