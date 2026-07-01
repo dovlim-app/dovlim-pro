@@ -1994,7 +1994,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 3 Manual Feed Independent 50g";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 4 Seed Per Meal Locked";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2431,16 +2431,54 @@ window.setLang = function(lang,el){
 
   let dovlimSelectedSlot = 0;
 
+  function dovlimSetSeedPicker(seedType){
+    seedType = dovlimNormalizeSeed(seedType || "");
+    qsa("#seedpicker .sopt").forEach(function(opt){
+      const label = qs(".sopt-lb", opt);
+      const v = label ? dovlimNormalizeSeed(label.textContent) : "";
+      opt.classList.toggle("sel", seedType && v === seedType);
+    });
+  }
+
+  function dovlimCurrentMealSeedType(slot){
+    const key = "meal" + (slot + 1);
+    const schedule = window.dovlimLastSchedule || {};
+    const meal = schedule[key] || {};
+    return meal.seedType ? dovlimNormalizeSeed(meal.seedType) : "";
+  }
+
+  function dovlimUpdateSaveState(){
+    const seed = dovlimCurrentMealSeedType(dovlimSelectedSlot);
+    const save = qs("#savebtn");
+    const schedSeed = qs("#schedSeed");
+
+    if(schedSeed){
+      if(seed){
+        schedSeed.textContent = seed;
+        schedSeed.style.color = "var(--ok)";
+      }else{
+        schedSeed.textContent = "Select seed type first";
+        schedSeed.style.color = "var(--warn)";
+      }
+    }
+
+    if(save){
+      save.disabled = !seed;
+      save.style.opacity = seed ? "1" : ".55";
+      save.style.cursor = seed ? "pointer" : "not-allowed";
+    }
+  }
+
   function dovlimUpdateEditorFromSlot(slot){
     dovlimSelectedSlot = Math.max(0, Math.min(3, Number(slot) || 0));
     const key = "meal" + (dovlimSelectedSlot + 1);
     const schedule = window.dovlimLastSchedule || {};
     const meal = schedule[key] || {};
     const defaults = [
-      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
-      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
-      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
-      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+      {time:"08:00", grams:2.5, enabled:true,  seedType:""},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:""},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:""},
+      {time:"21:00", grams:1.5, enabled:false, seedType:""}
     ];
     const d = defaults[dovlimSelectedSlot];
 
@@ -2451,33 +2489,53 @@ window.setLang = function(lang,el){
       p.classList.toggle("sel", Number(p.getAttribute("data-slot")) === dovlimSelectedSlot);
     });
 
-    const schedSeed = qs("#schedSeed");
-    if(schedSeed) schedSeed.textContent = dovlimNormalizeSeed(meal.seedType || d.seedType);
+    const seed = meal.seedType ? dovlimNormalizeSeed(meal.seedType) : "";
+    dovlimSetSeedPicker(seed);
+    dovlimUpdateSaveState();
   }
 
-  async function dovlimWriteMeal(slot, patch){
-    if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return;
+  async function dovlimWriteMeal(slot, patch, options){
+    if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return false;
+    options = options || {};
     slot = Math.max(0, Math.min(3, Number(slot) || 0));
     const key = "meal" + (slot + 1);
     const row = qsa("#s-schedule .slist .sitem")[slot];
     const defaults = [
-      {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
-      {time:"12:30", grams:2.0, enabled:true,  seedType:"Small"},
-      {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
-      {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
+      {time:"08:00", grams:2.5, enabled:true,  seedType:""},
+      {time:"12:30", grams:2.0, enabled:true,  seedType:""},
+      {time:"17:00", grams:2.5, enabled:true,  seedType:""},
+      {time:"21:00", grams:1.5, enabled:false, seedType:""}
     ];
     const base = Object.assign({}, defaults[slot], (window.dovlimLastSchedule && window.dovlimLastSchedule[key]) || {});
     const inp = row ? qs(".timeInput", row) : null;
     const tog = row ? qs(".tog", row) : null;
 
+    let seedType = "";
+    if(patch && patch.seedType) seedType = dovlimNormalizeSeed(patch.seedType);
+    else if(base.seedType) seedType = dovlimNormalizeSeed(base.seedType);
+
+    if(options.requireSeed && !seedType){
+      alert("Please select seed type first.");
+      dovlimUpdateSaveState();
+      return false;
+    }
+
     const meal = Object.assign({}, base, {
       time: inp && inp.value ? inp.value : base.time,
+      grams: Number.isFinite(Number(base.grams)) ? Number(base.grams) : defaults[slot].grams,
       enabled: tog ? tog.classList.contains("ton") : base.enabled,
-      seedType: dovlimNormalizeSeed(base.seedType || getSeedType())
+      seedType: seedType
     }, patch || {});
 
+    if(meal.seedType) meal.seedType = dovlimNormalizeSeed(meal.seedType);
+
     await deviceRef.child("schedule").child(key).update(meal);
+
+    if(!window.dovlimLastSchedule) window.dovlimLastSchedule = {};
+    window.dovlimLastSchedule[key] = Object.assign({}, window.dovlimLastSchedule[key] || {}, meal);
+    dovlimUpdateEditorFromSlot(slot);
     console.log("Schedule meal saved", key, meal);
+    return true;
   }
 
   function overrideAppActions(){
@@ -2485,7 +2543,7 @@ window.setLang = function(lang,el){
     window.updateScheduleTime = function(input){
       if (typeof oldUpdateScheduleTime === "function") oldUpdateScheduleTime(input);
       const slot = Number(input && input.getAttribute("data-slot"));
-      dovlimWriteMeal(slot, {time: input.value});
+      dovlimWriteMeal(slot, {time: input.value}, {requireSeed:true});
     };
 
     const oldTogBtn = window.togBtn;
@@ -2494,22 +2552,28 @@ window.setLang = function(lang,el){
       const row = btn ? btn.closest(".sitem") : null;
       const rows = qsa("#s-schedule .slist .sitem");
       const slot = rows.indexOf(row);
-      if(slot >= 0) dovlimWriteMeal(slot, {enabled: btn.classList.contains("ton")});
+      if(slot >= 0) dovlimWriteMeal(slot, {enabled: btn.classList.contains("ton")}, {requireSeed:true});
     };
 
     const oldChgD = window.chgD;
     window.chgD = function(delta){
       if (typeof oldChgD === "function") oldChgD(delta);
+      const seed = dovlimCurrentMealSeedType(dovlimSelectedSlot);
+      if(!seed){
+        alert("Please select seed type first.");
+        dovlimUpdateSaveState();
+        return;
+      }
       const grams = selectedMealGrams();
-      dovlimWriteMeal(dovlimSelectedSlot, {grams: grams});
+      dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seed}, {requireSeed:true});
     };
 
     const oldSelSeed = window.selSeed;
     window.selSeed = function(el){
       if (typeof oldSelSeed === "function") oldSelSeed(el);
-      const seedType = normalizeSeed(el ? el.textContent : getSeedType());
-      dovlimWriteMeal(dovlimSelectedSlot, {seedType: seedType});
-      pushSeedToFirebase();
+      const seedType = dovlimNormalizeSeed(el ? el.textContent : getSeedType());
+      dovlimWriteMeal(dovlimSelectedSlot, {seedType: seedType}, {requireSeed:false});
+      dovlimUpdateSaveState();
     };
 
     const oldSelTime = window.selTime;
@@ -2520,11 +2584,15 @@ window.setLang = function(lang,el){
     };
 
     window.doSave = async function(btn){
+      const seedType = dovlimCurrentMealSeedType(dovlimSelectedSlot);
+      if(!seedType){
+        alert("Please select seed type first.");
+        dovlimUpdateSaveState();
+        return;
+      }
       const grams = selectedMealGrams();
-      const seedType = getSeedType();
-      await dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seedType});
-      await pushSeedToFirebase();
-      if (btn) {
+      const ok = await dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seedType}, {requireSeed:true});
+      if (ok && btn) {
         const old = btn.textContent || "Save meal";
         btn.textContent = "Saved";
         setTimeout(function(){ btn.textContent = old; }, 1200);
@@ -2532,7 +2600,13 @@ window.setLang = function(lang,el){
     };
 
     window.doFeed = async function(btn){
-      const seedType = getSeedType();
+      const selected = qs("#seedpicker .sopt.sel .sopt-lb");
+      const seedType = selected ? dovlimNormalizeSeed(selected.textContent) : dovlimNormalizeSeed(getSeedType());
+      if(!seedType){
+        alert("Please select seed type first.");
+        return;
+      }
+
       const grams = dovlimClampManualGrams(dovlimManualFeedGrams);
       const commandId = String(Date.now());
 
