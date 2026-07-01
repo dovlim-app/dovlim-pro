@@ -1984,7 +1984,7 @@ window.setLang = function(lang,el){
 (function(){
   "use strict";
 
-  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.2 Schedule Write + Meal4";
+  const DOVLIM_APP_VERSION = "Dovlim App Patch 2.3 Meal Status Final";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
@@ -2296,25 +2296,44 @@ window.setLang = function(lang,el){
 
     const today = dovlimDayStamp();
     const nowMin = dovlimMinutesNow();
+
+    function mealDoneToday(m){
+      if(!m) return false;
+      const led = Number(m.lastExecutedDay);
+      if(Number.isFinite(led) && led === today) return true;
+      if(String(m.lastExecutedDay || "") === String(today)) return true;
+      return false;
+    }
+
     let nextIndex = -1;
     let nextTime = 99999;
 
-    for(let i=0;i<homeRows.length;i++){
+    for(let i=0;i<4;i++){
       const key = "meal" + (i + 1);
       const m = schedule[key] || {};
       if(m.enabled === false) continue;
+      if(mealDoneToday(m)) continue;
 
       const t = m.time || ["08:00","12:30","17:00","21:00"][i] || "00:00";
       const mt = dovlimMinutesFromTime(t);
-      const doneToday = Number(m.lastExecutedDay) === today && String(m.lastResult || "").toUpperCase() === "SUCCESS";
 
-      if(!doneToday && mt >= nowMin && mt < nextTime){
+      if(mt >= nowMin && mt < nextTime){
         nextTime = mt;
         nextIndex = i;
       }
     }
 
-    for(let i=0;i<homeRows.length;i++){
+    if(nextIndex < 0){
+      for(let i=0;i<4;i++){
+        const m = schedule["meal" + (i + 1)] || {};
+        if(m.enabled !== false){
+          nextIndex = i;
+          break;
+        }
+      }
+    }
+
+    for(let i=0;i<4;i++){
       const key = "meal" + (i + 1);
       const m = schedule[key] || {};
       const row = homeRows[i];
@@ -2338,18 +2357,15 @@ window.setLang = function(lang,el){
         if(!enabled){
           badge.textContent = "Off";
           badge.classList.add("bpend");
+        }else if(mealDoneToday(m)){
+          badge.textContent = "Done";
+          badge.classList.add("bdone");
+        }else if(i === nextIndex){
+          badge.textContent = "Next";
+          badge.classList.add("bnext");
         }else{
-          const doneToday = Number(m.lastExecutedDay) === today && String(m.lastResult || "").toUpperCase() === "SUCCESS";
-          if(doneToday){
-            badge.textContent = "Done";
-            badge.classList.add("bdone");
-          }else if(i === nextIndex){
-            badge.textContent = "Next";
-            badge.classList.add("bnext");
-          }else{
-            badge.textContent = "Pending";
-            badge.classList.add("bpend");
-          }
+          badge.textContent = "Pending";
+          badge.classList.add("bpend");
         }
       }
     }
@@ -2522,6 +2538,8 @@ window.setLang = function(lang,el){
     localStorage.setItem("dovlim_cam_ip", ip);
     alert("Camera IP saved: " + ip);
   };
+
+  let dovlimMealStatusTimer = null;
 
   async function startDovlimFirebase(){
     try {
