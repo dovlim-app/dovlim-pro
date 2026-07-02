@@ -2986,7 +2986,8 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
-    try{ if(window.dovlimLastDeviceData && dovlimLastDeviceData.status){ dovlimMarkEspUpdate(dovlimLastDeviceData.status.lastUpdate); } }catch(e){}
+    try{ setTimeout(function(){ window.dovlimOfflineWatchdogTick && window.dovlimOfflineWatchdogTick(); }, 20); }catch(e){}
+    
     try{ dovlimForceHealthScore(); }catch(e){ console.error("Health score fix failed", e); }
     try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
@@ -3709,16 +3710,19 @@ window.setLang = function(lang,el){
 </script>
 <!-- END PATCH 02 -->
 
+
 <script>
-/* PATCH 18 — ESP32 ONLINE/OFFLINE TIMEOUT
-   If Firebase status/lastUpdate stops changing for 30s, app shows Offline.
-   This fixes old online:true remaining after USB power is removed.
+/* PATCH 19 — STRONG ESP32 OFFLINE WATCHDOG
+   Online is decided ONLY by status.lastUpdate changing.
+   Firebase online:true is ignored because it can stay true after power loss.
 */
 (function(){
-  let lastSeenUpdateValue = null;
-  let lastSeenLocalMs = Date.now();
+  let lastValue = null;
+  let lastChangeMs = 0;
+  let started = false;
+  const TIMEOUT_MS = 15000;
 
-  function setDovlimOnlineUI(isOnline){
+  function forceOnlineUI(isOnline){
     document.querySelectorAll('#t-online').forEach(el=>{
       el.textContent = isOnline ? 'Online' : 'Offline';
       el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
@@ -3731,27 +3735,63 @@ window.setLang = function(lang,el){
     });
 
     document.querySelectorAll('.bdone').forEach(el=>{
-      if(el.textContent.trim()==='Online' || el.textContent.trim()==='Offline'){
+      const txt = el.textContent.trim();
+      if(txt === 'Online' || txt === 'Offline'){
         el.textContent = isOnline ? 'Online' : 'Offline';
         el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
       }
     });
   }
 
-  window.dovlimMarkEspUpdate = function(updateValue){
-    if(updateValue !== undefined && updateValue !== null && String(updateValue) !== String(lastSeenUpdateValue)){
-      lastSeenUpdateValue = String(updateValue);
-      lastSeenLocalMs = Date.now();
-      setDovlimOnlineUI(true);
+  function readLastUpdate(){
+    try{
+      const d = window.dovlimLastDeviceData || window.lastDeviceData || null;
+      if(d && d.status && d.status.lastUpdate !== undefined && d.status.lastUpdate !== null){
+        return String(d.status.lastUpdate);
+      }
+    }catch(e){}
+    return null;
+  }
+
+  window.dovlimOfflineWatchdogTick = function(){
+    const v = readLastUpdate();
+
+    if(v !== null && v !== lastValue){
+      lastValue = v;
+      lastChangeMs = Date.now();
+      started = true;
+      forceOnlineUI(true);
+      return;
     }
+
+    if(!started){
+      // Give Firebase first load a short chance.
+      forceOnlineUI(false);
+      return;
+    }
+
+    const age = Date.now() - lastChangeMs;
+    forceOnlineUI(age <= TIMEOUT_MS);
   };
 
-  setInterval(function(){
-    const age = Date.now() - lastSeenLocalMs;
-    if(age > 30000){
-      setDovlimOnlineUI(false);
-    }
-  }, 3000);
+  setInterval(window.dovlimOfflineWatchdogTick, 1000);
+
+  // Run after any render/navigation click because old UI code may write Online again.
+  const oldGo = window.go;
+  if(typeof oldGo === 'function'){
+    window.go = function(){
+      const r = oldGo.apply(this, arguments);
+      setTimeout(window.dovlimOfflineWatchdogTick, 50);
+      setTimeout(window.dovlimOfflineWatchdogTick, 300);
+      return r;
+    };
+  }
+
+  document.addEventListener('visibilitychange', function(){
+    setTimeout(window.dovlimOfflineWatchdogTick, 50);
+  });
+
+  setTimeout(window.dovlimOfflineWatchdogTick, 1000);
 })();
 </script>
 
