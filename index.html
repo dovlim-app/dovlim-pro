@@ -2986,6 +2986,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ if(window.dovlimLastDeviceData && dovlimLastDeviceData.status){ dovlimMarkEspUpdate(dovlimLastDeviceData.status.lastUpdate); } }catch(e){}
     try{ dovlimForceHealthScore(); }catch(e){ console.error("Health score fix failed", e); }
     try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
@@ -3707,6 +3708,53 @@ window.setLang = function(lang,el){
 })();
 </script>
 <!-- END PATCH 02 -->
+
+<script>
+/* PATCH 18 — ESP32 ONLINE/OFFLINE TIMEOUT
+   If Firebase status/lastUpdate stops changing for 30s, app shows Offline.
+   This fixes old online:true remaining after USB power is removed.
+*/
+(function(){
+  let lastSeenUpdateValue = null;
+  let lastSeenLocalMs = Date.now();
+
+  function setDovlimOnlineUI(isOnline){
+    document.querySelectorAll('#t-online').forEach(el=>{
+      el.textContent = isOnline ? 'Online' : 'Offline';
+      el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+    });
+
+    document.querySelectorAll('.online').forEach(el=>{
+      el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+      const dot = el.querySelector('.dot');
+      if(dot) dot.style.background = isOnline ? 'var(--ok)' : 'var(--danger)';
+    });
+
+    document.querySelectorAll('.bdone').forEach(el=>{
+      if(el.textContent.trim()==='Online' || el.textContent.trim()==='Offline'){
+        el.textContent = isOnline ? 'Online' : 'Offline';
+        el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+      }
+    });
+  }
+
+  window.dovlimMarkEspUpdate = function(updateValue){
+    if(updateValue !== undefined && updateValue !== null && String(updateValue) !== String(lastSeenUpdateValue)){
+      lastSeenUpdateValue = String(updateValue);
+      lastSeenLocalMs = Date.now();
+      setDovlimOnlineUI(true);
+    }
+  };
+
+  setInterval(function(){
+    const age = Date.now() - lastSeenLocalMs;
+    if(age > 30000){
+      setDovlimOnlineUI(false);
+    }
+  }, 3000);
+})();
+</script>
+
 </body>
 
 </html>
