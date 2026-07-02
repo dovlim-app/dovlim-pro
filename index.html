@@ -2986,6 +2986,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimForceHealthScore(); }catch(e){ console.error("Health score fix failed", e); }
     try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
@@ -3126,6 +3127,7 @@ window.setLang = function(lang,el){
   }
 
   function dovlimRenderAllLive(){
+    try{ dovlimForceHealthScore(); }catch(e){ console.error("Health score fix failed", e); }
     try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
     try{ dovlimStatsCleanup(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
@@ -3371,6 +3373,40 @@ window.setLang = function(lang,el){
     const alertMeta = qs("#s-alerts .tb .tb-meta");
     if(alertMeta) alertMeta.textContent = "Latest updates";
     dovlimUpdateScheduleSubtitle();
+  }
+
+
+  // PATCH 17 — Fix Home health number stuck at old value.
+  function dovlimForceHealthScore(){
+    const d = dovlimLastDeviceData || {};
+    const water = Number((d.water && (d.water.percent ?? d.water.level ?? d.water.percentage)) ?? d.waterPercent ?? 100);
+    const food = Number((d.food && (d.food.percent ?? d.food.level ?? d.food.percentage)) ?? d.foodPercent ?? 100);
+    const cage = d.cage || {};
+    const temp = Number(cage.temp ?? cage.temperature ?? d.temp ?? d.temperature ?? 0);
+    const hum = Number(cage.humidity ?? d.humidity ?? 0);
+
+    const th = d.thresholds || d.settings || {};
+    const maxTemp = Number(th.maxTemp ?? th.maxTemperature ?? th.temperatureMax ?? th.temp ?? 32);
+    const maxHum = Number(th.maxHumidity ?? th.humidityMax ?? th.humidity ?? 65);
+    const minFood = Number(th.lowFood ?? th.foodLow ?? th.food ?? 20);
+    const minWater = Number(th.lowWater ?? th.waterLow ?? th.water ?? 20);
+
+    let score = 100;
+    if(temp && temp > maxTemp) score -= 20;
+    if(hum && hum > maxHum) score -= 20;
+    if(food < minFood) score -= 25;
+    if(water < minWater) score -= 25;
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    const hnum = qs(".hnum");
+    if(hnum) hnum.textContent = String(score);
+
+    const circle = qs(".hring svg circle:nth-child(2)");
+    if(circle){
+      const dash = Math.round(188 * score / 100);
+      circle.setAttribute("stroke-dasharray", dash + " 188");
+      circle.setAttribute("stroke", score >= 80 ? "#5DCAA5" : (score >= 50 ? "#e8972a" : "#e04545"));
+    }
   }
 
   async function startDovlimFirebase(){
