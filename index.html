@@ -398,7 +398,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 <div class="screen" id="s-settings">
   <div class="tb"><h1 id="t-settings-h">Settings</h1></div>
   <div class="c">
-    <div style="background:var(--bg3);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border)"><div style="font-size:28px">🐦</div><div style="flex:1"><div style="font-size:15px;font-weight:500;color:var(--text)">Smart Pro · Cage A</div><div style="font-size:12px;color:var(--text3);margin-top:2px">ESP32 · FW 8.1.2 · IP54</div></div><div class="badge bdone" id="t-online">Online</div></div>
+    <div style="background:var(--bg3);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border)"><div style="font-size:28px">🐦</div><div style="flex:1"><div style="font-size:15px;font-weight:500;color:var(--text)">Smart Pro · Cage A</div></div><div class="badge bdone" id="t-online">Online</div></div>
 
     <!-- LANGUAGE -->
     <div class="card"><div class="clbl" id="t-lang-lbl">Language</div><div class="cbody">
@@ -448,29 +448,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
         <div id="deviceIpStatus" class="remoteStatus">Not saved</div>
       </div>
     </div>
-
-    <div class="card"><div class="clbl">Remote Notifications</div>
-      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
-        <div><div class="stitle">🔔 Telegram Alerts</div><div class="ssub">For alerts when you are in another city</div></div>
-        <input id="telegramChatId" class="remoteInput" type="text" placeholder="Telegram Chat ID">
-        <input id="telegramBotToken" class="remoteInput" type="password" placeholder="Telegram Bot Token">
-        <button class="remoteBtn" onclick="saveTelegramSettings()">Save Telegram Settings</button>
-        <div id="telegramStatus" class="remoteStatus">Not configured</div>
-        <div class="remoteNote">Important: ESP32 must send alerts to Telegram. Local WiFi control alone cannot send phone notifications when you are far from the box.</div>
-      </div>
-    </div>
-
-
-    <div class="card"><div class="clbl">API Ready</div>
-      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
-        <div><div class="stitle"><span id="apiDot" class="apiStatusDot"></span>Box connection status</div>
-        <div class="ssub">Prepared endpoints: /api/status · /api/schedule · /api/feed · /api/settings</div></div>
-        <button class="remoteBtn" onclick="testBoxConnection()">Test Box Connection</button>
-        <div id="apiStatusText" class="apiSmall">Waiting for ESP32 IP</div>
-      </div>
-    </div>
-
-    <div class="card"><div class="clbl" id="t-hw-lbl">Hardware</div>
+<div class="card"><div class="clbl" id="t-hw-lbl">Hardware</div>
       <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px;padding:14px 16px">
         <div><div class="stitle" id="t-cam-ip-title">📷 Camera IP</div><div class="ssub" id="t-cam-ip-hint">Used to load the live stream</div></div>
         <div style="display:flex;gap:8px"><input id="camip" type="text" placeholder="192.168.1.105" style="flex:1;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;min-width:0"><button onclick="saveCam()" id="t-save-btn" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">Save</button></div>
@@ -481,7 +459,6 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="srow"><div class="srowico" style="background:var(--bg3)">🔄</div><div style="flex:1"><div class="stitle" id="t-update-title">Check for updates</div><div class="ssub" id="t-update-sub">FW 8.1.2 · Up to date</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
       <div class="srow"><div class="srowico" style="background:#3d0f0f">⚠️</div><div style="flex:1"><div class="stitle" style="color:var(--danger)" id="t-reset-title">Factory reset</div><div class="ssub" id="t-reset-sub">Clears all schedules &amp; data</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
     </div>
-    <div style="text-align:center;padding:16px 0 4px"><div style="font-size:12px;color:var(--text3)">Smart Pro V8.1 · Inventor: Lotfi Mouaffek</div><div style="font-size:11px;color:var(--text3);opacity:.5;margin-top:3px">© 2026 · All rights reserved</div></div>
   </div>
 </div>
 
