@@ -2086,14 +2086,9 @@ window.setLang = function(lang,el){
   }
 
   function setOnlineStatus(status){
-    const online = !!(status && (status.online || status.espConnected));
-    qsa("#t-online,.online span").forEach(function(el){
-      el.textContent = online ? "Online" : "Offline";
-      el.style.color = online ? "var(--ok)" : "var(--danger)";
-    });
-    const dot = qs(".online .dot");
-    if (dot) dot.style.background = online ? "var(--ok)" : "var(--danger)";
-    return online;
+    // PATCH 20: do not trust Firebase online:true because it can remain true after ESP32 power loss.
+    if (window.dovlimOnlineWatchdogSetStatus) return window.dovlimOnlineWatchdogSetStatus(status || {});
+    return false;
   }
 
   function setHomeLevel(cardIndex, data, type){
@@ -2134,7 +2129,7 @@ window.setLang = function(lang,el){
 
   function updateHealth(d){
     let score = 100;
-    if (!d.status || !(d.status.online || d.status.espConnected)) score -= 25;
+    if (window.dovlimEspIsOnline && !window.dovlimEspIsOnline()) score -= 25;
     if (d.food && d.food.low) score -= 20;
     if (d.water && d.water.low) score -= 20;
     if (d.cage && safeNum(d.cage.humidity, 0) > 75) score -= 15;
@@ -2982,7 +2977,7 @@ window.setLang = function(lang,el){
     if(deviceRows[0]) deviceRows[0].textContent = '--';
     if(deviceRows[1]) deviceRows[1].textContent = '--';
     if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
-    if(deviceRows[3]) deviceRows[3].textContent = d.status && (d.status.online || d.status.espConnected) ? 'Online' : 'Offline';
+    if(deviceRows[3]) deviceRows[3].textContent = (window.dovlimEspIsOnline && window.dovlimEspIsOnline()) ? 'Online' : 'Offline';
   }
 
   function dovlimRenderAllLive(){
@@ -3125,7 +3120,7 @@ window.setLang = function(lang,el){
     if(deviceRows[0]) deviceRows[0].textContent = '--';
     if(deviceRows[1]) deviceRows[1].textContent = '--';
     if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
-    if(deviceRows[3]) deviceRows[3].textContent = d.status && (d.status.online || d.status.espConnected) ? 'Online' : 'Offline';
+    if(deviceRows[3]) deviceRows[3].textContent = (window.dovlimEspIsOnline && window.dovlimEspIsOnline()) ? 'Online' : 'Offline';
   }
 
   function dovlimRenderAllLive(){
@@ -3154,7 +3149,7 @@ window.setLang = function(lang,el){
     let score = 100;
     let problems = [];
 
-    if(!d.status || !(d.status.online || d.status.espConnected)){
+    if(window.dovlimEspIsOnline && !window.dovlimEspIsOnline()){
       score -= 25;
       problems.push("Device offline");
     }
@@ -3542,49 +3537,13 @@ window.setLang = function(lang,el){
         return r;
       };
     }
-
-    // Firebase is the only source for Online/Offline.
-    if(window.firebase && firebase.apps && firebase.apps.length){
-      var statusRef=firebase.database().ref("device/status");
-      statusRef.on("value",function(snap){ forceFirebaseStatus(snap.val()||{}); });
-      setInterval(function(){
-        statusRef.once("value").then(function(snap){ forceFirebaseStatus(snap.val()||{}); }).catch(function(){});
-      },1500);
-    }
+    // Online/Offline handled by PATCH 20 watchdog only.
   });
 })();
 </script>
 <!-- DOVLIM FINAL BASE FIX END -->
 
 
-<!-- DOVLIM APP 1 ONLINE FIX ONLY START -->
-<script>
-(function(){
-  "use strict";
-  function qsa(s){ return Array.from(document.querySelectorAll(s)); }
-  function qs(s){ return document.querySelector(s); }
-  function applyDovlimOnlineStatus(status){
-    var online = !!(status && (status.online || status.espConnected || status.appConnected));
-    qsa("#t-online,.online span").forEach(function(el){
-      el.textContent = online ? "Online" : "Offline";
-      el.style.color = online ? "var(--ok)" : "var(--danger)";
-    });
-    var dot = qs(".online .dot");
-    if(dot) dot.style.background = online ? "var(--ok)" : "var(--danger)";
-  }
-  function start(){
-    if(!window.firebase || !firebase.apps || !firebase.apps.length) return;
-    var ref = firebase.database().ref("device/status");
-    ref.on("value", function(snap){ applyDovlimOnlineStatus(snap.val() || {}); });
-    setInterval(function(){
-      ref.once("value").then(function(snap){ applyDovlimOnlineStatus(snap.val() || {}); }).catch(function(){});
-    }, 1000);
-  }
-  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
-  else start();
-})();
-</script>
-<!-- DOVLIM APP 1 ONLINE FIX ONLY END -->
 <!-- DOVLIM PATCH 02 - SEED REQUIRED + MANUAL FEED -->
 <script>
 (function(){
@@ -3711,87 +3670,110 @@ window.setLang = function(lang,el){
 <!-- END PATCH 02 -->
 
 
+
 <script>
-/* PATCH 19 — STRONG ESP32 OFFLINE WATCHDOG
-   Online is decided ONLY by status.lastUpdate changing.
-   Firebase online:true is ignored because it can stay true after power loss.
+/* PATCH 20 — FINAL OFFLINE FIX
+   Old online:true can stay in Firebase after ESP32 power loss.
+   Real status = status.lastUpdate must keep changing.
 */
 (function(){
-  let lastValue = null;
-  let lastChangeMs = 0;
-  let started = false;
-  const TIMEOUT_MS = 15000;
+  "use strict";
 
-  function forceOnlineUI(isOnline){
-    document.querySelectorAll('#t-online').forEach(el=>{
-      el.textContent = isOnline ? 'Online' : 'Offline';
-      el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+  var lastUpdateValue = null;
+  var lastChangeMs = 0;
+  var hasSeenUpdate = false;
+  var TIMEOUT_MS = 12000;
+
+  function qsa(s){ return Array.from(document.querySelectorAll(s)); }
+  function qs(s){ return document.querySelector(s); }
+
+  function paintOnline(isOnline){
+    var label = isOnline ? "Online" : "Offline";
+    var color = isOnline ? "var(--ok)" : "var(--danger)";
+
+    qsa("#t-online,.online span").forEach(function(el){
+      el.textContent = label;
+      el.style.color = color;
     });
 
-    document.querySelectorAll('.online').forEach(el=>{
-      el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
-      const dot = el.querySelector('.dot');
-      if(dot) dot.style.background = isOnline ? 'var(--ok)' : 'var(--danger)';
+    qsa(".online").forEach(function(el){
+      el.style.color = color;
+      var dot = el.querySelector(".dot");
+      if(dot) dot.style.background = color;
     });
 
-    document.querySelectorAll('.bdone').forEach(el=>{
-      const txt = el.textContent.trim();
-      if(txt === 'Online' || txt === 'Offline'){
-        el.textContent = isOnline ? 'Online' : 'Offline';
-        el.style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+    qsa(".bdone").forEach(function(el){
+      var t = (el.textContent || "").trim();
+      if(t === "Online" || t === "Offline" || t === "En ligne" || t === "Hors ligne" || t === "متصل"){
+        el.textContent = label;
+        el.style.color = color;
+        el.style.background = isOnline ? "var(--ok-dk)" : "rgba(224,69,69,.15)";
       }
     });
-  }
 
-  function readLastUpdate(){
-    try{
-      const d = window.dovlimLastDeviceData || window.lastDeviceData || null;
-      if(d && d.status && d.status.lastUpdate !== undefined && d.status.lastUpdate !== null){
-        return String(d.status.lastUpdate);
+    var uptime = document.querySelector("#t-uptime-lbl");
+    if(uptime){
+      var row = uptime.closest(".strow");
+      var val = row ? row.querySelector(".stval") : null;
+      if(val){
+        val.textContent = label;
+        val.style.color = color;
       }
-    }catch(e){}
-    return null;
+    }
   }
 
-  window.dovlimOfflineWatchdogTick = function(){
-    const v = readLastUpdate();
+  function statusFromGlobal(){
+    var d = window.dovlimLastDeviceData || window.lastDeviceData || null;
+    return d && d.status ? d.status : null;
+  }
 
-    if(v !== null && v !== lastValue){
-      lastValue = v;
-      lastChangeMs = Date.now();
-      started = true;
-      forceOnlineUI(true);
-      return;
+  function applyStatus(status){
+    if(status && status.lastUpdate !== undefined && status.lastUpdate !== null){
+      var v = String(status.lastUpdate);
+      if(v !== lastUpdateValue){
+        lastUpdateValue = v;
+        lastChangeMs = Date.now();
+        hasSeenUpdate = true;
+      }
     }
 
-    if(!started){
-      // Give Firebase first load a short chance.
-      forceOnlineUI(false);
-      return;
-    }
+    var online = hasSeenUpdate && (Date.now() - lastChangeMs <= TIMEOUT_MS);
+    paintOnline(online);
+    return online;
+  }
 
-    const age = Date.now() - lastChangeMs;
-    forceOnlineUI(age <= TIMEOUT_MS);
+  window.dovlimOnlineWatchdogSetStatus = applyStatus;
+  window.dovlimEspIsOnline = function(){
+    return hasSeenUpdate && (Date.now() - lastChangeMs <= TIMEOUT_MS);
   };
 
-  setInterval(window.dovlimOfflineWatchdogTick, 1000);
-
-  // Run after any render/navigation click because old UI code may write Online again.
-  const oldGo = window.go;
-  if(typeof oldGo === 'function'){
-    window.go = function(){
-      const r = oldGo.apply(this, arguments);
-      setTimeout(window.dovlimOfflineWatchdogTick, 50);
-      setTimeout(window.dovlimOfflineWatchdogTick, 300);
-      return r;
-    };
+  function tick(){
+    applyStatus(statusFromGlobal());
   }
 
-  document.addEventListener('visibilitychange', function(){
-    setTimeout(window.dovlimOfflineWatchdogTick, 50);
-  });
+  // Direct listener to lastUpdate only. No trust in status.online.
+  function startFirebaseWatch(){
+    try{
+      if(window.firebase && firebase.apps && firebase.apps.length){
+        firebase.database().ref("device/status/lastUpdate").on("value", function(snap){
+          applyStatus({lastUpdate: snap.val()});
+        });
+      }
+    }catch(e){}
+  }
 
-  setTimeout(window.dovlimOfflineWatchdogTick, 1000);
+  setInterval(tick, 500);
+  setTimeout(startFirebaseWatch, 300);
+  setTimeout(tick, 600);
+  setTimeout(tick, 1500);
+
+  // Stop old code from visually forcing Online after this patch.
+  var observer = new MutationObserver(function(){
+    setTimeout(tick, 0);
+  });
+  try{
+    observer.observe(document.body, {childList:true, subtree:true, characterData:true});
+  }catch(e){}
 })();
 </script>
 
