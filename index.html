@@ -27,7 +27,7 @@
 /* NO horizontal scroll anywhere */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;max-width:100%;}
 html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-serif;}
-
+ 
 /* APP: full screen, flex column */
 .app{
   width:390px;
@@ -39,21 +39,21 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
   background:var(--bg);
   overflow:hidden;
 }
-
+ 
 /* STATUS BAR */
 .sb{padding:12px 20px 4px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg);}
-.sb-t{font-size:14px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+.sb-t{font-size:14px;font-weight:500;color:var(--text);font-family:'Inter',sans-serif;}
 .sb-i{font-size:13px;color:var(--text2);}
-
+ 
 /* SCROLL AREA: takes all remaining space */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;}
 .scroll::-webkit-scrollbar{display:none;}
 .scroll{scrollbar-width:none;-ms-overflow-style:none;}
-
+ 
 /* SCREENS: hidden by default */
 .screen{display:none;}
 .screen.on{display:block;}
-
+ 
 /* BOTTOM NAV: always at bottom */
 .nav{
   flex-shrink:0;
@@ -67,7 +67,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .ni-lb{font-size:10px;color:var(--text3);}
 .ni.on .ni-lb{color:var(--blue);}
 .ni-bd{position:absolute;top:0;right:calc(50% - 20px);background:var(--danger);color:#fff;font-size:9px;font-weight:600;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;}
-
+ 
 /* TOPBAR */
 .tb{padding:12px 16px 6px;}
 .tb h1{font-size:24px;font-weight:600;color:var(--text);letter-spacing:-.3px;}
@@ -76,55 +76,55 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .online{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ok);}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-
+ 
 /* CONTENT */
 .c{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;}
-
+ 
 /* CARD */
 .card{background:var(--bg2);border-radius:var(--r);border:.5px solid var(--border);}
 .clbl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.1em;padding:13px 16px 0;text-transform:uppercase;}
 .cbody{padding:12px 16px 16px;}
-
+ 
 /* HEALTH SCORE */
 .hcard{background:linear-gradient(135deg,#0d1829,#13161f);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:16px;border:.5px solid rgba(74,144,217,.2);}
 .hring{position:relative;width:76px;height:76px;flex-shrink:0;}
 .hring svg{width:76px;height:76px;transform:rotate(-90deg);}
 .hv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.hnum{font-size:24px;font-weight:600;color:var(--teal);font-family:'DM Mono',monospace;line-height:1;}
+.hnum{font-size:24px;font-weight:600;color:var(--teal);font-family:'Inter',sans-serif;line-height:1;}
 .hof{font-size:9px;color:var(--text3);margin-top:1px;}
 .htitle{font-size:16px;font-weight:500;color:var(--text);}
 .hsub{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5;}
 .hbadge{display:inline-flex;align-items:center;background:rgba(34,168,116,.15);color:var(--ok);font-size:11px;padding:4px 10px;border-radius:20px;margin-top:8px;}
-
+ 
 /* LEVEL CARDS */
 .lgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .lcard{background:var(--bg3);border-radius:var(--rs);padding:14px;border:.5px solid var(--border);}
 .licon{font-size:20px;margin-bottom:6px;}
 .llbl{font-size:12px;color:var(--text2);margin-bottom:2px;}
-.lval{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;line-height:1.1;}
+.lval{font-size:26px;font-weight:600;font-family:'Inter',sans-serif;line-height:1.1;}
 .lbar{height:4px;background:var(--bg4);border-radius:2px;margin-top:8px;}
 .lbarfill{height:100%;border-radius:2px;}
 .lsub{font-size:11px;color:var(--text3);margin-top:5px;}
-
+ 
 /* ENVIRONMENT */
 .erow{display:flex;gap:8px;}
 .ebox{flex:1;background:var(--bg3);border-radius:var(--rs);padding:12px;border:.5px solid var(--border);min-width:0;}
 .etitle{font-size:10px;font-weight:500;color:var(--text3);letter-spacing:.08em;margin-bottom:8px;}
 .ems{display:flex;gap:6px;align-items:center;}
 .em{flex:1;min-width:0;}
-.emv{font-size:17px;font-weight:500;font-family:'DM Mono',monospace;}
+.emv{font-size:17px;font-weight:500;font-family:'Inter',sans-serif;}
 .eml{font-size:10px;color:var(--text3);margin-top:1px;}
 .ebadge{font-size:10px;font-weight:500;padding:3px 7px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
 .eok{background:rgba(34,168,116,.15);color:var(--ok);}
 .ewarn{background:rgba(232,151,42,.15);color:var(--warn);}
-
+ 
 /* CAMERA CARD */
 .camcard{background:var(--bg2);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:.5px solid var(--border);}
 .camth{width:48px;height:48px;border-radius:var(--rx);background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;flex-shrink:0;}
 .camdot{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--danger);animation:pulse 2s infinite;}
 .camtitle{font-size:15px;font-weight:500;color:var(--text);}
 .camsub{font-size:12px;color:var(--text3);margin-top:2px;}
-
+ 
 /* MEAL ROWS */
 .mrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--border);}
 .mrow:last-child{border-bottom:none;}
@@ -135,27 +135,27 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .bdone{background:var(--ok-dk);color:var(--ok);}
 .bnext{background:var(--blue-dk);color:var(--blue);}
 .bpend{background:var(--bg4);color:var(--text3);}
-
+ 
 /* CHART */
 .chart{height:80px;display:flex;align-items:flex-end;gap:4px;}
 .bar{border-radius:4px 4px 0 0;flex:1;}
 .clbls{display:flex;gap:4px;margin-top:5px;}
-.clbl2{flex:1;font-size:9px;color:var(--text3);text-align:center;font-family:'DM Mono',monospace;}
-
+.clbl2{flex:1;font-size:9px;color:var(--text3);text-align:center;font-family:'Inter',sans-serif;}
+ 
 /* ALERTS */
 .aitem{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:.5px solid var(--border);}
 .aitem:last-child{border-bottom:none;}
 .adot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
 .atitle{font-size:14px;font-weight:500;color:var(--text);}
 .asub{font-size:12px;color:var(--text3);margin-top:2px;}
-.atime{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;}
-
+.atime{font-size:11px;color:var(--text3);font-family:'Inter',sans-serif;white-space:nowrap;}
+ 
 /* SCHEDULE */
 .slist{display:flex;flex-direction:column;gap:8px;}
 .sitem{background:var(--bg3);border-radius:var(--rs);padding:13px 14px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border);}
 .sico{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
-.stime{font-size:17px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
-.timeInput{width:92px;background:transparent;border:none;color:var(--text);font-size:17px;font-weight:500;font-family:'DM Mono',monospace;outline:none;cursor:pointer;}
+.stime{font-size:17px;font-weight:500;color:var(--text);font-family:'Inter',sans-serif;}
+.timeInput{width:92px;background:transparent;border:none;color:var(--text);font-size:17px;font-weight:500;font-family:'Inter',sans-serif;outline:none;cursor:pointer;}
 .timeInput::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.7;cursor:pointer;}
 .timeInput:focus{background:var(--blue-dk);border:1px solid var(--blue);border-radius:8px;padding:4px 6px;margin:-5px -7px;}
 .smeta{font-size:12px;color:var(--text3);margin-top:2px;}
@@ -165,7 +165,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .tknob{width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;transition:left .18s;}
 .ton .tknob{left:18px;}
 .toff .tknob{left:2px;}
-
+ 
 /* SEED PICKER */
 .seedrow{display:flex;gap:6px;margin-bottom:12px;}
 .sopt{flex:1;background:var(--bg4);border-radius:var(--rx);padding:10px 6px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
@@ -173,58 +173,58 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .sopt-ic{font-size:18px;display:block;margin-bottom:3px;}
 .sopt-lb{font-size:11px;color:var(--text2);display:block;}
 .sopt.sel .sopt-lb{color:var(--blue);}
-
+ 
 /* TIME PILLS */
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .tpill{background:var(--bg4);border-radius:var(--rx);padding:11px 12px;cursor:pointer;border:1.5px solid transparent;transition:all .15s;}
 .tpill.sel{background:var(--blue-dk);border-color:var(--blue);}
-.tpill-t{font-size:16px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;}
+.tpill-t{font-size:16px;font-weight:500;color:var(--text);font-family:'Inter',sans-serif;}
 .tpill-l{font-size:11px;color:var(--text3);margin-top:2px;}
 .tpill.sel .tpill-l{color:var(--blue);}
 .tpill.hidden{display:none;}
-
+ 
 /* DOSE */
 .drow{display:flex;align-items:center;padding:10px 0;opacity:1;pointer-events:auto;transition:opacity .2s;}
 .drow.on{opacity:1;pointer-events:auto;}
 .dlbl{font-size:14px;color:var(--text2);flex:1;}
 .dctrl{display:flex;align-items:center;gap:12px;}
 .dbtn{width:32px;height:32px;border-radius:var(--rx);background:var(--bg4);border:none;color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.dval{font-size:18px;font-weight:500;color:var(--text);min-width:52px;text-align:center;font-family:'DM Mono',monospace;}
-
+.dval{font-size:18px;font-weight:500;color:var(--text);min-width:52px;text-align:center;font-family:'Inter',sans-serif;}
+ 
 /* SAVE BTN */
 .savebtn{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:15px;font-size:15px;font-weight:500;width:100%;cursor:pointer;margin-top:4px;font-family:'Inter',sans-serif;}
 .savebtn:disabled{background:var(--bg4);color:var(--text3);cursor:not-allowed;}
-
+ 
 /* SECTION LABEL */
 .slbl{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.08em;margin-bottom:6px;}
-
+ 
 /* STAT ROW */
 .strow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:.5px solid var(--border);}
 .strow:last-child{border-bottom:none;}
 .stlbl{font-size:13px;color:var(--text2);}
-.stval{font-size:14px;font-weight:500;font-family:'DM Mono',monospace;}
-
+.stval{font-size:14px;font-weight:500;font-family:'Inter',sans-serif;}
+ 
 /* TABS */
 .tabs{display:flex;gap:6px;margin-bottom:12px;}
 .tab{padding:6px 16px;border-radius:var(--rx);font-size:13px;cursor:pointer;border:none;background:var(--bg4);color:var(--text3);font-family:'Inter',sans-serif;}
 .tab.on{background:var(--blue-dk);color:var(--blue);}
-
+ 
 /* SETTINGS ROWS */
 .srow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:.5px solid var(--border);}
 .srow:last-child{border-bottom:none;}
 .srowico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
 .stitle{font-size:14px;font-weight:500;color:var(--text);}
 .ssub{font-size:12px;color:var(--text3);margin-top:1px;}
-
+ 
 /* SLIDER */
 .swrap{padding:12px 16px;}
 .swrap+.swrap{padding-top:0;}
 .shead{display:flex;justify-content:space-between;margin-bottom:6px;}
 .shead span{font-size:13px;color:var(--text2);}
-.shead strong{font-size:13px;color:var(--text);font-family:'DM Mono',monospace;}
+.shead strong{font-size:13px;color:var(--text);font-family:'Inter',sans-serif;}
 input[type=range]{width:100%;height:4px;border-radius:2px;appearance:none;background:var(--bg4);outline:none;}
 input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;}
-
+ 
 /* CAMERA SCREEN */
 .camtb{display:flex;align-items:center;gap:12px;padding:12px 16px;}
 .camback{width:36px;height:36px;border-radius:var(--rx);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--text);cursor:pointer;flex-shrink:0;}
@@ -232,14 +232,14 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 .camwrap img{width:100%;height:100%;object-fit:cover;display:none;}
 .camph{color:var(--text3);font-size:13px;text-align:center;padding:24px;}
 .campill{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);border-radius:20px;padding:5px 11px;display:flex;align-items:center;gap:5px;font-size:11px;color:#fff;}
-
-.remoteInput{width:100%;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;}
+ 
+.remoteInput{width:100%;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;}
 .remoteInput:focus{border:1px solid var(--blue);}
 .remoteBtn{background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;}
 .remoteNote{font-size:11px;color:var(--text3);line-height:1.45;margin-top:8px;}
-.remoteStatus{font-size:11px;color:var(--text3);margin-top:8px;font-family:'DM Mono',monospace;}
-
-
+.remoteStatus{font-size:11px;color:var(--text3);margin-top:8px;font-family:'Inter',sans-serif;}
+ 
+ 
 /* API READY + PROFESSIONAL LANGUAGE */
 .proLangWrap{background:var(--bg3);border-radius:var(--rs);border:.5px solid var(--border);padding:12px;display:flex;align-items:center;gap:12px;}
 .proLangIcon{width:38px;height:38px;border-radius:12px;background:var(--blue-dk);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
@@ -250,17 +250,21 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
 .apiStatusDot{width:8px;height:8px;border-radius:50%;background:var(--text3);display:inline-block;margin-right:6px;}
 .apiStatusDot.ok{background:var(--ok);}
 .apiStatusDot.err{background:var(--danger);}
-.apiSmall{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:6px;}
-
+.apiSmall{font-size:11px;color:var(--text3);font-family:'Inter',sans-serif;margin-top:6px;}
+ 
+/* PATCH 27b — DM Mono (used in ~21 places) draws a slashed zero with
+   no way to turn it off. Replaced everywhere in the app with Inter so
+   every "0" looks the same throughout, not just in a few spots. */
+ 
 </style>
 </head>
 <body>
 <div class="app">
-
+ 
 <div class="sb"><span class="sb-t" id="clk">09:41</span><span class="sb-i">📶 🔋</span></div>
-
+ 
 <div class="scroll">
-
+ 
 <!-- HOME -->
 <div class="screen on" id="s-home">
   <div class="tb"><div class="tb-row"><div><h1 id="t-app-name">Smart Pro</h1><div class="tb-meta" id="t-app-sub">Cage A</div></div><div class="online"><div class="dot"></div><span id="t-online">Online</span></div></div></div>
@@ -286,18 +290,18 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div></div>
   </div>
 </div>
-
+ 
 <!-- CAMERA -->
 <div class="screen" id="s-camera">
   <div class="camtb"><div class="camback" onclick="closeCam()">‹</div><div><div style="font-size:16px;font-weight:500;color:var(--text)">Live Camera</div><div style="font-size:12px;color:var(--text3)">ESP32-CAM · Motion triggered</div></div></div>
   <div class="camwrap"><img id="camImg" alt="stream"><div id="camPh" class="camph"><div style="font-size:36px;margin-bottom:10px">📷</div><div>Set camera IP in Settings<br>to enable live stream</div></div><div class="campill"><div class="dot"></div>LIVE</div></div>
   <div style="padding:14px 16px 0"><div class="card"><div class="clbl">Motion Events Today</div><div class="cbody" style="padding-top:8px">
-    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">09:12</span></div>
-    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">08:03</span></div>
-    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace">07:45</span></div>
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'Inter',sans-serif">09:12</span></div>
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'Inter',sans-serif">08:03</span></div>
+    <div class="mrow"><div class="mico">🐦</div><div style="flex:1"><div class="mname">Movement detected</div><div class="mdose">Near feeder</div></div><span style="font-size:12px;color:var(--text3);font-family:'Inter',sans-serif">07:45</span></div>
   </div></div></div>
 </div>
-
+ 
 <!-- SCHEDULE -->
 <div class="screen" id="s-schedule">
   <div class="tb"><h1 id="t-sched-h">Schedule</h1><div class="tb-meta">Active meals: 0 / 4</div></div>
@@ -315,10 +319,10 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       </div>
       <div class="slbl" id="t-time-lbl">TIME</div>
       <div class="tgrid">
-        <div class="tpill sel" data-slot="0" onclick="selTime(this)"><div class="tpill-t">08:00</div><div class="tpill-l">Morning</div></div>
-        <div class="tpill" data-slot="1" onclick="selTime(this)"><div class="tpill-t">12:30</div><div class="tpill-l">Mid-morning</div></div>
-        <div class="tpill" data-slot="2" onclick="selTime(this)"><div class="tpill-t">17:00</div><div class="tpill-l">Afternoon</div></div>
-        <div class="tpill" data-slot="3" onclick="selTime(this)"><div class="tpill-t">21:00</div><div class="tpill-l">Evening</div></div>
+        <div class="tpill sel" data-slot="0" onclick="selTime(this)"><div class="tpill-t">08:00</div><div class="tpill-l" id="t-tpill-0">Morning</div></div>
+        <div class="tpill" data-slot="1" onclick="selTime(this)"><div class="tpill-t">12:30</div><div class="tpill-l" id="t-tpill-1">Mid-morning</div></div>
+        <div class="tpill" data-slot="2" onclick="selTime(this)"><div class="tpill-t">17:00</div><div class="tpill-l" id="t-tpill-2">Afternoon</div></div>
+        <div class="tpill" data-slot="3" onclick="selTime(this)"><div class="tpill-t">21:00</div><div class="tpill-l" id="t-tpill-3">Evening</div></div>
       </div>
       <div class="slbl" id="t-dose-lbl">DOSE</div>
       <div class="drow" id="drow">
@@ -347,7 +351,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div></div>
   </div>
 </div>
-
+ 
 <!-- ALERTS -->
 <div class="screen" id="s-alerts">
   <div class="tb"><h1 id="t-alerts-h">Alerts</h1><div class="tb-meta">Latest updates</div></div>
@@ -363,7 +367,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div></div>
   </div>
 </div>
-
+ 
 <!-- STATS -->
 <div class="screen" id="s-stats">
   <div class="tb"><h1 id="t-stats-h">Statistics</h1></div>
@@ -387,19 +391,19 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div></div>
     <div class="card"><div class="clbl" id="t-dev-health-lbl">Device Health</div><div class="cbody" style="padding-top:8px">
       <div class="strow"><span class="stlbl" id="t-solar-lbl">☀️ Solar today</span><span class="stval" style="color:var(--warn)">712 mAh</span></div>
-      <div class="strow"><span class="stlbl" id="t-bat-lbl">🔋 Battery</span><span class="stval" style="color:var(--ok)">78%</span></div>
+      <div class="strow"><span class="stlbl" id="t-bat-lbl">🔋 Battery</span><span class="stval" id="t-bat-val" style="color:var(--ok)">--</span></div>
       <div class="strow"><span class="stlbl" id="t-pump-lbl">💧 Pump cycles</span><span class="stval" id="t-pump-val">14 this week</span></div>
       <div class="strow"><span class="stlbl" id="t-uptime-lbl">📶 Uptime</span><span class="stval" style="color:var(--ok)">99.8%</span></div>
     </div></div>
   </div>
 </div>
-
+ 
 <!-- SETTINGS -->
 <div class="screen" id="s-settings">
   <div class="tb"><h1 id="t-settings-h">Settings</h1></div>
   <div class="c">
     <div style="background:var(--bg3);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;border:.5px solid var(--border)"><div style="font-size:28px">🐦</div><div style="flex:1"><div style="font-size:15px;font-weight:500;color:var(--text)">Smart Pro · Cage A</div></div><div class="badge bdone" id="t-online">Online</div></div>
-
+ 
     <!-- LANGUAGE -->
     <div class="card"><div class="clbl" id="t-lang-lbl">Language</div><div class="cbody">
       <div class="proLangWrap">
@@ -408,8 +412,9 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
           <div class="proLangTitle">App language</div>
           <div class="proLangSub">Choose the interface language</div>
         </div>
-        <select id="proLangSelect" class="proLangSelect" onchange="setLang(this.value)">
+        <select id="proLangSelect" class="proLangSelect" onchange="applyLanguage(this.value)">
           <option value="en">🇬🇧 English</option>
+          <option value="ar">🇲🇦 العربية</option>
           <option value="fr">🇫🇷 Français</option>
           <option value="es">🇪🇸 Español</option>
           <option value="it">🇮🇹 Italiano</option>
@@ -439,19 +444,19 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="srow"><div class="srowico" style="background:#0f1a0e">🐦</div><div style="flex:1"><div class="stitle" id="t-notif5">High humidity — cage air</div><div class="ssub" id="t-notif5-sub">Bird health risk · clean cage</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
       <div class="srow"><div class="srowico" style="background:#0f0f1a">📶</div><div style="flex:1"><div class="stitle" id="t-notif6">WiFi disconnected</div><div class="ssub" id="t-notif6-sub">Device offline or out of range</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
     </div>
-
-    <div class="card"><div class="clbl">Device Connection</div>
+ 
+    <div class="card"><div class="clbl" id="t-devconn-lbl">Device Connection</div>
       <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
-        <div><div class="stitle">📡 ESP32 Device IP</div><div class="ssub">Local control: phone and box on same WiFi</div></div>
+        <div><div class="stitle" id="t-esp32ip-lbl">📡 ESP32 Device IP</div><div class="ssub" id="t-esp32ip-hint">Local control: phone and box on same WiFi</div></div>
         <input id="deviceIp" class="remoteInput" type="text" placeholder="192.168.1.105">
-        <button class="remoteBtn" onclick="saveDeviceIp()">Save Device IP</button>
+        <button class="remoteBtn" onclick="saveDeviceIp()" id="t-savedeviceip-btn">Save Device IP</button>
         <div id="deviceIpStatus" class="remoteStatus">Not saved</div>
       </div>
     </div>
 <div class="card"><div class="clbl" id="t-hw-lbl">Hardware</div>
       <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px;padding:14px 16px">
         <div><div class="stitle" id="t-cam-ip-title">📷 Camera IP</div><div class="ssub" id="t-cam-ip-hint">Used to load the live stream</div></div>
-        <div style="display:flex;gap:8px"><input id="camip" type="text" placeholder="192.168.1.105" style="flex:1;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;min-width:0"><button onclick="saveCam()" id="t-save-btn" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">Save</button></div>
+        <div style="display:flex;gap:8px"><input id="camip" type="text" placeholder="192.168.1.105" style="flex:1;background:var(--bg4);border:none;border-radius:var(--rx);padding:10px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;min-width:0"><button onclick="saveCam()" id="t-save-btn" style="background:var(--blue);color:#fff;border:none;border-radius:var(--rx);padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0">Save</button></div>
       </div>
       <div class="srow"><div class="srowico" style="background:#0d1520">📶</div><div style="flex:1"><div class="stitle" id="t-wifi-title">WiFi network</div><div class="ssub">HomeNetwork_5G</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
     </div>
@@ -461,9 +466,9 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div>
   </div>
 </div>
-
+ 
 </div><!-- end .scroll -->
-
+ 
 <!-- INSTALL BANNER -->
 <div id="installBanner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;background:#1a4a80;border-radius:14px;padding:12px 16px;z-index:50;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);">
   <div style="font-size:24px">📲</div>
@@ -471,14 +476,14 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
   <button onclick="installApp()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">Install</button>
   <button onclick="dismissInstall()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:4px;">✕</button>
 </div>
-
+ 
 <!-- iOS INSTALL HINT (shows only on iOS Safari) -->
 <div id="iosBanner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;background:#1a4a80;border-radius:14px;padding:12px 16px;z-index:50;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);">
   <div style="font-size:24px">📲</div>
   <div style="flex:1"><div style="font-size:13px;font-weight:500;color:#fff">Install on iPhone</div><div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">Tap <strong>Share</strong> ↑ then <strong>"Add to Home Screen"</strong></div></div>
   <button onclick="document.getElementById('iosBanner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:4px;">✕</button>
 </div>
-
+ 
 <nav class="nav">
   <div class="ni on" onclick="go('home',this)"><div class="ni-ic">🏠</div><span class="ni-lb">Home</span></div>
   <div class="ni" onclick="go('schedule',this)"><div class="ni-ic">📅</div><span class="ni-lb">Schedule</span></div>
@@ -486,7 +491,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
   <div class="ni" onclick="go('stats',this)"><div class="ni-ic">📊</div><span class="ni-lb">Stats</span></div>
   <div class="ni" onclick="go('settings',this)"><div class="ni-ic">⚙️</div><span class="ni-lb">Settings</span></div>
 </nav>
-
+ 
 </div>
 <script>
 // ═══ i18n TRANSLATIONS ═══
@@ -502,6 +507,7 @@ var T={
     addMeal:'Add Meal',seedSize:'Seed size',notSet:'Select seed type first',
     timeLabel:'TIME',doseLabel:'DOSE',gramsPerMeal:'Grams per meal',saveMeal:'Save meal',
     manualFeed:'Manual Feed',dispenseNow:'Dispense now',seedColon:'Seed:',notSetFeed:'not set — select in Settings',feedNow:'Feed now',
+    lowWaterAlertLbl:'Low water alert',everyDay:'every day',notSetShort:'Not set',activeMealsLbl:'Active meals',
     activeAlerts:'Active',todayAlerts:'Today',
     avgSeeds:'Avg daily seeds',avgWater:'Avg daily water',vsLastWeek:'+0.4g vs last week',normalRange:'Normal range',
     seedChart:'Seed Consumption (g/day)',waterChart:'Water Consumed (ml/day)',
@@ -520,8 +526,17 @@ var T={
     mealDist:'Meal distributed',morning:'Morning · 08:00',midday:'Midday · 12:30',
     solarActive:'Solar charging active',batAt:'Battery at 78%',
     waterPump:'Water pump cycle',circDone:'Circulation completed',
-    seedsUnit:' seeds ✓',confirm:' ✓',camNotSet:'Set camera IP in Settings\nto enable live stream',
+    seedsUnit:' seeds ✓',confirm:' ✓',camNotSet:'Set camera IP in Settings\nto enable live stream',seeds:'seeds',
     seedConsumption:'Seed Consumption (g/day)',d7:'7d',d30:'30d',d90:'90d',
+    waterCircTitle:'Water circulation',lastCycle:'Last cycle',statusLbl:'Status',nextCycle:'Next cycle',
+    foodRefillTitle:'Food refill',lastRefill:'Last refill',recommendationLbl:'Recommendation',
+    notRecorded:'Not recorded yet',waitingStatus:'Waiting...',
+    noActiveAlerts:'No active alerts',allLimitsNormal:'All limits are normal',
+    highTempCageAir:'High temperature — cage air',
+    mealDisabled:'Meal disabled',scheduledMeal:'Scheduled meal',selectSeedShort:'Select seed',offStatus:'Off',
+    deviceConnTitle:'Device connection',esp32IP:'📡 ESP32 Device IP',localControlHint:'Local control: phone and box on same WiFi',
+    saveDeviceIP:'Save Device IP',notSavedStatus:'Not saved',
+    morningName:'Morning',middayName:'Midday',eveningName:'Evening',nightName:'Night',midMorningName:'Mid-morning',afternoonName:'Afternoon',
   },
   fr:{
     appName:'Smart Pro',appSub:'Cage A',online:'En ligne',
@@ -534,6 +549,7 @@ var T={
     addMeal:'Ajouter repas',seedSize:'Taille graines',notSet:'Non défini — aller aux Réglages',
     timeLabel:'HEURE',doseLabel:'DOSE',gramsPerMeal:'Grammes par repas',saveMeal:'Enregistrer',
     manualFeed:'Alimentation manuelle',dispenseNow:'Distribuer maintenant',seedColon:'Graines :',notSetFeed:'non défini — sélectionner dans Réglages',feedNow:'Distribuer',
+    lowWaterAlertLbl:'Alerte eau basse',everyDay:'tous les jours',notSetShort:'Non défini',activeMealsLbl:'Repas actifs',
     activeAlerts:'Actives',todayAlerts:"Aujourd'hui",
     avgSeeds:'Moy. graines/jour',avgWater:'Moy. eau/jour',vsLastWeek:'+0.4g vs semaine dernière',normalRange:'Plage normale',
     seedChart:'Consommation graines (g/jour)',waterChart:'Eau consommée (ml/jour)',
@@ -552,8 +568,17 @@ var T={
     mealDist:'Repas distribué',morning:'Matin · 08:00',midday:'Midi · 12:30',
     solarActive:'Charge solaire active',batAt:'Batterie à 78%',
     waterPump:'Cycle pompe eau',circDone:'Circulation terminée',
-    seedsUnit:' graines ✓',confirm:' ✓',camNotSet:'Configurer l\'IP caméra dans Réglages',
+    seedsUnit:' graines ✓',confirm:' ✓',camNotSet:'Configurer l\'IP caméra dans Réglages',seeds:'graines',
     seedConsumption:'Consommation graines (g/jour)',d7:'7j',d30:'30j',d90:'90j',
+    waterCircTitle:'Circulation d\'eau',lastCycle:'Dernier cycle',statusLbl:'Statut',nextCycle:'Prochain cycle',
+    foodRefillTitle:'Remplissage nourriture',lastRefill:'Dernier remplissage',recommendationLbl:'Recommandation',
+    notRecorded:'Pas encore enregistré',waitingStatus:'En attente...',
+    noActiveAlerts:'Aucune alerte active',allLimitsNormal:'Tous les seuils sont normaux',
+    highTempCageAir:'Température élevée — air cage',
+    mealDisabled:'Repas désactivé',scheduledMeal:'Repas programmé',selectSeedShort:'Choisir graines',offStatus:'Désactivé',
+    deviceConnTitle:'Connexion appareil',esp32IP:'📡 IP de l\'appareil ESP32',localControlHint:'Contrôle local : téléphone et boîtier sur le même WiFi',
+    saveDeviceIP:'Enregistrer l\'IP',notSavedStatus:'Non enregistré',
+    morningName:'Matin',middayName:'Midi',eveningName:'Soir',nightName:'Nuit',midMorningName:'Milieu de matinée',afternoonName:'Après-midi',
   },
   ar:{
     appName:'سمارت برو',appSub:'قفص A',online:'متصل',
@@ -566,6 +591,7 @@ var T={
     addMeal:'إضافة وجبة',seedSize:'حجم البذور',notSet:'غير محدد — اذهب للإعدادات',
     timeLabel:'الوقت',doseLabel:'الجرعة',gramsPerMeal:'غرامات لكل وجبة',saveMeal:'حفظ الوجبة',
     manualFeed:'توزيع يدوي',dispenseNow:'توزيع الآن',seedColon:'البذور:',notSetFeed:'غير محدد — حدد في الإعدادات',feedNow:'وزّع الآن',
+    lowWaterAlertLbl:'تنبيه انخفاض الماء',everyDay:'كل يوم',notSetShort:'غير محدد',activeMealsLbl:'الوجبات النشطة',
     activeAlerts:'نشط',todayAlerts:'اليوم',
     avgSeeds:'متوسط البذور اليومي',avgWater:'متوسط الماء اليومي',vsLastWeek:'+0.4g مقارنة بالأسبوع الماضي',normalRange:'نطاق طبيعي',
     seedChart:'استهلاك البذور (غ/يوم)',waterChart:'الماء المستهلك (مل/يوم)',
@@ -584,8 +610,17 @@ var T={
     mealDist:'تم توزيع وجبة',morning:'صباح · 08:00',midday:'ظهر · 12:30',
     solarActive:'الشحن الشمسي نشط',batAt:'البطارية 78%',
     waterPump:'دورة مضخة الماء',circDone:'اكتملت عملية التوزيع',
-    seedsUnit:' بذور ✓',confirm:' ✓',camNotSet:'حدد عنوان IP الكاميرا في الإعدادات\nلتفعيل البث المباشر',
+    seedsUnit:' بذور ✓',confirm:' ✓',camNotSet:'حدد عنوان IP الكاميرا في الإعدادات\nلتفعيل البث المباشر',seeds:'بذور',
     seedConsumption:'استهلاك البذور (غ/يوم)',d7:'7أ',d30:'30أ',d90:'90أ',
+    waterCircTitle:'دورة الماء',lastCycle:'آخر دورة',statusLbl:'الحالة',nextCycle:'الدورة القادمة',
+    foodRefillTitle:'تعبئة الأكل',lastRefill:'آخر تعبئة',recommendationLbl:'التوصية',
+    notRecorded:'لم يسجل بعد',waitingStatus:'في الانتظار...',
+    noActiveAlerts:'لا توجد تنبيهات نشطة',allLimitsNormal:'كل المعدلات طبيعية',
+    highTempCageAir:'حرارة عالية — هواء القفص',
+    mealDisabled:'الوجبة معطلة',scheduledMeal:'وجبة مجدولة',selectSeedShort:'اختر البذور',offStatus:'معطل',
+    deviceConnTitle:'اتصال الجهاز',esp32IP:'📡 عنوان IP الجهاز',localControlHint:'تحكم محلي: الهاتف والجهاز على نفس الواي فاي',
+    saveDeviceIP:'حفظ عنوان IP',notSavedStatus:'غير محفوظ',
+    morningName:'الصباح',middayName:'الظهيرة',eveningName:'المساء',nightName:'الليل',midMorningName:'منتصف الصباح',afternoonName:'بعد الظهر',
   },
   es:{
     appName:'Smart Pro',appSub:'Jaula A',online:'En línea',
@@ -598,6 +633,7 @@ var T={
     addMeal:'Agregar comida',seedSize:'Tamaño semillas',notSet:'No definido — ir a Ajustes',
     timeLabel:'HORA',doseLabel:'DOSIS',gramsPerMeal:'Gramos por comida',saveMeal:'Guardar',
     manualFeed:'Alimentación manual',dispenseNow:'Distribuir ahora',seedColon:'Semillas:',notSetFeed:'no definido — seleccionar en Ajustes',feedNow:'Distribuir',
+    lowWaterAlertLbl:'Alerta de agua baja',everyDay:'todos los días',notSetShort:'No definido',activeMealsLbl:'Comidas activas',
     activeAlerts:'Activas',todayAlerts:'Hoy',
     avgSeeds:'Prom. semillas/día',avgWater:'Prom. agua/día',vsLastWeek:'+0.4g vs semana pasada',normalRange:'Rango normal',
     seedChart:'Consumo semillas (g/día)',waterChart:'Agua consumida (ml/día)',
@@ -616,8 +652,17 @@ var T={
     mealDist:'Comida distribuida',morning:'Mañana · 08:00',midday:'Mediodía · 12:30',
     solarActive:'Carga solar activa',batAt:'Batería al 78%',
     waterPump:'Ciclo bomba agua',circDone:'Circulación completada',
-    seedsUnit:' semillas ✓',confirm:' ✓',camNotSet:'Configurar IP cámara en Ajustes',
+    seedsUnit:' semillas ✓',confirm:' ✓',camNotSet:'Configurar IP cámara en Ajustes',seeds:'semillas',
     seedConsumption:'Consumo semillas (g/día)',d7:'7d',d30:'30d',d90:'90d',
+    waterCircTitle:'Circulación de agua',lastCycle:'Último ciclo',statusLbl:'Estado',nextCycle:'Próximo ciclo',
+    foodRefillTitle:'Recarga de comida',lastRefill:'Última recarga',recommendationLbl:'Recomendación',
+    notRecorded:'Aún no registrado',waitingStatus:'Esperando...',
+    noActiveAlerts:'Sin alertas activas',allLimitsNormal:'Todos los límites son normales',
+    highTempCageAir:'Temperatura alta — aire jaula',
+    mealDisabled:'Comida desactivada',scheduledMeal:'Comida programada',selectSeedShort:'Elegir semillas',offStatus:'Desactivado',
+    deviceConnTitle:'Conexión del dispositivo',esp32IP:'📡 IP del dispositivo ESP32',localControlHint:'Control local: teléfono y caja en el mismo WiFi',
+    saveDeviceIP:'Guardar IP',notSavedStatus:'No guardado',
+    morningName:'Mañana',middayName:'Mediodía',eveningName:'Tarde',nightName:'Noche',midMorningName:'Media mañana',afternoonName:'Tarde',
   },
   it:{
     appName:'Smart Pro',appSub:'Gabbia A',online:'Online',
@@ -630,6 +675,7 @@ var T={
     addMeal:'Aggiungi pasto',seedSize:'Dimensione semi',notSet:'Non impostato — vai alle Impostazioni',
     timeLabel:'ORA',doseLabel:'DOSE',gramsPerMeal:'Grammi per pasto',saveMeal:'Salva pasto',
     manualFeed:'Alimentazione manuale',dispenseNow:'Distribuisci ora',seedColon:'Semi:',notSetFeed:'non impostato — seleziona in Impostazioni',feedNow:'Distribuisci',
+    lowWaterAlertLbl:'Avviso acqua bassa',everyDay:'ogni giorno',notSetShort:'Non impostato',activeMealsLbl:'Pasti attivi',
     activeAlerts:'Attive',todayAlerts:'Oggi',
     avgSeeds:'Media semi/giorno',avgWater:'Media acqua/giorno',vsLastWeek:'+0.4g vs settimana scorsa',normalRange:'Intervallo normale',
     seedChart:'Consumo semi (g/giorno)',waterChart:'Acqua consumata (ml/giorno)',
@@ -648,8 +694,17 @@ var T={
     mealDist:'Pasto distribuito',morning:'Mattina · 08:00',midday:'Mezzogiorno · 12:30',
     solarActive:'Ricarica solare attiva',batAt:'Batteria all\'78%',
     waterPump:'Ciclo pompa acqua',circDone:'Circolazione completata',
-    seedsUnit:' semi ✓',confirm:' ✓',camNotSet:'Configura IP telecamera in Impostazioni',
+    seedsUnit:' semi ✓',confirm:' ✓',camNotSet:'Configura IP telecamera in Impostazioni',seeds:'semi',
     seedConsumption:'Consumo semi (g/giorno)',d7:'7g',d30:'30g',d90:'90g',
+    waterCircTitle:'Circolazione acqua',lastCycle:'Ultimo ciclo',statusLbl:'Stato',nextCycle:'Prossimo ciclo',
+    foodRefillTitle:'Ricarica cibo',lastRefill:'Ultima ricarica',recommendationLbl:'Raccomandazione',
+    notRecorded:'Non ancora registrato',waitingStatus:'In attesa...',
+    noActiveAlerts:'Nessun avviso attivo',allLimitsNormal:'Tutti i limiti sono normali',
+    highTempCageAir:'Temperatura alta — aria gabbia',
+    mealDisabled:'Pasto disattivato',scheduledMeal:'Pasto programmato',selectSeedShort:'Scegli semi',offStatus:'Disattivato',
+    deviceConnTitle:'Connessione dispositivo',esp32IP:'📡 IP dispositivo ESP32',localControlHint:'Controllo locale: telefono e box sulla stessa WiFi',
+    saveDeviceIP:'Salva IP',notSavedStatus:'Non salvato',
+    morningName:'Mattina',middayName:'Mezzogiorno',eveningName:'Sera',nightName:'Notte',midMorningName:'Metà mattina',afternoonName:'Pomeriggio',
   },
   ja:{
     appName:'スマートプロ',appSub:'ゲージA · タンジェ',online:'オンライン',
@@ -662,6 +717,7 @@ var T={
     addMeal:'食事を追加',seedSize:'種のサイズ',notSet:'未設定 — 設定へ',
     timeLabel:'時間',doseLabel:'用量',gramsPerMeal:'1食あたりのグラム',saveMeal:'食事を保存',
     manualFeed:'手動給餌',dispenseNow:'今すぐ給餌',seedColon:'種：',notSetFeed:'未設定 — 設定で選択',feedNow:'給餌する',
+    lowWaterAlertLbl:'水量低下アラート',everyDay:'毎日',notSetShort:'未設定',activeMealsLbl:'有効な食事',
     activeAlerts:'アクティブ',todayAlerts:'今日',
     avgSeeds:'1日平均種量',avgWater:'1日平均水量',vsLastWeek:'先週比+0.4g',normalRange:'正常範囲',
     seedChart:'種の消費量 (g/日)',waterChart:'水の消費量 (ml/日)',
@@ -680,25 +736,64 @@ var T={
     mealDist:'食事を配給',morning:'朝 · 08:00',midday:'昼 · 12:30',
     solarActive:'太陽光充電中',batAt:'バッテリー78%',
     waterPump:'水ポンプサイクル',circDone:'循環完了',
-    seedsUnit:'の種 ✓',confirm:' ✓',camNotSet:'設定でカメラIPを設定してください',
+    seedsUnit:'の種 ✓',confirm:' ✓',camNotSet:'設定でカメラIPを設定してください',seeds:'種',
     seedConsumption:'種の消費量 (g/日)',d7:'7日',d30:'30日',d90:'90日',
+    waterCircTitle:'給水サイクル',lastCycle:'前回のサイクル',statusLbl:'状態',nextCycle:'次のサイクル',
+    foodRefillTitle:'餌の補充',lastRefill:'前回の補充',recommendationLbl:'推奨事項',
+    notRecorded:'まだ記録なし',waitingStatus:'待機中...',
+    noActiveAlerts:'アクティブな警告なし',allLimitsNormal:'すべて正常範囲内',
+    highTempCageAir:'高温 — ケージ内',
+    mealDisabled:'食事は無効',scheduledMeal:'予定された食事',selectSeedShort:'種を選択',offStatus:'無効',
+    deviceConnTitle:'デバイス接続',esp32IP:'📡 ESP32デバイスIP',localControlHint:'ローカル制御：電話と本体が同じWiFi上にあること',
+    saveDeviceIP:'IPを保存',notSavedStatus:'未保存',
+    morningName:'朝',middayName:'昼',eveningName:'夕方',nightName:'夜',midMorningName:'午前中',afternoonName:'午後',
   }
 };
-
+ 
 var lang='en';
-function setLang(l,el){
-  lang=l;
-  // Update picker
-  document.querySelectorAll('#langPicker .sopt').forEach(function(o){o.classList.remove('sel');});
-  el.classList.add('sel');
-  // RTL for Arabic
-  document.querySelector('.app').setAttribute('dir',l==='ar'?'rtl':'ltr');
-  document.querySelector('.app').style.fontFamily=l==='ja'?'\'DM Mono\',sans-serif':'\'Inter\',sans-serif';
+ 
+// PATCH 25: global helper so ANY function anywhere in this file can get a
+// translated string without needing local access to applyLanguage()'s
+// internal `t` variable. This is what the dynamic Alerts cards (Water
+// circulation, Food refill) and the duplicate meal-name renderers were
+// missing - they were never wired to translation at all, not broken by it.
+function tr(key){
+  var dict = T[lang] || T.en;
+  return (dict && dict[key] !== undefined) ? dict[key] : ((T.en && T.en[key]) || key);
+}
+ 
+// PATCH 25: the firmware sends English status words directly into Firebase
+// (e.g. "Waiting...", "Running", "Not recorded yet") since it has no i18n
+// of its own. This maps the known ones to the current app language and
+// passes anything unrecognized through unchanged (safer than hiding data).
+function dovlimTranslateStatus(raw){
+  var s = String(raw || '').trim();
+  if (s === 'Waiting...') return tr('waitingStatus');
+  if (s === 'Not recorded yet') return tr('notRecorded');
+  return s; // unknown values (e.g. "Running", "Completed", "Refilled", "OK") shown as-is
+}
+ 
+// ============================================================================
+// PATCH 24 — TRANSLATION REBUILT FROM SCRATCH
+// This is now the ONLY function that applies a language. Four old competing
+// versions of "setLang" (each wrapping the previous one, one of them silently
+// skipping the real translation when called without a legacy `el` argument)
+// have been removed. The T{} dictionary below is unchanged - it was already
+// correct and complete for every language, the problem was never the content.
+// ============================================================================
+function applyLanguage(l){
+  if (!T[l]) l = 'en';
+  lang = l;
+ 
+  var picker = document.getElementById('proLangSelect');
+  if (picker && picker.value !== l) picker.value = l;
+ 
+  localStorage.setItem('smartpro_lang', l);
+ 
+  document.querySelector('.app').setAttribute('dir', l==='ar' ? 'rtl' : 'ltr');
+  document.querySelector('.app').style.fontFamily = l==='ja' ? '\'DM Mono\',sans-serif' : '\'Inter\',sans-serif';
+ 
   var t=T[l];
-  // App name + meta
-  var els={
-    'h1[id=t-settings]':t.tSettings,
-  };
   // Nav
   var navLbls=document.querySelectorAll('.ni-lb');
   navLbls[0].textContent=t.home;
@@ -734,7 +829,7 @@ function setLang(l,el){
   // Schedule
   setText('t-sched-h',t.schedule);
   setText('t-addmeal-lbl',t.addMeal);
-  setText('t-seedsize-display-lbl','Seed size');
+  setText('t-seedsize-display-lbl',t.seedSize);
   setText('t-time-lbl',t.timeLabel);
   setText('t-dose-lbl',t.doseLabel);
   setText('t-grams-lbl',t.gramsPerMeal);
@@ -781,10 +876,14 @@ function setLang(l,el){
   if(sOpts[0])sOpts[0].textContent=t.small;
   if(sOpts[1])sOpts[1].textContent=t.medium;
   if(sOpts[2])sOpts[2].textContent=t.large;
-  setText('t-thresh-lbl',t.alertThresh);
-  setText('t-hum-lbl',t.maxHumidity);
+  setText('t-thresh-lbl',t.alertThresh);  setText('t-hum-lbl',t.maxHumidity);
   setText('t-temp-lbl2',t.maxTemp);
   setText('t-food-lbl',t.lowFood);
+  setText('t-water-low-lbl',t.lowWaterAlertLbl);
+  setText('t-tpill-0',t.morningName);
+  setText('t-tpill-1',t.midMorningName);
+  setText('t-tpill-2',t.afternoonName);
+  setText('t-tpill-3',t.eveningName);
   setText('t-notif-lbl',t.notifLabel);
   setText('t-notif1',t.lowWater);setText('t-notif1-sub','Alert when below 20%');
   setText('t-notif2',t.lowSeeds);setText('t-notif2-sub','Alert when below 20%');
@@ -799,6 +898,12 @@ function setLang(l,el){
   setText('t-device-lbl',t.deviceLabel);
   setText('t-update-title',t.checkUpdates);setText('t-update-sub',t.fwUpToDate);
   setText('t-reset-title',t.factoryReset);setText('t-reset-sub',t.factoryResetHint);
+  setText('t-devconn-lbl',t.deviceConnTitle);
+  setText('t-esp32ip-lbl',t.esp32IP);
+  setText('t-esp32ip-hint',t.localControlHint);
+  setText('t-savedeviceip-btn',t.saveDeviceIP);
+  var ipStatus=document.getElementById('deviceIpStatus');
+  if(ipStatus && ipStatus.textContent==='Not saved') ipStatus.textContent=t.notSavedStatus;
   // Update schedSeed + feedseed if already set
   var ss=document.getElementById('schedSeed');
   if(ss&&ss.style.color!=='var(--warn)'){ss.textContent=ss.textContent;}
@@ -815,11 +920,13 @@ function setLang(l,el){
   if(tabs[0])tabs[0].textContent=t.d7;
   if(tabs[1])tabs[1].textContent=t.d30;
   if(tabs[2])tabs[2].textContent=t.d90;
+ 
+  if (typeof window.cleanFakeVisuals === 'function') window.cleanFakeVisuals();
 }
-
+ 
 function setText(id,txt){var el=document.getElementById(id);if(el)el.textContent=txt;}
-
-
+ 
+ 
 function go(name,el){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
@@ -828,14 +935,14 @@ function go(name,el){
   if(name==='alerts'){var b=el.querySelector('.ni-bd');if(b)b.style.display='none';}
   document.querySelector('.scroll').scrollTop=0;
 }
-
+ 
 function togBtn(btn){
   var on=btn.classList.contains('ton');
   btn.classList.toggle('ton',!on);
   btn.classList.toggle('toff',on);
   syncAddMealTimes();
 }
-
+ 
 function syncAddMealTimes(){
   var items=document.querySelectorAll('#s-schedule .slist .sitem');
   var pills=document.querySelectorAll('#s-schedule .tpill[data-slot]');
@@ -856,13 +963,13 @@ function syncAddMealTimes(){
     if(firstVisible)firstVisible.classList.add('sel');
   }
 }
-
+ 
 function updateScheduleTime(inp){
   // Keeps the chosen time visible immediately. Later this can be sent to ESP32/Firebase.
   inp.setAttribute('value', inp.value);
   syncAddMealTimes();
 }
-
+ 
 function openCam(){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
   document.querySelectorAll('.ni').forEach(function(n){n.classList.remove('on');});
@@ -878,7 +985,7 @@ function closeCam(){
   document.querySelector('.ni').classList.add('on');
 }
 function saveCam(){var v=document.getElementById('camip').value.trim();if(v){camIP=v;alert('Saved: '+v);}}
-
+ 
 function selSeed(el){
   document.querySelectorAll('#seedpicker .sopt').forEach(function(o){o.classList.remove('sel');});
   el.classList.add('sel');
@@ -894,12 +1001,12 @@ function selSeed(el){
   if(dr)dr.classList.add('on');
   if(sb)sb.disabled=false;
 }
-
+ 
 function selTime(el){
   document.querySelectorAll('.tpill').forEach(function(p){p.classList.remove('sel');});
   el.classList.add('sel');
 }
-
+ 
 var dose = 2.0;
 function chgD(d){
   dose = Math.round((dose + d) * 10) / 10;
@@ -911,12 +1018,12 @@ function chgD(d){
 function doFeed(btn){
   var grams = parseFloat(document.getElementById('dval').textContent) || 2.0;
   var commandId = Date.now();
-
+ 
   if(btn){
     btn.disabled = true;
     btn.textContent = 'Sending...';
   }
-
+ 
   firebase.database().ref("device/commands").update({
     feedNow: true,
     feedGrams: grams,
@@ -945,7 +1052,7 @@ var cd={
   90:{v:[6.8,7.5,8.2,8.0,8.4,8.1,8.3],l:['M1','M2','M3','M4','M5','M6','M7']}
 };
 var wd=[28,32,30,35,29,33,31],wl=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-
+ 
 function drawChart(cid,lid,vals,lbls,col,colLast){
   var mx=Math.max.apply(null,vals);
   document.getElementById(cid).innerHTML=vals.map(function(v,i){
@@ -961,17 +1068,17 @@ function swTab(el,d){
   el.classList.add('on');
   drawChart('ch1','lb1',cd[d].v,cd[d].l,'var(--blue-md)','var(--blue)');
 }
-
+ 
 function tick(){
   var n=new Date();
   document.getElementById('clk').textContent=
     String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
 }
-
+ 
 drawChart('ch1','lb1',cd[7].v,cd[7].l,'var(--blue-md)','var(--blue)');
 drawChart('ch2','lb2',wd,wl,'var(--blue-md)','var(--blue)');
 tick();setInterval(tick,10000);
-
+ 
 // PWA Install prompt
 var deferredPrompt;
 window.addEventListener('beforeinstallprompt',function(e){
@@ -994,7 +1101,7 @@ function dismissInstall(){
   var banner=document.getElementById('installBanner');
   if(banner)banner.style.display='none';
 }
-
+ 
 // iOS Safari hint
 var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
 var isInStandalone=('standalone' in navigator)&&navigator.standalone;
@@ -1010,7 +1117,7 @@ if('serviceWorker' in navigator){
 }
 syncAddMealTimes();
 </script>
-
+ 
 <script>
 function syncHomeTimes(){
   try{
@@ -1028,7 +1135,7 @@ document.addEventListener('change',e=>{
 });
 setTimeout(syncHomeTimes,500);
 </script>
-
+ 
 <script>
 function saveDeviceIp(){
   const el=document.getElementById('deviceIp');
@@ -1084,8 +1191,8 @@ window.doSave = async function(btn){
   }
 };
 </script>
-
-
+ 
+ 
 <script>
 /* SMART PRO API READY LAYER */
 const SMARTPRO_API = {
@@ -1095,14 +1202,14 @@ const SMARTPRO_API = {
   settings:'/api/settings',
   camera:'/stream'
 };
-
+ 
 function spDeviceBase(){
   const ip = localStorage.getItem('smartpro_device_ip') || (document.getElementById('deviceIp') ? document.getElementById('deviceIp').value.trim() : '');
   if(!ip) return '';
   if(ip.startsWith('http://') || ip.startsWith('https://')) return ip.replace(/\/$/,'');
   return 'http://' + ip;
 }
-
+ 
 function spGetMealsPayload(){
   const timeInputs=[...document.querySelectorAll('.timeInput')];
   const rows=[...document.querySelectorAll('#s-schedule .slist .sitem')];
@@ -1127,7 +1234,7 @@ function spGetMealsPayload(){
     };
   });
 }
-
+ 
 async function spApiPost(path,payload){
   const base=spDeviceBase();
   if(!base) throw new Error('Missing ESP32 IP');
@@ -1139,7 +1246,7 @@ async function spApiPost(path,payload){
   if(!res.ok) throw new Error('ESP32 error '+res.status);
   try{return await res.json();}catch(e){return {ok:true};}
 }
-
+ 
 async function spApiGet(path){
   const base=spDeviceBase();
   if(!base) throw new Error('Missing ESP32 IP');
@@ -1147,14 +1254,14 @@ async function spApiGet(path){
   if(!res.ok) throw new Error('ESP32 error '+res.status);
   return await res.json();
 }
-
+ 
 function spSetApiStatus(ok,msg){
   const dot=document.getElementById('apiDot');
   const txt=document.getElementById('apiStatusText');
   if(dot){dot.classList.remove('ok','err'); dot.classList.add(ok?'ok':'err');}
   if(txt) txt.textContent=msg;
 }
-
+ 
 async function testBoxConnection(){
   try{
     const data=await spApiGet(SMARTPRO_API.status);
@@ -1164,7 +1271,7 @@ async function testBoxConnection(){
     spSetApiStatus(false,'Not connected · '+e.message);
   }
 }
-
+ 
 function spUpdateDashboard(data){
   if(!data) return;
   // expected JSON from box:
@@ -1176,22 +1283,22 @@ function spUpdateDashboard(data){
   const humBox = data.humBox ?? data.boxHumidity;
   const tempCage = data.tempCage ?? data.cageTemp;
   const humCage = data.humCage ?? data.cageHumidity;
-
+ 
   const waterVal=[...document.querySelectorAll('.lval')][0];
   const seedsVal=[...document.querySelectorAll('.lval')][1];
   if(water!==undefined && waterVal) waterVal.innerHTML=Math.round(water)+'<span style="font-size:14px;color:var(--text3)">%</span>';
   if(seeds!==undefined && seedsVal) seedsVal.innerHTML=Math.round(seeds)+'<span style="font-size:14px;color:var(--text3)">%</span>';
-
+ 
   const emv=[...document.querySelectorAll('.emv')];
   if(tempBox!==undefined && emv[0]) emv[0].textContent=Math.round(tempBox)+'°';
   if(humBox!==undefined && emv[1]) emv[1].textContent=Math.round(humBox)+'%';
   if(tempCage!==undefined && emv[2]) emv[2].textContent=Math.round(tempCage)+'°';
   if(humCage!==undefined && emv[3]) emv[3].textContent=Math.round(humCage)+'%';
-
+ 
   const battRow=[...document.querySelectorAll('.strow .stval')].find(x=>x.textContent.includes('%'));
   if(battery!==undefined && battRow) battRow.textContent=Math.round(battery)+'%';
 }
-
+ 
 async function spSendFullSchedule(btn){
   const payload={
     meals:spGetMealsPayload(),
@@ -1200,13 +1307,13 @@ async function spSendFullSchedule(btn){
   const res=await spApiPost(SMARTPRO_API.schedule,payload);
   return res;
 }
-
+ 
 async function spSendManualFeed(){
   const doseText=(document.getElementById('dval')||{}).textContent || '2.0 g';
   const grams=parseFloat(doseText.replace('g','').trim()) || 2.0;
   return await spApiPost(SMARTPRO_API.feed,{grams:grams,seedSize:localStorage.getItem('smartpro_seed_size') || 'small',mode:'manual'});
 }
-
+ 
 // Override Save Meal to become API-ready
 const spOriginalDoSave = window.doSave;
 window.doSave = async function(btn){
@@ -1228,7 +1335,7 @@ window.doSave = async function(btn){
     spSetApiStatus(false,e.message);
   }
 };
-
+ 
 // Override Feed now
 const spOriginalDoFeed = window.doFeed;
 window.doFeed = async function(btn){
@@ -1245,17 +1352,18 @@ window.doFeed = async function(btn){
     spSetApiStatus(false,e.message);
   }
 };
-
+ 
 // When toggle or time changes, keep app internally synced
 document.addEventListener('change',function(e){
   if(e.target && e.target.classList && e.target.classList.contains('timeInput')){
     if(typeof syncHomeTimes==='function') syncHomeTimes();
   }
 });
-
+ 
 document.addEventListener('DOMContentLoaded',function(){
-  if(document.getElementById('proLangSelect') && localStorage.getItem('smartpro_lang')){
-    document.getElementById('proLangSelect').value=localStorage.getItem('smartpro_lang');
+  var savedLang = localStorage.getItem('smartpro_lang');
+  if (savedLang && typeof applyLanguage === 'function') {
+    applyLanguage(savedLang);
   }
   setInterval(async()=>{
     try{
@@ -1265,18 +1373,12 @@ document.addEventListener('DOMContentLoaded',function(){
     }catch(e){}
   },10000);
 });
-
-// Save language choice also
-const spOldSetLang = window.setLang;
-window.setLang = function(lang,el){
-  localStorage.setItem('smartpro_lang',lang);
-  if(document.getElementById('proLangSelect')) document.getElementById('proLangSelect').value=lang;
-  if(typeof spOldSetLang === 'function') return spOldSetLang(lang,el);
-};
+ 
+// Language handling fully rebuilt in PATCH 24 - see applyLanguage() above.
 </script>
-
-
-
+ 
+ 
+ 
 <script>
 /* DOVLIM V8.1 — 30 DAY TRIAL STABLE LAYER
    Purpose: one schedule source, API-ready local/remote base URL, safe manual feed,
@@ -1292,20 +1394,20 @@ window.setLang = function(lang,el){
     {id:3,label:'Evening', icon:'🌆', time:'17:00', grams:2.5, enabled:true, seedSize:'small'},
     {id:4,label:'Night', icon:'🌙', time:'21:00', grams:1.5, enabled:false, seedSize:'small'}
   ];
-
+ 
   function $(sel,root){return (root||document).querySelector(sel);}
   function $all(sel,root){return Array.from((root||document).querySelectorAll(sel));}
   function clone(x){return JSON.parse(JSON.stringify(x));}
   function safeNum(v, fallback){ const n=parseFloat(v); return isNaN(n)?fallback:n; }
   function seedSize(){ return localStorage.getItem(LS_SEED) || ''; }
-  function seedLabel(s){ return s==='large'?'Large':(s==='medium'?'Medium':(s==='small'?'Small':'Not set')); }
+  function seedLabel(s){ return s==='large'?tr('large'):(s==='medium'?tr('medium'):(s==='small'?tr('small'):tr('notSetShort'))); }
   function seedIcon(s){ return s==='large'?'🌻':(s==='medium'?'🌾':(s==='small'?'🌱':'⚠️')); }
   function apiBase(){
     const raw=(localStorage.getItem(LS_IP)||($('#deviceIp')?$('#deviceIp').value:'')||'').trim();
     if(!raw) return '';
     return (raw.startsWith('http://')||raw.startsWith('https://')) ? raw.replace(/\/$/,'') : 'http://'+raw;
   }
-
+ 
   function loadMeals(){
     try{
       const parsed=JSON.parse(localStorage.getItem(LS_MEALS)||'null');
@@ -1319,20 +1421,20 @@ window.setLang = function(lang,el){
     return p ? parseInt(p.getAttribute('data-slot')||'0',10) : 0;
   }
   function setDoseValue(g){ const d=$('#dval'); if(d) d.textContent=(Math.round(g*10)/10).toFixed(1)+' g'; }
-
+ 
   function syncAll(){
     const meals=loadMeals();
     const seed=seedSize();
-
+ 
     // Schedule list rows
     const rows=$all('#s-schedule .slist .sitem');
     rows.forEach((row,i)=>{
       const m=meals[i] || DEFAULT_MEALS[i];
       const input=$('.timeInput',row); if(input){ input.value=m.time; input.setAttribute('value',m.time); }
-      const meta=$('.smeta',row); if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+seedLabel(m.seedSize||seed)+' seeds · every day';
+      const meta=$('.smeta',row); if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+seedLabel(m.seedSize||seed)+' '+tr('seeds')+' · '+tr('everyDay');
       const tog=$('.tog',row); if(tog){ tog.classList.toggle('ton',!!m.enabled); tog.classList.toggle('toff',!m.enabled); }
     });
-
+ 
     // Add-meal pills
     const pills=$all('#s-schedule .tpill[data-slot]');
     pills.forEach(p=>{
@@ -1348,10 +1450,10 @@ window.setLang = function(lang,el){
       const first=$('#s-schedule .tpill:not(.hidden)'); if(first) first.classList.add('sel');
     }
     const i=selectedSlot(); if(meals[i]) setDoseValue(meals[i].grams);
-
+ 
     // Seed text + enable buttons: seed type is mandatory before schedule/feed editing
     const hasSeed = !!seed;
-    const full = hasSeed ? (seedIcon(seed)+' '+seedLabel(seed)+' seeds ✓') : 'Select seed type first';
+    const full = hasSeed ? (seedIcon(seed)+' '+seedLabel(seed)+' seeds ✓') : tr('notSet');
     const schedSeed=$('#schedSeed'); if(schedSeed){ schedSeed.textContent=full; schedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
     const feedSeed=$('#feedseed'); if(feedSeed){ feedSeed.textContent=hasSeed?full:'not set — select in Settings'; feedSeed.style.color=hasSeed?'var(--ok)':'var(--warn)'; }
     const feedBtn=$('#feedbtn'); if(feedBtn){
@@ -1362,7 +1464,7 @@ window.setLang = function(lang,el){
       feedBtn.style.opacity=hasSeed?'1':'.5';
     }
     const saveBtn=$('#savebtn'); if(saveBtn){ saveBtn.disabled=!hasSeed; saveBtn.style.cursor=hasSeed?'pointer':'not-allowed'; }
-
+ 
     // Home: same active meals as schedule
     const active=meals.filter(m=>m.enabled);
     const homeRows=$all('#s-home .mrow');
@@ -1381,7 +1483,7 @@ window.setLang = function(lang,el){
         else { badge.classList.add('bpend'); badge.textContent='Pending'; }
       }
     });
-
+ 
     // Header summary
     const meta=$('#s-schedule .tb-meta');
     if(meta){
@@ -1389,7 +1491,7 @@ window.setLang = function(lang,el){
       meta.textContent=meals.filter(m=>m.enabled).length+' meals · '+(Math.round(total*10)/10).toFixed(1)+' g/day';
     }
   }
-
+ 
   function updateMealFromUI(slot){
     const meals=loadMeals();
     const row=$all('#s-schedule .slist .sitem')[slot];
@@ -1402,7 +1504,7 @@ window.setLang = function(lang,el){
     saveMeals(meals);
     syncAll();
   }
-
+ 
   // Override original fragile UI functions
   window.updateScheduleTime=function(inp){
     const slot=parseInt(inp.getAttribute('data-slot')||'0',10);
@@ -1444,7 +1546,7 @@ window.setLang = function(lang,el){
     saveMeals(meals);
     syncAll();
   };
-
+ 
   async function apiGet(path){ const base=apiBase(); if(!base) throw new Error('Missing Device IP'); const r=await fetch(base+path,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); return await r.json(); }
   async function apiPost(path,payload){ const base=apiBase(); if(!base) throw new Error('Missing Device IP'); const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); if(!r.ok) throw new Error('HTTP '+r.status); try{return await r.json();}catch(e){return {ok:true};} }
   function setApiStatus(ok,msg){
@@ -1453,7 +1555,7 @@ window.setLang = function(lang,el){
     if(txt) txt.textContent=msg;
     // APP 1 FIX: API test status must not change main Online/Offline label.
   }
-
+ 
   function updateDashboard(data){
     if(!data) return;
     localStorage.setItem(LS_STATUS, JSON.stringify(Object.assign({},data,{_savedAt:new Date().toISOString()})));
@@ -1466,24 +1568,24 @@ window.setLang = function(lang,el){
     const tempBox  = data.box_temp_c ?? data.tempBox ?? data.boxTemp;
     const humBox   = data.box_humidity ?? data.humBox ?? data.boxHumidity;
     const battery  = data.battery_percent ?? data.batteryPercent ?? data.battery;
-
+ 
     const vals=$all('.lval');
     if(vals[0] && waterPct!==undefined) vals[0].innerHTML=Math.round(waterPct)+'<span style="font-size:14px;color:var(--text3)">%</span>';
     if(vals[1] && foodPct!==undefined) vals[1].innerHTML=Math.round(foodPct)+'<span style="font-size:14px;color:var(--text3)">%</span>';
     const subs=$all('.lsub');
     if(subs[0] && waterG!==undefined) subs[0].textContent=Math.round(waterG)+' g in tank';
     if(subs[1] && foodG!==undefined) subs[1].textContent=Math.round(foodG)+' g in tank';
-
+ 
     const emv=$all('.emv');
     if(tempBox!==undefined && emv[0]) emv[0].textContent=Math.round(tempBox)+'°';
     if(humBox!==undefined && emv[1]) emv[1].textContent=Math.round(humBox)+'%';
     if(tempCage!==undefined && emv[2]) emv[2].textContent=Math.round(tempCage)+'°';
     if(humCage!==undefined && emv[3]) emv[3].textContent=Math.round(humCage)+'%';
-
+ 
     const batt=$all('.strow .stval').find(x=>x.textContent.includes('%'));
     if(batt && battery!==undefined) batt.textContent=Math.round(battery)+'%';
   }
-
+ 
   window.testBoxConnection=async function(){
     try{ const data=await apiGet('/api/status'); updateDashboard(data); setApiStatus(true,'Connected · '+new Date().toLocaleTimeString()); }
     catch(e){ setApiStatus(false,'Offline · '+e.message); }
@@ -1527,16 +1629,9 @@ window.setLang = function(lang,el){
       setApiStatus(false,'Feed failed · '+e.message);
     }
   };
-
-  // Language selector safe override (works from select without crashing)
-  const oldSetLang=window.setLang;
-  window.setLang=function(l,el){
-    localStorage.setItem('smartpro_lang',l);
-    const select=$('#proLangSelect'); if(select) select.value=l;
-    const app=$('.app'); if(app) app.setAttribute('dir',l==='ar'?'rtl':'ltr');
-    try{ if(typeof oldSetLang==='function' && el) oldSetLang(l,el); }catch(e){}
-  };
-
+ 
+  // Language handling fully rebuilt in PATCH 24 - see applyLanguage() above.
+ 
   document.addEventListener('DOMContentLoaded',function(){
     const ip=localStorage.getItem(LS_IP)||''; if($('#deviceIp')) $('#deviceIp').value=ip; if($('#deviceIpStatus')) $('#deviceIpStatus').textContent=ip?'Saved: '+ip:'Not saved';
     const lang=localStorage.getItem('smartpro_lang')||'en'; if($('#proLangSelect')) $('#proLangSelect').value=lang;
@@ -1544,15 +1639,15 @@ window.setLang = function(lang,el){
     try{ const last=JSON.parse(localStorage.getItem(LS_STATUS)||'null'); if(last) updateDashboard(last); }catch(e){}
     // APP 1 FIX: disabled old /api/status polling. Online/Offline now comes only from Firebase.
   });
-
+ 
   // Immediate init if script loads after DOM already ready
   if(document.readyState!=='loading'){
     const ev=new Event('DOMContentLoaded'); document.dispatchEvent(ev);
   }
 })();
 </script>
-
-
+ 
+ 
 <script>
 /* === DOVLIM V8.1 PATCH v3: FEED NOW BUTTON FINAL FIX ===
    This patch is loaded last. It forces Feed Now to work after seed selection,
@@ -1593,9 +1688,9 @@ window.setLang = function(lang,el){
     return 'small';
   }
   function seedLabel(seed){
-    if(seed==='large') return '🌻 Large seeds';
-    if(seed==='medium') return '🌾 Medium seeds';
-    return '🌱 Small seeds';
+    if(seed==='large') return '🌻 ' + tr('large') + ' ' + tr('seeds');
+    if(seed==='medium') return '🌾 ' + tr('medium') + ' ' + tr('seeds');
+    return '🌱 ' + tr('small') + ' ' + tr('seeds');
   }
   function setApiStatus(ok,msg){
     var dot=$('#apiDot'), txt=$('#apiStatusText');
@@ -1608,7 +1703,7 @@ window.setLang = function(lang,el){
     var fs=$('#feedseed');
     var sched=$('#schedSeed');
     if(fs){ fs.textContent=seed ? (seedLabel(seed)+' ✓') : 'not set — select in Settings'; fs.style.color=seed?'var(--ok)':'var(--warn)'; }
-    if(sched){ sched.textContent=seed ? (seedLabel(seed)+' ✓') : 'Select seed type first'; sched.style.color=seed?'var(--ok)':'var(--warn)'; }
+    if(sched){ sched.textContent=seed ? (seedLabel(seed)+' ✓') : tr('notSet'); sched.style.color=seed?'var(--ok)':'var(--warn)'; }
     if(btn){
       btn.disabled=!seed;
       btn.style.pointerEvents='auto';
@@ -1622,7 +1717,7 @@ window.setLang = function(lang,el){
     var saveBtn=$('#savebtn');
     if(saveBtn){ saveBtn.disabled=!seed; saveBtn.style.cursor=seed?'pointer':'not-allowed'; }
   }
-
+ 
   window.selSeed=function(el){
     $all('#seedpicker .sopt').forEach(function(o){o.classList.remove('sel');});
     if(el) el.classList.add('sel');
@@ -1632,7 +1727,7 @@ window.setLang = function(lang,el){
     updateFeedUI();
     setApiStatus(true,'Seed size selected: '+seed);
   };
-
+ 
   window.doFeed=async function(btn){
     var seed=getSeed();
     if(!seed){
@@ -1670,7 +1765,7 @@ window.setLang = function(lang,el){
       setApiStatus(false,'Feed failed · '+e.message);
     }
   };
-
+ 
   document.addEventListener('DOMContentLoaded',function(){
     updateFeedUI();
     var btn=$('#feedbtn');
@@ -1681,9 +1776,9 @@ window.setLang = function(lang,el){
   updateFeedUI();
 })();
 </script>
-
-
-
+ 
+ 
+ 
 <script>
 /* === DOVLIM V8.1 PATCH v4: SEED SETTINGS VISUAL SYNC ===
    Fix: if seed is already saved in localStorage, Settings page must show the same seed active.
@@ -1714,19 +1809,19 @@ window.setLang = function(lang,el){
       var optSeed=seedFromOptionText(o.textContent);
       o.classList.toggle('sel', !!seed && optSeed===seed);
     });
-
+ 
     var feed=$('#feedseed');
     if(feed){
       feed.textContent=seed ? (label(seed)+' ✓') : 'not set — select in Settings';
       feed.style.color=seed ? 'var(--ok)' : 'var(--warn)';
     }
-
+ 
     var sched=$('#schedSeed');
     if(sched){
-      sched.textContent=seed ? (label(seed)+' ✓') : 'Select seed type first';
+      sched.textContent=seed ? (label(seed)+' ✓') : tr('notSet');
       sched.style.color=seed ? 'var(--ok)' : 'var(--warn)';
     }
-
+ 
     var feedBtn=$('#feedbtn');
     if(feedBtn){
       feedBtn.disabled=!seed;
@@ -1736,33 +1831,33 @@ window.setLang = function(lang,el){
       feedBtn.style.background=seed?'var(--ok-dk)':'var(--bg4)';
       feedBtn.style.color=seed?'var(--ok)':'var(--text3)';
     }
-
+ 
     var saveBtn=$('#savebtn');
     if(saveBtn){
       saveBtn.disabled=!seed;
       saveBtn.style.cursor=seed?'pointer':'not-allowed';
     }
   }
-
+ 
   var oldGo=window.go;
   window.go=function(name,el){
     if(typeof oldGo==='function') oldGo(name,el);
     setTimeout(syncSeedSettingsVisual,30);
   };
-
+ 
   var oldSelSeed=window.selSeed;
   window.selSeed=function(el){
     if(typeof oldSelSeed==='function') oldSelSeed(el);
     setTimeout(syncSeedSettingsVisual,30);
   };
-
+ 
   document.addEventListener('DOMContentLoaded',syncSeedSettingsVisual);
   setTimeout(syncSeedSettingsVisual,50);
 })();
 </script>
-
-
-
+ 
+ 
+ 
 <script>
 /* === DOVLIM V8.1 PATCH v6: FINAL CONTROL CLEAN ===
    Fixes after final review:
@@ -1775,29 +1870,29 @@ window.setLang = function(lang,el){
 (function(){
   function $(q,root){return (root||document).querySelector(q);}
   function $all(q,root){return Array.from((root||document).querySelectorAll(q));}
-
+ 
   var LS_SEED='smartpro_seed_size';
   var LS_SEED_OLD='smartpro_seed';
   var LS_MEALS='dovlim_v81_meals';
   var LS_IP='smartpro_device_ip';
   var INIT='dovlim_v6_final_seed_reset_done';
-
+ 
   var defaults=[
     {id:1,label:'Morning', icon:'🌅', time:'08:00', grams:2.5, enabled:true, seedSize:''},
     {id:2,label:'Midday', icon:'☀️', time:'12:30', grams:2.0, enabled:true, seedSize:''},
     {id:3,label:'Evening', icon:'🌆', time:'17:00', grams:2.5, enabled:true, seedSize:''},
     {id:4,label:'Night', icon:'🌙', time:'21:00', grams:1.5, enabled:false, seedSize:''}
   ];
-
+ 
   if(!localStorage.getItem(INIT)){
     localStorage.removeItem(LS_SEED);
     localStorage.removeItem(LS_SEED_OLD);
     localStorage.setItem(INIT,'1');
   }
-
+ 
   function seed(){return (localStorage.getItem(LS_SEED)||localStorage.getItem(LS_SEED_OLD)||'').trim();}
   function hasSeed(){return !!seed();}
-  function seedLabel(s){return s==='large'?'Large':(s==='medium'?'Medium':(s==='small'?'Small':'Not set'));}
+  function seedLabel(s){return s==='large'?tr('large'):(s==='medium'?tr('medium'):(s==='small'?tr('small'):tr('notSetShort')));}
   function seedIcon(s){return s==='large'?'🌻':(s==='medium'?'🌾':(s==='small'?'🌱':'⚠️'));}
   function seedFromText(txt){
     txt=(txt||'').toLowerCase();
@@ -1836,15 +1931,15 @@ window.setLang = function(lang,el){
     el.style.opacity=enabled?'1':'.45';
     el.style.cursor=enabled?'pointer':'not-allowed';
   }
-
+ 
   function syncFinal(){
     var s=seed(), ok=!!s;
     var meals=loadMeals();
-
+ 
     // Remove old v5 message if any exists from cache/older file
     var oldWarn=$('#seedRequiredBox');
     if(oldWarn) oldWarn.remove();
-
+ 
     // Schedule list: time always editable
     var rows=$all('#s-schedule .slist .sitem');
     rows.forEach(function(row,i){
@@ -1852,10 +1947,10 @@ window.setLang = function(lang,el){
       var inp=$('.timeInput',row);
       if(inp){ inp.disabled=false; inp.style.pointerEvents='auto'; inp.style.opacity='1'; inp.style.cursor='pointer'; inp.value=m.time; inp.setAttribute('value',m.time); }
       var meta=$('.smeta',row);
-      if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+(ok?seedLabel(s):'Seed not selected')+' seeds · every day';
+      if(meta) meta.textContent=(m.grams||0).toFixed(1)+' g · '+(ok?seedLabel(s):tr('notSetShort'))+' '+tr('seeds')+' · '+tr('everyDay');
       var tog=$('.tog',row); if(tog){tog.classList.toggle('ton',!!m.enabled); tog.classList.toggle('toff',!m.enabled);}
     });
-
+ 
     // Add-meal pills synced with schedule times
     $all('#s-schedule .tpill[data-slot]').forEach(function(p){
       var i=parseInt(p.getAttribute('data-slot')||'0',10), m=meals[i]||defaults[i];
@@ -1867,15 +1962,15 @@ window.setLang = function(lang,el){
     var sel=$('#s-schedule .tpill.sel');
     if(!sel || sel.classList.contains('hidden')){ if(sel)sel.classList.remove('sel'); var first=$('#s-schedule .tpill:not(.hidden)'); if(first)first.classList.add('sel'); }
     var sl=selectedSlot(); if(meals[sl]) setDose(meals[sl].grams);
-
+ 
     // Seed indicators
     var full=ok ? (seedIcon(s)+' '+seedLabel(s)+' seeds ✓') : 'Choose seed size in Settings first';
     var sched=$('#schedSeed'); if(sched){sched.textContent=full; sched.style.color=ok?'var(--ok)':'var(--warn)';}
     var feed=$('#feedseed'); if(feed){feed.textContent=full; feed.style.color=ok?'var(--ok)':'var(--warn)';}
-
+ 
     // Settings visual state
     $all('#seedpicker .sopt').forEach(function(o){o.classList.toggle('sel', ok && seedFromText(o.textContent)===s);});
-
+ 
     // Lock only grams, save and feed. DO NOT lock time.
     $all('#s-schedule .dbtn').forEach(function(b){setControl(b,ok);});
     setControl($('#savebtn'),ok);
@@ -1889,7 +1984,7 @@ window.setLang = function(lang,el){
       feedBtn.style.color=ok?'var(--ok)':'var(--text3)';
       var sp=$('#t-feedbtn-txt',feedBtn); if(sp)sp.textContent='Feed now'; else feedBtn.textContent='Feed now';
     }
-
+ 
     // Home from same meals source
     var active=meals.filter(function(m){return m.enabled;});
     var homeRows=$all('#s-home .mrow');
@@ -1904,7 +1999,7 @@ window.setLang = function(lang,el){
       if(badge){badge.classList.remove('bdone','bnext','bpend'); if(i===0){badge.classList.add('bdone');badge.textContent='Done';} else if(i===1){badge.classList.add('bnext');badge.textContent='Next';} else {badge.classList.add('bpend');badge.textContent='Pending';}}
     });
   }
-
+ 
   window.updateScheduleTime=function(inp){
     var i=parseInt(inp.getAttribute('data-slot')||'0',10);
     var meals=loadMeals();
@@ -1955,25 +2050,25 @@ window.setLang = function(lang,el){
       apiStatus(false,'Feed failed · '+e.message);
     }
   };
-
+ 
   var oldGo=window.go;
   window.go=function(name,el){ if(typeof oldGo==='function')oldGo(name,el); setTimeout(syncFinal,20); };
   document.addEventListener('DOMContentLoaded',syncFinal);
   if(document.readyState!=='loading') setTimeout(syncFinal,20);
 })();
 </script>
-
-
-
+ 
+ 
+ 
 <!-- DOVLI<!-- DOVLIM FIREBASE FINAL START -->
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
 <script>
 (function(){
   "use strict";
-
+ 
   const DOVLIM_APP_VERSION = "Dovlim App Patch 16 D5 Home Subtitle Clean";
-
+ 
   const firebaseConfig = {
     apiKey: "AIzaSyDF4ySJte7bTAjQoc9PkHmszYDp5FRe3IY",
     authDomain: "dovlim-smart-pro.firebaseapp.com",
@@ -1984,44 +2079,44 @@ window.setLang = function(lang,el){
     appId: "1:941701677770:web:9cdabbe885589db6bd2a33",
     measurementId: "G-CQP9LGKKXX"
   };
-
+ 
   if (!window.firebase) {
     console.error("Firebase SDK not loaded");
     return;
   }
-
+ 
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
+ 
   const db = firebase.database();
   const deviceRef = db.ref("device");
-
+ 
   function nowISO(){ return new Date().toISOString(); }
   function qs(s,root){ return (root || document).querySelector(s); }
   function qsa(s,root){ return Array.from((root || document).querySelectorAll(s)); }
-
+ 
   function safeNum(v, def){
     const n = Number(v);
     return Number.isFinite(n) ? n : (def || 0);
   }
-
+ 
   function clampPercent(v){
     return Math.max(0, Math.min(100, Math.round(safeNum(v, 0))));
   }
-
+ 
   function setText(sel, text){
     const el = qs(sel);
     if (el) el.textContent = text;
   }
-
+ 
   function setAllText(sel, text){
     qsa(sel).forEach(function(el){ el.textContent = text; });
   }
-
+ 
   function setBar(selector, percent){
     const el = qs(selector);
     if (el) el.style.width = clampPercent(percent) + "%";
   }
-
+ 
   function getSeedType(){
     const selected = qs("#seedpicker .sopt.sel .sopt-lb");
     if (selected && selected.textContent.trim()) return selected.textContent.trim();
@@ -2030,13 +2125,13 @@ window.setLang = function(lang,el){
            localStorage.getItem("seedSize") ||
            "not_set";
   }
-
+ 
   function selectedMealGrams(){
     const v = qs("#dval");
     const n = v ? parseFloat(String(v.textContent).replace(",", ".")) : NaN;
     return Number.isFinite(n) ? n : 2.0;
   }
-
+ 
   function readMealsFromScreen(){
     const rows = qsa("#s-schedule .slist .sitem");
     const out = {};
@@ -2046,14 +2141,14 @@ window.setLang = function(lang,el){
       {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
       {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
     ];
-
+ 
     rows.forEach(function(row, i){
       const inp = qs(".timeInput", row);
       const meta = qs(".smeta", row);
       const tog = qs(".tog", row);
       let grams = defaults[i] ? defaults[i].grams : 2.0;
       let seedType = getSeedType();
-
+ 
       if (meta) {
         const text = String(meta.textContent || "");
         const m = text.match(/([0-9]+(?:[\.,][0-9]+)?)\s*g/i);
@@ -2062,7 +2157,7 @@ window.setLang = function(lang,el){
         else if (text.toLowerCase().indexOf("medium") >= 0) seedType = "Medium";
         else if (text.toLowerCase().indexOf("small") >= 0) seedType = "Small";
       }
-
+ 
       out["meal" + (i + 1)] = {
         time: inp && inp.value ? inp.value : defaults[i].time,
         grams: Number.isFinite(grams) ? grams : defaults[i].grams,
@@ -2076,7 +2171,7 @@ window.setLang = function(lang,el){
     });
     return out;
   }
-
+ 
   async function registerAppOnly(){
     // Important: app must not write fake sensor/status values.
     await deviceRef.update({
@@ -2084,23 +2179,23 @@ window.setLang = function(lang,el){
       "app/lastOpen": nowISO()
     });
   }
-
+ 
   function setOnlineStatus(status){
     // PATCH 20: do not trust Firebase online:true because it can remain true after ESP32 power loss.
     if (window.dovlimOnlineWatchdogSetStatus) return window.dovlimOnlineWatchdogSetStatus(status || {});
     return false;
   }
-
+ 
   function setHomeLevel(cardIndex, data, type){
     const p = clampPercent(data && data.percent);
     const grams = safeNum(data && data.grams, 0);
     const card = qs("#s-home .lgrid .lcard:nth-child(" + cardIndex + ")");
     if (!card) return;
-
+ 
     const val = qs(".lval", card);
     const bar = qs(".lbarfill", card);
     const sub = qs(".lsub", card);
-
+ 
     const color = type === "water" ? "var(--blue)" : (p <= 20 ? "var(--danger)" : "var(--warn)");
     if (val) {
       val.style.color = color;
@@ -2112,21 +2207,21 @@ window.setLang = function(lang,el){
     }
     if (sub) sub.textContent = Math.round(grams) + " g";
   }
-
+ 
   function setCageSensor(cage){
     const vals = qsa("#s-home .erow .ebox:nth-child(2) .emv");
     const temp = cage && cage.temperature !== undefined ? safeNum(cage.temperature, 0).toFixed(1) + "°" : "--";
     const hum = cage && cage.humidity !== undefined ? Math.round(safeNum(cage.humidity, 0)) + "%" : "--";
     if (vals[0]) vals[0].textContent = temp;
     if (vals[1]) vals[1].textContent = hum;
-
+ 
     const title = qs("#s-home .erow .ebox:nth-child(2) .etitle");
     if (title) title.textContent = "🐦 CAGE SENSOR";
-
+ 
     const badge = qs("#s-home .erow .ebox:nth-child(2) .ebadge");
     if (badge) badge.style.display = "none";
   }
-
+ 
   function updateHealth(d){
     let score = 100;
     if (window.dovlimEspIsOnline && !window.dovlimEspIsOnline()) score -= 25;
@@ -2135,14 +2230,14 @@ window.setLang = function(lang,el){
     if (d.cage && safeNum(d.cage.humidity, 0) > 75) score -= 15;
     if (d.cage && safeNum(d.cage.temperature, 0) > 34) score -= 15;
     score = Math.max(0, Math.min(100, score));
-
+ 
     const hnum = qs(".hnum");
     if (hnum) hnum.textContent = score;
-
+ 
     const temp = d.cage && d.cage.temperature !== undefined ? safeNum(d.cage.temperature, 0).toFixed(1) + "°C" : "--";
     const hum = d.cage && d.cage.humidity !== undefined ? Math.round(safeNum(d.cage.humidity, 0)) + "% RH" : "--";
     setText("#t-health-sub", "Firebase live · " + temp + " · " + hum);
-
+ 
     const badge = qs("#t-health-badge");
     if (badge) {
       if (score >= 80) {
@@ -2156,13 +2251,13 @@ window.setLang = function(lang,el){
       }
     }
   }
-
+ 
   function updateFirmware(status){
     const fw = status && status.firmware ? status.firmware : "--";
     const settingsFw = qs("#t-update-sub");
     if (settingsFw) settingsFw.textContent = "FW " + fw;
   }
-
+ 
   function bindRealtimeHome(){
     deviceRef.on("value", function(snapshot){
       const d = snapshot.val() || {};
@@ -2177,17 +2272,17 @@ window.setLang = function(lang,el){
       dovlimRenderAllLive();
     });
   }
-
-
+ 
+ 
   // PATCH 2.1 — Schedule READ ONLY from Firebase.
   // This renders meal1..meal4 on the Schedule page without writing sensor/demo data.
   let dovlimScheduleRendering = false;
-
+ 
   function dovlimSafeNum(v, def){
     const n = Number(v);
     return Number.isFinite(n) ? n : (def || 0);
   }
-
+ 
   function dovlimNormalizeSeed(seed){
     seed = String(seed || "Small").trim();
     const low = seed.toLowerCase();
@@ -2195,12 +2290,12 @@ window.setLang = function(lang,el){
     if (low.indexOf("medium") >= 0 || low.indexOf("متوسط") >= 0 || low.indexOf("moy") >= 0) return "Medium";
     return "Small";
   }
-
+ 
   function dovlimRenderSchedule(schedule){
     dovlimScheduleRendering = true;
     schedule = schedule || {};
     window.dovlimLastSchedule = schedule;
-
+ 
     const rows = qsa("#s-schedule .slist .sitem");
     const defaults = [
       {time:"08:00", grams:2.5, enabled:true,  seedType:"Small"},
@@ -2208,9 +2303,9 @@ window.setLang = function(lang,el){
       {time:"17:00", grams:2.5, enabled:true,  seedType:"Small"},
       {time:"21:00", grams:1.5, enabled:false, seedType:"Small"}
     ];
-
+ 
     let total = 0;
-
+ 
     for(let i=0;i<4;i++){
       const key = "meal" + (i + 1);
       const m = Object.assign({}, defaults[i], schedule[key] || {});
@@ -2218,42 +2313,42 @@ window.setLang = function(lang,el){
       const grams = dovlimSafeNum(m.grams, defaults[i].grams);
       const enabled = m.enabled !== false;
       const seed = dovlimNormalizeSeed(m.seedType || defaults[i].seedType);
-
+ 
       if(enabled) total += grams;
-
+ 
       const row = rows[i];
       if(row){
         const input = qs(".timeInput", row);
         const meta = qs(".smeta", row);
         const tog = qs(".tog", row);
-
+ 
         if(input && input.value !== time) input.value = time;
-        if(meta) meta.textContent = grams + " g · " + seed + " seeds · every day";
-
+        if(meta) meta.textContent = grams + " g · " + seed + " " + tr('seeds') + " · " + tr('everyDay');
+ 
         if(tog){
           tog.classList.toggle("ton", enabled);
           tog.classList.toggle("toff", !enabled);
         }
       }
-
+ 
       const pill = qs('#s-schedule .tpill[data-slot="' + i + '"]');
       if(pill){
         const t = qs(".tpill-t", pill);
         if(t) t.textContent = time;
       }
     }
-
+ 
     const topMeta = qs("#s-schedule .tb-meta");
     if(topMeta) topMeta.textContent = "4 meals · " + total.toFixed(1).replace(".0","") + " g/day";
-
+ 
     dovlimRenderHomeMeals(schedule);
     dovlimUpdateEditorFromSlot(dovlimSelectedSlot || 0);
     dovlimShowSeedRequirementIfNeeded();
-
+ 
     dovlimScheduleRendering = false;
   }
-
-
+ 
+ 
   // PATCH 2.1B — Home meal status must reflect Firebase execution state.
   // No meal is marked Done unless Firebase says lastResult SUCCESS for today.
   function dovlimDayStamp(){
@@ -2264,25 +2359,25 @@ window.setLang = function(lang,el){
     const day = Math.floor(diff / oneDay);
     return d.getFullYear() * 1000 + day;
   }
-
+ 
   function dovlimMinutesNow(){
     const d = new Date();
     return d.getHours() * 60 + d.getMinutes();
   }
-
+ 
   function dovlimMinutesFromTime(t){
     const parts = String(t || "00:00").split(":");
     return (parseInt(parts[0] || "0", 10) * 60) + parseInt(parts[1] || "0", 10);
   }
-
+ 
   function dovlimRenderHomeMeals(schedule){
     schedule = schedule || {};
     const homeRows = qsa("#s-home .card .mrow");
     if(!homeRows.length) return;
-
+ 
     const today = dovlimDayStamp();
     const nowMin = dovlimMinutesNow();
-
+ 
     function mealDoneToday(m){
       if(!m) return false;
       const led = Number(m.lastExecutedDay);
@@ -2290,25 +2385,25 @@ window.setLang = function(lang,el){
       if(String(m.lastExecutedDay || "") === String(today)) return true;
       return false;
     }
-
+ 
     let nextIndex = -1;
     let nextTime = 99999;
-
+ 
     for(let i=0;i<4;i++){
       const key = "meal" + (i + 1);
       const m = schedule[key] || {};
       if(m.enabled === false) continue;
       if(mealDoneToday(m)) continue;
-
+ 
       const t = m.time || ["08:00","12:30","17:00","21:00"][i] || "00:00";
       const mt = dovlimMinutesFromTime(t);
-
+ 
       if(mt >= nowMin && mt < nextTime){
         nextTime = mt;
         nextIndex = i;
       }
     }
-
+ 
     if(nextIndex < 0){
       for(let i=0;i<4;i++){
         const m = schedule["meal" + (i + 1)] || {};
@@ -2318,28 +2413,28 @@ window.setLang = function(lang,el){
         }
       }
     }
-
+ 
     for(let i=0;i<4;i++){
       const key = "meal" + (i + 1);
       const m = schedule[key] || {};
       const row = homeRows[i];
       if(!row) continue;
-
+ 
       const time = m.time || ["08:00","12:30","17:00","21:00"][i] || "--:--";
       const grams = dovlimSafeNum(m.grams, [2.5,2.0,2.5,1.5][i] || 2);
       const seed = dovlimNormalizeSeed(m.seedType || "Small");
       const enabled = m.enabled !== false;
-
+ 
       const name = qs(".mname", row);
       const dose = qs(".mdose", row);
       const badge = qs(".badge", row);
-
+ 
       if(name) name.textContent = ["Morning","Midday","Evening","Night"][i] + " · " + time;
       if(dose) dose.textContent = grams + " g · " + seed + " seeds";
-
+ 
       if(badge){
         badge.classList.remove("bdone","bnext","bpend");
-
+ 
         if(!enabled){
           badge.textContent = "Off";
           badge.classList.add("bpend");
@@ -2356,18 +2451,18 @@ window.setLang = function(lang,el){
       }
     }
   }
-
+ 
   function dovlimBindScheduleRead(){
     deviceRef.child("schedule").on("value", function(snap){
       dovlimRenderSchedule(snap.val() || {});
     });
   }
-
+ 
   function pushScheduleToFirebase(){
     if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return Promise.resolve();
     return deviceRef.child("schedule").update(readMealsFromScreen()).catch(console.error);
   }
-
+ 
   function pushSeedToFirebase(){
     const seedType = getSeedType();
     if (!seedType || seedType === "not_set") return Promise.resolve();
@@ -2377,10 +2472,10 @@ window.setLang = function(lang,el){
       "app/lastOpen": nowISO()
     }).catch(console.error);
   }
-
-
+ 
+ 
   let dovlimManualFeedGrams = 2.0;
-
+ 
   function dovlimClampManualGrams(v){
     v = Number(v);
     if(!Number.isFinite(v)) v = 2.0;
@@ -2388,25 +2483,25 @@ window.setLang = function(lang,el){
     if(v > 50) v = 50;
     return Math.round(v * 10) / 10;
   }
-
+ 
   function dovlimRenderManualFeedGrams(){
     const el = qs("#manualFeedVal");
     if(el) el.textContent = dovlimManualFeedGrams.toFixed(1) + " g";
   }
-
+ 
   window.chgManualFeed = function(delta){
     dovlimManualFeedGrams = dovlimClampManualGrams(dovlimManualFeedGrams + Number(delta || 0));
     localStorage.setItem("dovlim_manual_feed_grams", String(dovlimManualFeedGrams));
     dovlimRenderManualFeedGrams();
   };
-
+ 
   function dovlimLoadManualFeedGrams(){
     dovlimManualFeedGrams = dovlimClampManualGrams(localStorage.getItem("dovlim_manual_feed_grams") || 2.0);
     dovlimRenderManualFeedGrams();
   }
-
+ 
   let dovlimSelectedSlot = 0;
-
+ 
   function dovlimSetSeedPicker(seedType){
     seedType = dovlimNormalizeSeed(seedType || "");
     qsa("#seedpicker .sopt").forEach(function(opt){
@@ -2415,36 +2510,36 @@ window.setLang = function(lang,el){
       opt.classList.toggle("sel", seedType && v === seedType);
     });
   }
-
+ 
   function dovlimCurrentMealSeedType(slot){
     const key = "meal" + (slot + 1);
     const schedule = window.dovlimLastSchedule || {};
     const meal = schedule[key] || {};
     return meal.seedType ? dovlimNormalizeSeed(meal.seedType) : "";
   }
-
+ 
   function dovlimUpdateSaveState(){
     const seed = dovlimCurrentMealSeedType(dovlimSelectedSlot);
     const save = qs("#savebtn");
     const schedSeed = qs("#schedSeed");
-
+ 
     if(schedSeed){
       if(seed){
         schedSeed.textContent = seed;
         schedSeed.style.color = "var(--ok)";
       }else{
-        schedSeed.textContent = "Select seed type first";
+        schedSeed.textContent = tr('notSet');
         schedSeed.style.color = "var(--warn)";
       }
     }
-
+ 
     if(save){
       save.disabled = !seed;
       save.style.opacity = seed ? "1" : ".55";
       save.style.cursor = seed ? "pointer" : "not-allowed";
     }
   }
-
+ 
   function dovlimUpdateEditorFromSlot(slot){
     dovlimSelectedSlot = Math.max(0, Math.min(3, Number(slot) || 0));
     const key = "meal" + (dovlimSelectedSlot + 1);
@@ -2457,19 +2552,19 @@ window.setLang = function(lang,el){
       {time:"21:00", grams:1.5, enabled:false, seedType:""}
     ];
     const d = defaults[dovlimSelectedSlot];
-
+ 
     const dval = qs("#dval");
     if(dval) dval.textContent = dovlimSafeNum(meal.grams, d.grams) + " g";
-
+ 
     qsa("#s-schedule .tpill").forEach(function(p){
       p.classList.toggle("sel", Number(p.getAttribute("data-slot")) === dovlimSelectedSlot);
     });
-
+ 
     const seed = meal.seedType ? dovlimNormalizeSeed(meal.seedType) : "";
     dovlimSetSeedPicker(seed);
     dovlimUpdateSaveState();
   }
-
+ 
   async function dovlimWriteMeal(slot, patch, options){
     if (typeof dovlimScheduleRendering !== "undefined" && dovlimScheduleRendering) return false;
     options = options || {};
@@ -2485,28 +2580,28 @@ window.setLang = function(lang,el){
     const base = Object.assign({}, defaults[slot], (window.dovlimLastSchedule && window.dovlimLastSchedule[key]) || {});
     const inp = row ? qs(".timeInput", row) : null;
     const tog = row ? qs(".tog", row) : null;
-
+ 
     let seedType = "";
     if(patch && patch.seedType) seedType = dovlimNormalizeSeed(patch.seedType);
     else if(base.seedType) seedType = dovlimNormalizeSeed(base.seedType);
-
+ 
     if(options.requireSeed && !seedType){
       alert("Please select seed type first.");
       dovlimUpdateSaveState();
       return false;
     }
-
+ 
     const meal = Object.assign({}, base, {
       time: inp && inp.value ? inp.value : base.time,
       grams: Number.isFinite(Number(base.grams)) ? Number(base.grams) : defaults[slot].grams,
       enabled: tog ? tog.classList.contains("ton") : base.enabled,
       seedType: seedType
     }, patch || {});
-
+ 
     if(meal.seedType) meal.seedType = dovlimNormalizeSeed(meal.seedType);
-
+ 
     await deviceRef.child("schedule").child(key).update(meal);
-
+ 
     if(!window.dovlimLastSchedule) window.dovlimLastSchedule = {};
     window.dovlimLastSchedule[key] = Object.assign({}, window.dovlimLastSchedule[key] || {}, meal);
     dovlimUpdateEditorFromSlot(slot);
@@ -2514,7 +2609,7 @@ window.setLang = function(lang,el){
     console.log("Schedule meal saved", key, meal);
     return true;
   }
-
+ 
   function overrideAppActions(){
     const oldUpdateScheduleTime = window.updateScheduleTime;
     window.updateScheduleTime = function(input){
@@ -2522,7 +2617,7 @@ window.setLang = function(lang,el){
       const slot = Number(input && input.getAttribute("data-slot"));
       dovlimWriteMeal(slot, {time: input.value}, {requireSeed:true});
     };
-
+ 
     const oldTogBtn = window.togBtn;
     window.togBtn = function(btn){
       if (typeof oldTogBtn === "function") oldTogBtn(btn);
@@ -2531,7 +2626,7 @@ window.setLang = function(lang,el){
       const slot = rows.indexOf(row);
       if(slot >= 0) dovlimWriteMeal(slot, {enabled: btn.classList.contains("ton")}, {requireSeed:true});
     };
-
+ 
     const oldChgD = window.chgD;
     window.chgD = function(delta){
       if (typeof oldChgD === "function") oldChgD(delta);
@@ -2544,7 +2639,7 @@ window.setLang = function(lang,el){
       const grams = selectedMealGrams();
       dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seed}, {requireSeed:true});
     };
-
+ 
     const oldSelSeed = window.selSeed;
     window.selSeed = function(el){
       if (typeof oldSelSeed === "function") oldSelSeed(el);
@@ -2552,7 +2647,7 @@ window.setLang = function(lang,el){
       dovlimWriteMeal(dovlimSelectedSlot, {seedType: seedType}, {requireSeed:false});
       dovlimUpdateSaveState();
     };
-
+ 
     const oldSelTime = window.selTime;
     window.selTime = function(el){
       if (typeof oldSelTime === "function") oldSelTime(el);
@@ -2560,7 +2655,7 @@ window.setLang = function(lang,el){
       dovlimUpdateEditorFromSlot(slot);
     dovlimShowSeedRequirementIfNeeded();
     };
-
+ 
     window.doSave = async function(btn){
       const seedType = dovlimCurrentMealSeedType(dovlimSelectedSlot);
       if(!seedType){
@@ -2576,7 +2671,7 @@ window.setLang = function(lang,el){
         setTimeout(function(){ btn.textContent = old; }, 1200);
       }
     };
-
+ 
     window.doFeed = async function(btn){
       const selected = qs("#seedpicker .sopt.sel .sopt-lb");
       const seedType = selected ? dovlimNormalizeSeed(selected.textContent) : dovlimNormalizeSeed(getSeedType());
@@ -2584,15 +2679,15 @@ window.setLang = function(lang,el){
         alert("Please select seed type first.");
         return;
       }
-
+ 
       const grams = dovlimClampManualGrams(dovlimManualFeedGrams);
       const commandId = String(Date.now());
-
+ 
       if(btn){
         btn.disabled = true;
         btn.textContent = "Sending...";
       }
-
+ 
       try{
         await deviceRef.child("commands").update({
           feedNow: true,
@@ -2601,7 +2696,7 @@ window.setLang = function(lang,el){
           commandId: commandId,
           seedType: seedType
         });
-
+ 
         if(btn) btn.textContent = "Sent";
         setTimeout(function(){
           if(btn){
@@ -2619,21 +2714,21 @@ window.setLang = function(lang,el){
       }
     };
   }
-
+ 
   // Camera reserved: present now, active only when ESP32-CAM IP is saved.
   window.openCam = function(){
     qsa(".screen").forEach(function(s){ s.classList.remove("on"); });
     qsa(".ni").forEach(function(n){ n.classList.remove("on"); });
     const screen = qs("#s-camera");
     if (screen) screen.classList.add("on");
-
+ 
     const input = qs("#camip");
     let ip = input ? input.value.trim() : "";
     if (!ip) ip = localStorage.getItem("dovlim_cam_ip") || "";
-
+ 
     const img = qs("#camImg");
     const ph = qs("#camPh");
-
+ 
     if (ip) {
       if (img) {
         img.src = "http://" + ip + "/stream";
@@ -2651,7 +2746,7 @@ window.setLang = function(lang,el){
       }
     }
   };
-
+ 
   window.saveCam = function(){
     const input = qs("#camip");
     if (!input) return;
@@ -2663,60 +2758,60 @@ window.setLang = function(lang,el){
     localStorage.setItem("dovlim_cam_ip", ip);
     alert("Camera IP saved: " + ip);
   };
-
+ 
   let dovlimMealStatusTimer = null;
-
-
+ 
+ 
   // PATCH 5 — Settings sliders <-> Firebase.
   // device/settings/humidityMax
   // device/settings/temperatureMax
   // device/settings/lowFoodPercent
   let dovlimSettingsRendering = false;
-
+ 
   function dovlimClamp(v, min, max, def){
     v = Number(v);
     if(!Number.isFinite(v)) v = def;
     return Math.max(min, Math.min(max, v));
   }
-
+ 
   function dovlimApplySettingsToUI(settings){
     dovlimSettingsRendering = true;
     settings = settings || {};
-
+ 
     const humidityMax = dovlimClamp(settings.humidityMax, 50, 85, 65);
     const temperatureMax = dovlimClamp(settings.temperatureMax, 25, 42, 32);
     const lowFoodPercent = dovlimClamp(settings.lowFoodPercent, 10, 40, 20);
     const lowWaterPercent = dovlimClamp(settings.lowWaterPercent, 5, 40, 20);
-
+ 
     const humInput = qs('#s-settings input[type="range"][min="50"][max="85"]');
     const tempInput = qs('#s-settings input[type="range"][min="25"][max="42"]');
     const foodInput = qs('#s-settings input[type="range"][min="10"][max="40"]');
     const waterInput = qs('#s-settings input[type="range"][min="5"][max="40"]');
-
+ 
     if(humInput) humInput.value = humidityMax;
     if(tempInput) tempInput.value = temperatureMax;
     if(foodInput) foodInput.value = lowFoodPercent;
     if(waterInput) waterInput.value = lowWaterPercent;
-
+ 
     const hv = qs("#hv");
     const tv = qs("#tv");
     const fv = qs("#fv");
     const wv = qs("#wv");
-
+ 
     if(hv) hv.textContent = humidityMax + "%";
     if(tv) tv.textContent = temperatureMax + "°C";
     if(fv) fv.textContent = lowFoodPercent + "%";
     if(wv) wv.textContent = lowWaterPercent + "%";
-
+ 
     dovlimSettingsRendering = false;
   }
-
+ 
   async function dovlimSaveSetting(key, value){
     if(dovlimSettingsRendering) return;
     const payload = {};
     payload[key] = value;
     payload.updatedAt = nowISO();
-
+ 
     try{
       await deviceRef.child("settings").update(payload);
       console.log("Setting saved", key, value);
@@ -2724,16 +2819,16 @@ window.setLang = function(lang,el){
       console.error("Setting save failed", e);
     }
   }
-
+ 
   function dovlimBindSettings(){
     deviceRef.child("settings").on("value", function(snap){
       dovlimApplySettingsToUI(snap.val() || {});
     });
-
+ 
     const humInput = qs('#s-settings input[type="range"][min="50"][max="85"]');
     const tempInput = qs('#s-settings input[type="range"][min="25"][max="42"]');
     const foodInput = qs('#s-settings input[type="range"][min="10"][max="40"]');
-
+ 
     if(humInput && !humInput.dataset.dovlimBound){
       humInput.dataset.dovlimBound = "1";
       humInput.addEventListener("input", function(){
@@ -2745,7 +2840,7 @@ window.setLang = function(lang,el){
         if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
-
+ 
     if(tempInput && !tempInput.dataset.dovlimBound){
       tempInput.dataset.dovlimBound = "1";
       tempInput.addEventListener("input", function(){
@@ -2757,7 +2852,7 @@ window.setLang = function(lang,el){
         if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
-
+ 
     if(foodInput && !foodInput.dataset.dovlimBound){
       foodInput.dataset.dovlimBound = "1";
       foodInput.addEventListener("input", function(){
@@ -2769,7 +2864,7 @@ window.setLang = function(lang,el){
         if(dovlimLastDeviceData) dovlimUpdateHomeHealthFinal(dovlimLastDeviceData);
       });
     }
-
+ 
     const waterInput = qs('#s-settings input[type="range"][min="5"][max="40"]');
     if(waterInput && !waterInput.dataset.dovlimBound){
       waterInput.dataset.dovlimBound = "1";
@@ -2783,16 +2878,16 @@ window.setLang = function(lang,el){
       });
     }
   }
-
-
+ 
+ 
   // PATCH 6 — Alerts page live from Firebase, no demo rows.
   let dovlimLastDeviceData = null;
   let dovlimLastSettingsData = null;
-
+ 
   function dovlimAlertDot(color){
     return '<div class="adot" style="background:' + color + '"></div>';
   }
-
+ 
   function dovlimAlertItem(color, title, sub, time){
     return '<div class="aitem">' +
       dovlimAlertDot(color) +
@@ -2800,7 +2895,7 @@ window.setLang = function(lang,el){
       '<span class="atime">' + (time || 'now') + '</span>' +
     '</div>';
   }
-
+ 
   function dovlimMealStatusForAlert(meal){
     const today = (typeof dovlimDayStamp === "function") ? dovlimDayStamp() : 0;
     if(!meal) return "Pending";
@@ -2808,23 +2903,23 @@ window.setLang = function(lang,el){
     if(Number(meal.lastExecutedDay) === today || String(meal.lastExecutedDay || "") === String(today)) return "Done";
     return "Pending";
   }
-
+ 
   function dovlimRenderAlertsLive(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimLastSettingsData || {};
     const schedule = d.schedule || window.dovlimLastSchedule || {};
-
+ 
     const humidityMax = dovlimClamp(settings.humidityMax, 50, 85, 65);
     const temperatureMax = dovlimClamp(settings.temperatureMax, 25, 42, 32);
     const lowFoodPercent = dovlimClamp(settings.lowFoodPercent, 10, 40, 20);
-
+ 
     const active = [];
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : null;
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : null;
     const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : null;
     const waterLow = d.water && d.water.low === true;
     const foodLow = d.food && d.food.low === true;
-
+ 
     if(Number.isFinite(cageHum) && cageHum > humidityMax){
       active.push(dovlimAlertItem('var(--warn)', 'High humidity — cage air', Math.round(cageHum) + '% detected · Max ' + humidityMax + '%', 'now'));
     }
@@ -2837,11 +2932,11 @@ window.setLang = function(lang,el){
     if(waterLow){
       active.push(dovlimAlertItem('var(--danger)', 'Low water', 'Water level is low', 'now'));
     }
-
+ 
     if(active.length === 0){
       active.push(dovlimAlertItem('var(--ok)', 'No active alerts', 'All limits are normal', 'now'));
     }
-
+ 
     const meals = [];
     const names = ['Morning','Midday','Evening','Night'];
     for(let i=0;i<4;i++){
@@ -2855,10 +2950,10 @@ window.setLang = function(lang,el){
       const sub = grams + 'g · ' + seed + ' · ' + names[i];
       meals.push(dovlimAlertItem(color, title, sub, time));
     }
-
+ 
     const alertsC = qs("#s-alerts .c");
     if(!alertsC) return;
-
+ 
     alertsC.innerHTML =
       '<div class="card"><div class="clbl" id="t-active-lbl">Active</div><div class="cbody" style="padding-top:8px">' +
       active.join('') +
@@ -2867,8 +2962,8 @@ window.setLang = function(lang,el){
       meals.join('') +
       '</div></div>';
   }
-
-
+ 
+ 
   // PATCH 7 — strict Alerts + Stats Live from Firebase.
   // This overrides demo statistics and forces alerts to use current settings.
   function dovlimGetSettings(){
@@ -2879,18 +2974,18 @@ window.setLang = function(lang,el){
       lowFoodPercent: dovlimClamp(s.lowFoodPercent, 10, 40, 20)
     };
   }
-
+ 
   function dovlimRenderAlertsStrict(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettings();
     const schedule = d.schedule || window.dovlimLastSchedule || {};
-
+ 
     const active = [];
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
     const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
     const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
-
+ 
     if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
       active.push(dovlimAlertItem('var(--warn)', 'High humidity — cage air', Math.round(cageHum) + '% detected · Max ' + settings.humidityMax + '%', 'now'));
     }
@@ -2903,11 +2998,11 @@ window.setLang = function(lang,el){
     if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
       active.push(dovlimAlertItem('var(--danger)', 'Low water', Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
     }
-
+ 
     if(active.length === 0){
       active.push(dovlimAlertItem('var(--ok)', 'No active alerts', 'All current limits are normal', 'now'));
     }
-
+ 
     const names = ['Morning','Midday','Evening','Night'];
     const meals = [];
     for(let i=0;i<4;i++){
@@ -2920,7 +3015,7 @@ window.setLang = function(lang,el){
       const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
       meals.push(dovlimAlertItem(color, title, grams + 'g · ' + seed + ' · ' + names[i], time));
     }
-
+ 
     const alertsC = qs("#s-alerts .c");
     if(alertsC){
       alertsC.innerHTML =
@@ -2934,26 +3029,26 @@ window.setLang = function(lang,el){
         dovlimFoodRefillCard();
     }
   }
-
+ 
   function dovlimRenderStatsLive(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettings();
-
+ 
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
     const foodGrams = d.food && d.food.grams !== undefined ? Number(d.food.grams) : NaN;
     const waterGrams = d.water && d.water.grams !== undefined ? Number(d.water.grams) : NaN;
-
+ 
     const avgSeedVal = qs("#s-stats .lgrid .lcard:nth-child(1) .lval");
     const avgWaterVal = qs("#s-stats .lgrid .lcard:nth-child(2) .lval");
     const avgSeedSub = qs("#s-stats #t-vs-week");
     const avgWaterSub = qs("#s-stats #t-normal-range");
-
+ 
     if(avgSeedVal) avgSeedVal.innerHTML = (Number.isFinite(foodGrams) ? Math.round(foodGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
     if(avgWaterVal) avgWaterVal.innerHTML = (Number.isFinite(waterGrams) ? Math.round(waterGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
     if(avgSeedSub) avgSeedSub.textContent = 'Current stock';
     if(avgWaterSub) avgWaterSub.textContent = 'Current water';
-
+ 
     const envBox = qs("#s-stats #t-env-lbl + .cbody");
     if(envBox){
       const tempTxt = Number.isFinite(cageTemp) ? cageTemp.toFixed(1) + '°C' : '--';
@@ -2972,14 +3067,22 @@ window.setLang = function(lang,el){
         '<div><div class="stval" style="color:' + statusColor + '">' + statusTxt + '</div><div style="font-size:11px;color:var(--text3)">' + (subTxt || 'Normal') + '</div></div>' +
         '</div></div>';
     }
-
+ 
     const deviceRows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow .stval");
     if(deviceRows[0]) deviceRows[0].textContent = '--';
-    if(deviceRows[1]) deviceRows[1].textContent = '--';
+    if(deviceRows[1]){
+      const battV = d.power && d.power.batteryVoltage !== undefined ? Number(d.power.batteryVoltage) : NaN;
+      if (Number.isFinite(battV) && battV > 0) {
+        deviceRows[1].textContent = battV.toFixed(2) + 'V';
+        deviceRows[1].style.color = battV >= 3.7 ? 'var(--ok)' : (battV >= 3.0 ? 'var(--warn)' : 'var(--danger)');
+      } else {
+        deviceRows[1].textContent = '--';
+      }
+    }
     if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
     if(deviceRows[3]) deviceRows[3].textContent = (window.dovlimEspIsOnline && window.dovlimEspIsOnline()) ? 'Online' : 'Offline';
   }
-
+ 
   function dovlimRenderAllLive(){
     try{ setTimeout(function(){ window.dovlimOfflineWatchdogTick && window.dovlimOfflineWatchdogTick(); }, 20); }catch(e){}
     
@@ -2990,8 +3093,8 @@ window.setLang = function(lang,el){
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error(e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error(e); }
   }
-
-
+ 
+ 
   // PATCH 8 — FINAL threshold sync.
   // Alerts and Stats must use the same visible Settings values.
   function dovlimParseVisibleNumber(id, def){
@@ -3000,16 +3103,16 @@ window.setLang = function(lang,el){
     const m = String(el.textContent || "").match(/[0-9]+(?:\.[0-9]+)?/);
     return m ? Number(m[0]) : def;
   }
-
+ 
   function dovlimGetSettingsFinal(){
     const uiHumidity = dovlimParseVisibleNumber("#hv", NaN);
     const uiTemp = dovlimParseVisibleNumber("#tv", NaN);
     const uiFood = dovlimParseVisibleNumber("#fv", NaN);
     const uiWater = dovlimParseVisibleNumber("#wv", NaN);
-
+ 
     const d = dovlimLastDeviceData || {};
     const fb = d.settings || dovlimLastSettingsData || {};
-
+ 
     return {
       humidityMax: dovlimClamp(Number.isFinite(uiHumidity) ? uiHumidity : fb.humidityMax, 50, 85, 65),
       temperatureMax: dovlimClamp(Number.isFinite(uiTemp) ? uiTemp : fb.temperatureMax, 25, 42, 32),
@@ -3017,85 +3120,85 @@ window.setLang = function(lang,el){
       lowWaterPercent: dovlimClamp(Number.isFinite(uiWater) ? uiWater : fb.lowWaterPercent, 5, 40, 20)
     };
   }
-
+ 
   function dovlimRenderAlertsStrict(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettingsFinal();
     const schedule = d.schedule || window.dovlimLastSchedule || {};
-
+ 
     const active = [];
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
     const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
     const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
-
+ 
     if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
-      active.push(dovlimAlertItem('var(--warn)', 'High humidity — cage air', Math.round(cageHum) + '% detected · Max ' + settings.humidityMax + '%', 'now'));
+      active.push(dovlimAlertItem('var(--warn)', tr('alertHighHum'), Math.round(cageHum) + '% detected · Max ' + settings.humidityMax + '%', 'now'));
     }
-
+ 
     if(Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
-      active.push(dovlimAlertItem('var(--warn)', 'High temperature — cage air', cageTemp.toFixed(1) + '°C detected · Max ' + settings.temperatureMax + '°C', 'now'));
+      active.push(dovlimAlertItem('var(--warn)', tr('highTempCageAir'), cageTemp.toFixed(1) + '°C detected · Max ' + settings.temperatureMax + '°C', 'now'));
     }
-
+ 
     if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
-      active.push(dovlimAlertItem('var(--danger)', 'Low seeds', Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
+      active.push(dovlimAlertItem('var(--danger)', tr('lowSeeds'), Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
     }
-
+ 
     if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
-      active.push(dovlimAlertItem('var(--danger)', 'Low water', Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
+      active.push(dovlimAlertItem('var(--danger)', tr('lowWater'), Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
     }
-
+ 
     if(active.length === 0){
-      active.push(dovlimAlertItem('var(--ok)', 'No active alerts', 'All current limits are normal', 'now'));
+      active.push(dovlimAlertItem('var(--ok)', tr('noActiveAlerts'), tr('allLimitsNormal'), 'now'));
     }
-
-    const names = ['Morning','Midday','Evening','Night'];
+ 
+    const names = [tr('morningName'),tr('middayName'),tr('eveningName'),tr('nightName')];
     const meals = [];
-
+ 
     for(let i=0;i<4;i++){
       const m = schedule['meal' + (i+1)] || {};
       const time = m.time || ['08:00','12:30','17:00','21:00'][i];
       const grams = Number(m.grams || [2.5,2,2.5,1.5][i]);
-      const seed = dovlimMealSeedFinal(i, m) || 'Select seed';
+      const seed = dovlimMealSeedFinal(i, m) || tr('selectSeedShort');
       const st = dovlimMealStatusForAlert(m);
       const color = st === 'Done' ? 'var(--ok)' : (st === 'Off' ? 'var(--text3)' : 'var(--blue)');
-      const title = st === 'Done' ? 'Meal distributed' : (st === 'Off' ? 'Meal disabled' : 'Scheduled meal');
+      const title = st === 'Done' ? tr('mealDist') : (st === 'Off' ? tr('mealDisabled') : tr('scheduledMeal'));
       meals.push(dovlimAlertItem(color, title, grams + 'g · ' + seed + ' · ' + names[i], time));
     }
-
+ 
     const alertsC = qs("#s-alerts .c");
     if(alertsC){
       alertsC.innerHTML =
-        '<div class="card"><div class="clbl">Active</div><div class="cbody" style="padding-top:8px">' +
+        '<div class="card"><div class="clbl">' + tr('activeAlerts') + '</div><div class="cbody" style="padding-top:8px">' +
         active.join('') +
         '</div></div>' +
-        '<div class="card"><div class="clbl">Today meals</div><div class="cbody" style="padding-top:8px">' +
+        '<div class="card"><div class="clbl">' + tr('todayMeals') + '</div><div class="cbody" style="padding-top:8px">' +
         meals.join('') +
         '</div></div>' +
         dovlimWaterCirculationCard() +
         dovlimFoodRefillCard();
     }
   }
-
+ 
   function dovlimRenderStatsLive(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettingsFinal();
-
+ 
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
     const foodGrams = d.food && d.food.grams !== undefined ? Number(d.food.grams) : NaN;
     const waterGrams = d.water && d.water.grams !== undefined ? Number(d.water.grams) : NaN;
-
+ 
     const avgSeedVal = qs("#s-stats .lgrid .lcard:nth-child(1) .lval");
     const avgWaterVal = qs("#s-stats .lgrid .lcard:nth-child(2) .lval");
     const avgSeedSub = qs("#s-stats #t-vs-week");
     const avgWaterSub = qs("#s-stats #t-normal-range");
-
+ 
     if(avgSeedVal) avgSeedVal.innerHTML = (Number.isFinite(foodGrams) ? Math.round(foodGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
     if(avgWaterVal) avgWaterVal.innerHTML = (Number.isFinite(waterGrams) ? Math.round(waterGrams) : '--') + '<span style="font-size:13px;color:var(--text3)"> g</span>';
     if(avgSeedSub) avgSeedSub.textContent = 'Current stock';
     if(avgWaterSub) avgWaterSub.textContent = 'Current water';
-
+ 
     const envBox = qs("#s-stats #t-env-lbl + .cbody");
     if(envBox){
       const tempTxt = Number.isFinite(cageTemp) ? cageTemp.toFixed(1) + '°C' : '--';
@@ -3105,7 +3208,7 @@ window.setLang = function(lang,el){
       const statusTxt = (tempHigh || humHigh) ? '⚠ High' : '✓ OK';
       const statusColor = (tempHigh || humHigh) ? 'var(--warn)' : 'var(--ok)';
       const subTxt = (tempHigh ? 'Temp high' : '') + (tempHigh && humHigh ? ' · ' : '') + (humHigh ? 'Humidity high' : '') || 'Normal';
-
+ 
       envBox.innerHTML =
         '<div style="background:var(--bg3);border-radius:var(--rx);padding:10px 12px">' +
         '<div style="font-size:10px;color:var(--text3);letter-spacing:.06em;margin-bottom:6px">🐦 CAGE SENSOR</div>' +
@@ -3115,14 +3218,22 @@ window.setLang = function(lang,el){
         '<div><div class="stval" style="color:' + statusColor + '">' + statusTxt + '</div><div style="font-size:11px;color:var(--text3)">' + subTxt + '</div></div>' +
         '</div></div>';
     }
-
+ 
     const deviceRows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow .stval");
     if(deviceRows[0]) deviceRows[0].textContent = '--';
-    if(deviceRows[1]) deviceRows[1].textContent = '--';
+    if(deviceRows[1]){
+      const battV = d.power && d.power.batteryVoltage !== undefined ? Number(d.power.batteryVoltage) : NaN;
+      if (Number.isFinite(battV) && battV > 0) {
+        deviceRows[1].textContent = battV.toFixed(2) + 'V';
+        deviceRows[1].style.color = battV >= 3.7 ? 'var(--ok)' : (battV >= 3.0 ? 'var(--warn)' : 'var(--danger)');
+      } else {
+        deviceRows[1].textContent = '--';
+      }
+    }
     if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
     if(deviceRows[3]) deviceRows[3].textContent = (window.dovlimEspIsOnline && window.dovlimEspIsOnline()) ? 'Online' : 'Offline';
   }
-
+ 
   function dovlimRenderAllLive(){
     try{ dovlimForceHealthScore(); }catch(e){ console.error("Health score fix failed", e); }
     try{ dovlimPatch14UI(); }catch(e){ console.error("Patch14 UI failed", e); }
@@ -3131,8 +3242,8 @@ window.setLang = function(lang,el){
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error("Stats render failed", e); }
   }
-
-
+ 
+ 
   // PATCH 9 — Home Health Score follows the same Settings thresholds.
   function dovlimUpdateHomeHealthFinal(d){
     d = d || {};
@@ -3141,51 +3252,51 @@ window.setLang = function(lang,el){
       temperatureMax:32,
       lowFoodPercent:20
     };
-
+ 
     const cageTemp = d.cage && d.cage.temperature !== undefined ? Number(d.cage.temperature) : NaN;
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
     const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
-
+ 
     let score = 100;
     let problems = [];
-
+ 
     if(window.dovlimEspIsOnline && !window.dovlimEspIsOnline()){
       score -= 25;
       problems.push("Device offline");
     }
-
+ 
     if(Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
       score -= 20;
       problems.push("High temp");
     }
-
+ 
     if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
       score -= 20;
       problems.push("High humidity");
     }
-
+ 
     if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
       score -= 15;
       problems.push("Low seeds");
     }
-
+ 
     const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
     if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
       score -= 15;
       problems.push("Low water");
     }
-
+ 
     score = Math.max(0, Math.min(100, score));
-
+ 
     const hnum = qs(".hnum");
     if(hnum) hnum.textContent = score;
-
+ 
     const tempTxt = Number.isFinite(cageTemp) ? cageTemp.toFixed(1) + "°C" : "--";
     const humTxt = Number.isFinite(cageHum) ? Math.round(cageHum) + "% RH" : "--";
-
+ 
     const hsub = qs("#t-health-sub");
     if(hsub) hsub.textContent = "Firebase live · " + tempTxt + " · " + humTxt;
-
+ 
     const badge = qs("#t-health-badge");
     if(badge){
       if(problems.length === 0){
@@ -3198,7 +3309,7 @@ window.setLang = function(lang,el){
         badge.style.background = "rgba(232,151,42,.15)";
       }
     }
-
+ 
     const hcard = qs("#s-home .hcard");
     if(hcard){
       if(problems.length === 0){
@@ -3208,8 +3319,8 @@ window.setLang = function(lang,el){
       }
     }
   }
-
-
+ 
+ 
   // PATCH 11 — Seed sync final.
   // Alerts must show the same seed type visible in Schedule.
   function dovlimSeedFromScheduleRow(slot, fallback){
@@ -3223,7 +3334,7 @@ window.setLang = function(lang,el){
     }
     return fallback ? dovlimNormalizeSeed(fallback) : "";
   }
-
+ 
   function dovlimMealSeedFinal(slot, meal){
     meal = meal || {};
     const rowSeed = dovlimSeedFromScheduleRow(slot, "");
@@ -3231,7 +3342,7 @@ window.setLang = function(lang,el){
     if(meal.seedType) return dovlimNormalizeSeed(meal.seedType);
     return "";
   }
-
+ 
   function dovlimAnyMealMissingSeed(schedule){
     schedule = schedule || {};
     for(let i=0;i<4;i++){
@@ -3240,7 +3351,7 @@ window.setLang = function(lang,el){
     }
     return false;
   }
-
+ 
   function dovlimShowSeedRequirementIfNeeded(){
     const schedule = window.dovlimLastSchedule || {};
     const hint = qs("#t-seedsize-hint");
@@ -3250,8 +3361,8 @@ window.setLang = function(lang,el){
         : "Each meal keeps its saved seed type";
     }
   }
-
-
+ 
+ 
   // PATCH 12 — Water circulation value card + remove pump cycles from Stats.
   function dovlimFormatPumpTime(value){
     if(!value) return "Not recorded yet";
@@ -3270,25 +3381,26 @@ window.setLang = function(lang,el){
     }
     return s;
   }
-
+ 
   function dovlimWaterCirculationCard(){
     const d = dovlimLastDeviceData || {};
     const water = d.water || {};
     const last = dovlimFormatPumpTime(water.lastPumpTime);
-    const status = water.lastPumpStatus || water.pumpStatus || "Waiting...";
+    const rawStatus = water.lastPumpStatus || water.pumpStatus || "Waiting...";
+    const status = dovlimTranslateStatus(rawStatus);
     const next = water.nextPumpTime || "--";
-    const stLow = String(status).toLowerCase();
+    const stLow = String(rawStatus).toLowerCase();
     const statusColor = stLow.indexOf("complete") >= 0 ? "var(--ok)" :
                         stLow.indexOf("fail") >= 0 ? "var(--danger)" :
                         "var(--text3)";
-
-    return '<div class="card"><div class="clbl">Water circulation</div><div class="cbody" style="padding-top:8px">' +
-      '<div class="strow"><span class="stlbl">💧 Last cycle</span><span class="stval">' + last + '</span></div>' +
-      '<div class="strow"><span class="stlbl">Status</span><span class="stval" style="color:' + statusColor + '">' + status + '</span></div>' +
-      '<div class="strow"><span class="stlbl">Next cycle</span><span class="stval">' + next + '</span></div>' +
+ 
+    return '<div class="card"><div class="clbl">' + tr('waterCircTitle') + '</div><div class="cbody" style="padding-top:8px">' +
+      '<div class="strow"><span class="stlbl">💧 ' + tr('lastCycle') + '</span><span class="stval">' + last + '</span></div>' +
+      '<div class="strow"><span class="stlbl">' + tr('statusLbl') + '</span><span class="stval" style="color:' + statusColor + '">' + status + '</span></div>' +
+      '<div class="strow"><span class="stlbl">' + tr('nextCycle') + '</span><span class="stval">' + next + '</span></div>' +
     '</div></div>';
   }
-
+ 
   function dovlimCleanStatsPumpRow(){
     const rows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow");
     rows.forEach(function(row){
@@ -3298,15 +3410,15 @@ window.setLang = function(lang,el){
       }
     });
   }
-
-
+ 
+ 
   // PATCH 13 — Statistics cleanup.
   // Keep: Current Seeds, Current Water, Seed Consumption 7d, Environment, Device Health.
   // Hide: Water Consumption chart, 30d/90d tabs.
   function dovlimStatsCleanup(){
     const stats = qs("#s-stats");
     if(!stats) return;
-
+ 
     // Hide 30d and 90d buttons, keep 7d only.
     qsa("#s-stats .tabs .tab").forEach(function(tab){
       const t = String(tab.textContent || "").trim().toLowerCase();
@@ -3314,23 +3426,23 @@ window.setLang = function(lang,el){
         tab.style.display = "none";
       }
     });
-
+ 
     // Hide water consumed chart card.
     const waterLbl = qs("#t-water-chart-lbl");
     if(waterLbl){
       const card = waterLbl.closest(".card");
       if(card) card.style.display = "none";
     }
-
+ 
     // Ensure seed chart label is clear.
     const seedLbl = qs("#t-seed-chart-lbl");
     if(seedLbl) seedLbl.textContent = "Seed Consumption (7 days)";
-
+ 
     // Pump row is already removed by Patch 12, keep it hidden.
     dovlimCleanStatsPumpRow();
   }
-
-
+ 
+ 
   // PATCH 14 — D1/D2/D3 only.
   // D1: Schedule subtitle = Active meals X / 4.
   // D2: Alerts subtitle = Latest updates.
@@ -3338,41 +3450,41 @@ window.setLang = function(lang,el){
   function dovlimUpdateScheduleSubtitle(){
     const meta = qs("#s-schedule .tb .tb-meta");
     if(!meta) return;
-
+ 
     const d = dovlimLastDeviceData || {};
     const schedule = d.schedule || window.dovlimLastSchedule || {};
     let active = 0;
-
+ 
     for(let i=1;i<=4;i++){
       const m = schedule["meal" + i] || {};
       if(m.enabled !== false) active++;
     }
-
-    meta.textContent = "Active meals: " + active + " / 4";
+ 
+    meta.textContent = tr('activeMealsLbl') + ": " + active + " / 4";
   }
-
+ 
   function dovlimFoodRefillCard(){
     const d = dovlimLastDeviceData || {};
     const food = d.food || {};
-
-    const last = food.lastRefillTime ? dovlimFormatPumpTime(food.lastRefillTime) : "Not recorded yet";
-    const status = food.lastRefillStatus || "Waiting...";
+ 
+    const last = food.lastRefillTime ? dovlimFormatPumpTime(food.lastRefillTime) : tr('notRecorded');
+    const status = dovlimTranslateStatus(food.lastRefillStatus || "Waiting...");
     const recommendation = food.refillRecommendation || "--";
-
-    return '<div class="card"><div class="clbl">Food refill</div><div class="cbody" style="padding-top:8px">' +
-      '<div class="strow"><span class="stlbl">🌾 Last refill</span><span class="stval">' + last + '</span></div>' +
-      '<div class="strow"><span class="stlbl">Status</span><span class="stval">' + status + '</span></div>' +
-      '<div class="strow"><span class="stlbl">Recommendation</span><span class="stval">' + recommendation + '</span></div>' +
+ 
+    return '<div class="card"><div class="clbl">' + tr('foodRefillTitle') + '</div><div class="cbody" style="padding-top:8px">' +
+      '<div class="strow"><span class="stlbl">🌾 ' + tr('lastRefill') + '</span><span class="stval">' + last + '</span></div>' +
+      '<div class="strow"><span class="stlbl">' + tr('statusLbl') + '</span><span class="stval">' + status + '</span></div>' +
+      '<div class="strow"><span class="stlbl">' + tr('recommendationLbl') + '</span><span class="stval">' + recommendation + '</span></div>' +
     '</div></div>';
   }
-
+ 
   function dovlimPatch14UI(){
     const alertMeta = qs("#s-alerts .tb .tb-meta");
     if(alertMeta) alertMeta.textContent = "Latest updates";
     dovlimUpdateScheduleSubtitle();
   }
-
-
+ 
+ 
   // PATCH 17 — Fix Home health number stuck at old value.
   function dovlimForceHealthScore(){
     const d = dovlimLastDeviceData || {};
@@ -3381,23 +3493,23 @@ window.setLang = function(lang,el){
     const cage = d.cage || {};
     const temp = Number(cage.temp ?? cage.temperature ?? d.temp ?? d.temperature ?? 0);
     const hum = Number(cage.humidity ?? d.humidity ?? 0);
-
+ 
     const th = d.thresholds || d.settings || {};
     const maxTemp = Number(th.maxTemp ?? th.maxTemperature ?? th.temperatureMax ?? th.temp ?? 32);
     const maxHum = Number(th.maxHumidity ?? th.humidityMax ?? th.humidity ?? 65);
     const minFood = Number(th.lowFood ?? th.foodLow ?? th.food ?? 20);
     const minWater = Number(th.lowWater ?? th.waterLow ?? th.water ?? 20);
-
+ 
     let score = 100;
     if(temp && temp > maxTemp) score -= 20;
     if(hum && hum > maxHum) score -= 20;
     if(food < minFood) score -= 25;
     if(water < minWater) score -= 25;
     score = Math.max(0, Math.min(100, Math.round(score)));
-
+ 
     const hnum = qs(".hnum");
     if(hnum) hnum.textContent = String(score);
-
+ 
     const circle = qs(".hring svg circle:nth-child(2)");
     if(circle){
       const dash = Math.round(188 * score / 100);
@@ -3405,7 +3517,7 @@ window.setLang = function(lang,el){
       circle.setAttribute("stroke", score >= 80 ? "#5DCAA5" : (score >= 50 ? "#e8972a" : "#e04545"));
     }
   }
-
+ 
   async function startDovlimFirebase(){
     try {
       await registerAppOnly();
@@ -3419,7 +3531,7 @@ window.setLang = function(lang,el){
       console.error("Dovlim Firebase init failed", e);
     }
   }
-
+ 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", startDovlimFirebase);
   } else {
@@ -3437,63 +3549,63 @@ window.setLang = function(lang,el){
 /* Future/non-active values remain visible but not fake. */
 .dovlim-not-active{color:var(--text3)!important;}
 </style>
-
+ 
 <script>
 (function(){
   "use strict";
-
+ 
   function ready(fn){ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",fn); else fn(); }
   function qs(s,r){return (r||document).querySelector(s);}
   function qsa(s,r){return Array.from((r||document).querySelectorAll(s));}
   function setText(id,v){var e=document.getElementById(id); if(e)e.textContent=v;}
-
+ 
   var langMap={
     en:{online:"Online",offline:"Offline",cage:"🐦 CAGE SENSOR",notActive:"--"},
+    ar:{online:"متصل",offline:"غير متصل",cage:"🐦 حساس القفص",notActive:"--"},
     fr:{online:"En ligne",offline:"Hors ligne",cage:"🐦 CAPTEUR CAGE",notActive:"--"},
     es:{online:"En línea",offline:"Offline",cage:"🐦 SENSOR JAULA",notActive:"--"},
     it:{online:"Online",offline:"Offline",cage:"🐦 SENSORE GABBIA",notActive:"--"},
     ja:{online:"オンライン",offline:"オフライン",cage:"🐦 ケージセンサー",notActive:"--"}
   };
-
+ 
   function currentLang(){
     var s=document.getElementById("proLangSelect");
     var l=(s&&s.value)||localStorage.getItem("smartpro_lang")||"en";
-    if(l==="ar") l="en";
     return langMap[l]?l:"en";
   }
-
-  function removeArabic(){
-    var s=document.getElementById("proLangSelect");
-    if(!s)return;
-    qsa("option",s).forEach(function(o){ if(o.value==="ar") o.remove(); });
-    if(s.value==="ar"){ s.value="en"; localStorage.setItem("smartpro_lang","en"); }
-  }
-
+ 
+  // PATCH 23: Arabic is now a fully supported language (translation
+  // dictionary already existed in T.ar) - no longer stripped from the
+  // dropdown or forced back to English.
+  function removeArabic(){ /* no-op: kept as a stub in case anything still calls it */ }
+ 
   function cleanFakeVisuals(){
     removeArabic();
-
+ 
     var l=currentLang(), t=langMap[l];
-
+ 
     var cageTitle=qs("#s-home .erow .ebox:nth-child(2) .etitle");
     if(cageTitle) cageTitle.textContent=t.cage;
-
+ 
     var cageBadge=qs("#s-home .erow .ebox:nth-child(2) .ebadge");
     if(cageBadge) cageBadge.style.display="none";
-
+ 
     // Device Health values are future modules: keep rows visible, remove fake numbers.
+    // PATCH 28: battery is now real data (firmware Patch I/J) - no longer blanked here.
     qsa("#s-stats .card .strow").forEach(function(row){
       var label=qs(".stlbl",row), val=qs(".stval",row);
       if(!label||!val)return;
       var text=label.textContent.toLowerCase();
-      if(text.includes("solar")||text.includes("battery")||text.includes("pump")||text.includes("uptime")||
-         text.includes("solaire")||text.includes("batterie")||text.includes("pompe")||
-         text.includes("solar hoy")||text.includes("bater")||
-         text.includes("solare")||text.includes("ポンプ")||text.includes("バッテリー")){
+      if(val.id==="t-bat-val")return; // real data now, handled by Patch 28's own listener
+      if(text.includes("solar")||text.includes("pump")||text.includes("uptime")||
+         text.includes("solaire")||text.includes("pompe")||
+         text.includes("solar hoy")||
+         text.includes("solare")||text.includes("ポンプ")){
         val.textContent=t.notActive;
         val.classList.add("dovlim-not-active");
       }
     });
-
+ 
     // Avg cards/charts remain visible; remove fake numeric summaries only.
     var avg1=qs("#s-stats .lgrid .lcard:nth-child(1) .lval");
     var avg2=qs("#s-stats .lgrid .lcard:nth-child(2) .lval");
@@ -3504,7 +3616,7 @@ window.setLang = function(lang,el){
     if(sub1)sub1.textContent="Not active yet";
     if(sub2)sub2.textContent="Not active yet";
   }
-
+ 
   function forceFirebaseStatus(status){
     var l=currentLang(), t=langMap[l];
     var on=!!(status&&(status.online||status.espConnected||status.appConnected));
@@ -3512,55 +3624,47 @@ window.setLang = function(lang,el){
     var dot=qs(".online .dot");
     if(dot) dot.style.background=on?"var(--ok)":"var(--danger)";
   }
-
+ 
+  window.cleanFakeVisuals = cleanFakeVisuals; // PATCH 24: let applyLanguage() re-trigger this
+ 
   ready(function(){
     cleanFakeVisuals();
-
+ 
     var s=document.getElementById("proLangSelect");
     if(s){
       s.addEventListener("change",function(){
-        if(s.value==="ar"){s.value="en";}
         localStorage.setItem("smartpro_lang",s.value);
         setTimeout(cleanFakeVisuals,50);
         setTimeout(cleanFakeVisuals,300);
       });
     }
-
-    // Wrap original setLang without replacing it; only prevent Arabic and re-clean labels.
-    if(typeof window.setLang==="function"){
-      var oldSetLang=window.setLang;
-      window.setLang=function(l){
-        if(l==="ar") l="en";
-        var r=oldSetLang.apply(this, arguments);
-        setTimeout(cleanFakeVisuals,50);
-        setTimeout(cleanFakeVisuals,300);
-        return r;
-      };
-    }
+ 
+    // Language handling fully rebuilt in PATCH 24 - applyLanguage() is now
+    // the single function, called directly by the dropdown. No wrapping.
     // Online/Offline handled by PATCH 20 watchdog only.
   });
 })();
 </script>
 <!-- DOVLIM FINAL BASE FIX END -->
-
-
+ 
+ 
 <!-- DOVLIM PATCH 02 - SEED REQUIRED + MANUAL FEED -->
 <script>
 (function(){
   "use strict";
-
+ 
   var feedLock = false;
-
+ 
   function qs(s){ return document.querySelector(s); }
   function qsa(s){ return Array.from(document.querySelectorAll(s)); }
   function id(x){ return document.getElementById(x); }
-
+ 
   function getSeed(){
     var selected = qs("#seedpicker .sopt.sel .sopt-lb");
     if(!selected) return "";
     return selected.textContent.trim();
   }
-
+ 
   function showSeedMsg(msg, color){
     var feedseed = id("feedseed");
     var schedSeed = id("schedSeed");
@@ -3573,12 +3677,12 @@ window.setLang = function(lang,el){
       schedSeed.style.color = color || "var(--warn)";
     }
   }
-
+ 
   function setButtonsBySeed(){
     var seed = getSeed();
     var feedBtn = id("feedbtn");
     var saveBtn = id("savebtn");
-
+ 
     if(!seed){
       showSeedMsg("Select seed size in Settings first", "var(--warn)");
       if(feedBtn){
@@ -3589,7 +3693,7 @@ window.setLang = function(lang,el){
       if(saveBtn) saveBtn.disabled = true;
       return false;
     }
-
+ 
     showSeedMsg(seed + " seeds ✓", "var(--ok)");
     if(feedBtn){
       feedBtn.disabled = false;
@@ -3601,44 +3705,44 @@ window.setLang = function(lang,el){
     if(saveBtn) saveBtn.disabled = false;
     return true;
   }
-
+ 
   qsa("#seedpicker .sopt").forEach(function(opt){
     opt.addEventListener("click", function(){
       setTimeout(setButtonsBySeed, 50);
     });
   });
-
+ 
   setTimeout(setButtonsBySeed, 300);
-
+ 
   window.doFeed = function(btn){
     if(feedLock) return;
     if(!setButtonsBySeed()) return;
-
+ 
     if(!window.firebase || !firebase.apps || !firebase.apps.length){
       showSeedMsg("Firebase not ready", "var(--danger)");
       return;
     }
-
+ 
     var dval = id("dval");
     var grams = dval ? parseFloat(dval.textContent) : 2.0;
     if(!isFinite(grams) || grams <= 0) grams = 2.0;
-
+ 
     var commandId = Date.now();
     var seed = getSeed();
-
+ 
     feedLock = true;
     if(btn){
       btn.disabled = true;
       btn.style.opacity = ".5";
     }
-
+ 
     firebase.database().ref("device/water/pumpRunning").once("value").then(function(snap){
       var pumpRunning = !!snap.val();
       showSeedMsg(
         pumpRunning ? "Pump running — feed queued" : "Sending feed command...",
         pumpRunning ? "var(--warn)" : "var(--blue)"
       );
-
+ 
       return firebase.database().ref("device/commands").update({
         feedNow: true,
         feedGrams: grams,
@@ -3658,19 +3762,19 @@ window.setLang = function(lang,el){
       setButtonsBySeed();
     });
   };
-
+ 
   var oldDoSave = window.doSave;
   window.doSave = function(btn){
     if(!setButtonsBySeed()) return;
     if(typeof oldDoSave === "function") return oldDoSave(btn);
   };
-
+ 
 })();
 </script>
 <!-- END PATCH 02 -->
-
-
-
+ 
+ 
+ 
 <script>
 /* PATCH 20 — FINAL OFFLINE FIX
    Old online:true can stay in Firebase after ESP32 power loss.
@@ -3678,30 +3782,30 @@ window.setLang = function(lang,el){
 */
 (function(){
   "use strict";
-
+ 
   var lastUpdateValue = null;
   var lastChangeMs = 0;
   var hasSeenUpdate = false;
   var TIMEOUT_MS = 12000;
-
+ 
   function qsa(s){ return Array.from(document.querySelectorAll(s)); }
   function qs(s){ return document.querySelector(s); }
-
+ 
   function paintOnline(isOnline){
     var label = isOnline ? "Online" : "Offline";
     var color = isOnline ? "var(--ok)" : "var(--danger)";
-
+ 
     qsa("#t-online,.online span").forEach(function(el){
       el.textContent = label;
       el.style.color = color;
     });
-
+ 
     qsa(".online").forEach(function(el){
       el.style.color = color;
       var dot = el.querySelector(".dot");
       if(dot) dot.style.background = color;
     });
-
+ 
     qsa(".bdone").forEach(function(el){
       var t = (el.textContent || "").trim();
       if(t === "Online" || t === "Offline" || t === "En ligne" || t === "Hors ligne" || t === "متصل"){
@@ -3710,7 +3814,7 @@ window.setLang = function(lang,el){
         el.style.background = isOnline ? "var(--ok-dk)" : "rgba(224,69,69,.15)";
       }
     });
-
+ 
     var uptime = document.querySelector("#t-uptime-lbl");
     if(uptime){
       var row = uptime.closest(".strow");
@@ -3721,12 +3825,12 @@ window.setLang = function(lang,el){
       }
     }
   }
-
+ 
   function statusFromGlobal(){
     var d = window.dovlimLastDeviceData || window.lastDeviceData || null;
     return d && d.status ? d.status : null;
   }
-
+ 
   function applyStatus(status){
     if(status && status.lastUpdate !== undefined && status.lastUpdate !== null){
       var v = String(status.lastUpdate);
@@ -3736,21 +3840,21 @@ window.setLang = function(lang,el){
         hasSeenUpdate = true;
       }
     }
-
+ 
     var online = hasSeenUpdate && (Date.now() - lastChangeMs <= TIMEOUT_MS);
     paintOnline(online);
     return online;
   }
-
+ 
   window.dovlimOnlineWatchdogSetStatus = applyStatus;
   window.dovlimEspIsOnline = function(){
     return hasSeenUpdate && (Date.now() - lastChangeMs <= TIMEOUT_MS);
   };
-
+ 
   function tick(){
     applyStatus(statusFromGlobal());
   }
-
+ 
   // Direct listener to lastUpdate only. No trust in status.online.
   function startFirebaseWatch(){
     try{
@@ -3761,12 +3865,12 @@ window.setLang = function(lang,el){
       }
     }catch(e){}
   }
-
+ 
   setInterval(tick, 500);
   setTimeout(startFirebaseWatch, 300);
   setTimeout(tick, 600);
   setTimeout(tick, 1500);
-
+ 
   // Stop old code from visually forcing Online after this patch.
   var observer = new MutationObserver(function(){
     setTimeout(tick, 0);
@@ -3776,7 +3880,162 @@ window.setLang = function(lang,el){
   }catch(e){}
 })();
 </script>
-
+ 
+<script>
+/* PATCH 21 — AUTO CAMERA IP FROM FIREBASE
+   The ESP32-CAM now publishes its own IP to /device/camera/ip once it
+   connects to wifi (see DOVLIM_CAM_V1_AUTO_IP.cpp). This patch reads that
+   value and uses it automatically, so the customer never has to type an
+   IP address. Manual entry in Settings still works as a fallback/override
+   if the person prefers to set it themselves.
+*/
+(function(){
+  "use strict";
+ 
+  var autoIp = "";
+  var autoOnline = false;
+ 
+  function qs(s){ return document.querySelector(s); }
+ 
+  function currentManualIp(){
+    var input = qs("#camip");
+    var v = input ? input.value.trim() : "";
+    if (v) return v;
+    return localStorage.getItem("dovlim_cam_ip") || "";
+  }
+ 
+  function effectiveIp(){
+    // Manual override always wins if the person explicitly set one.
+    var manual = currentManualIp();
+    if (manual) return manual;
+    return autoIp;
+  }
+ 
+  function applyToCameraScreen(){
+    var screen = qs("#s-camera");
+    if (!screen || !screen.classList.contains("on")) return; // only touch DOM while camera screen is open
+ 
+    var img = qs("#camImg");
+    var ph = qs("#camPh");
+    var ip = effectiveIp();
+ 
+    if (ip) {
+      if (img) {
+        var wanted = "http://" + ip + "/stream";
+        if (img.getAttribute("src") !== wanted) img.src = wanted;
+        img.style.display = "block";
+      }
+      if (ph) ph.style.display = "none";
+    } else {
+      if (img) { img.removeAttribute("src"); img.style.display = "none"; }
+      if (ph) {
+        ph.style.display = "block";
+        ph.innerHTML = "<div style='font-size:36px;margin-bottom:10px'>\ud83d\udcf7</div><div>Looking for camera on your network...</div>";
+      }
+    }
+  }
+ 
+  function startFirebaseWatch(){
+    try{
+      if (!(window.firebase && firebase.apps && firebase.apps.length)) {
+        setTimeout(startFirebaseWatch, 500);
+        return;
+      }
+      firebase.database().ref("device/camera/ip").on("value", function(snap){
+        autoIp = snap.val() || "";
+        applyToCameraScreen();
+      });
+      firebase.database().ref("device/camera/online").on("value", function(snap){
+        autoOnline = !!snap.val();
+        applyToCameraScreen();
+      });
+    }catch(e){}
+  }
+ 
+  var oldOpenCam = window.openCam;
+  window.openCam = function(){
+    if (typeof oldOpenCam === "function") oldOpenCam();
+    applyToCameraScreen();
+  };
+ 
+  setTimeout(startFirebaseWatch, 300);
+})();
+</script>
+ 
+<script>
+/* PATCH 22 — BLOCK FEED WHEN TANK IS EMPTY
+   Firmware Patch F now publishes /device/food/canFeed continuously (true
+   only when there's enough food for the motor to dispense). This patch
+   disables the "Feed now" button proactively and shows why, instead of
+   letting the customer press it, hear the motor spin, and get a failure
+   message afterward. When canFeed goes back to true, it steps aside and
+   lets the existing seed-selection logic control the button as before.
+*/
+(function(){
+  "use strict";
+ 
+  var canFeed = true;        // assume ok until Firebase says otherwise
+  var hasSeenCanFeed = false;
+ 
+  function qs(s){ return document.querySelector(s); }
+ 
+  function enforceFeedGate(){
+    var btn = qs("#feedbtn");
+    var span = qs("#t-feedbtn-txt");
+    if (!btn) return;
+ 
+    if (hasSeenCanFeed && !canFeed) {
+      btn.disabled = true;
+      btn.style.cursor = "not-allowed";
+      btn.style.opacity = ".5";
+      btn.style.background = "var(--bg4)";
+      btn.style.color = "var(--text3)";
+      if (span) span.textContent = "Tank empty";
+    } else if (span && span.textContent === "Tank empty") {
+      span.textContent = "Feed now"; // hand control back to the other patches
+    }
+  }
+ 
+  function startWatch(){
+    try{
+      if (!(window.firebase && firebase.apps && firebase.apps.length)) {
+        setTimeout(startWatch, 500);
+        return;
+      }
+      firebase.database().ref("device/food/canFeed").on("value", function(snap){
+        var v = snap.val();
+        canFeed = (v === null) ? true : !!v; // null = old firmware without this field, don't block
+        hasSeenCanFeed = (v !== null);
+        enforceFeedGate();
+      });
+    }catch(e){}
+  }
+ 
+  // Re-apply the gate every 500ms so it always wins over any other patch
+  // that might re-enable the button for unrelated reasons (seed selection, etc).
+  setInterval(enforceFeedGate, 500);
+  setTimeout(startWatch, 300);
+ 
+  // Defense in depth: even if the button is somehow clicked, don't send
+  // the command - the firmware also refuses, this just skips a pointless
+  // round trip and a confusing "Sent" message.
+  var oldDoFeed = window.doFeed;
+  window.doFeed = function(btn){
+    if (hasSeenCanFeed && !canFeed) {
+      alert("Tank is empty. Please refill before feeding.");
+      return;
+    }
+    if (typeof oldDoFeed === "function") return oldDoFeed(btn);
+  };
+})();
+</script>
+ 
+<!-- PATCH 28: battery voltage is now handled directly inside dovlimRenderStatsLive()
+     (fixed above) since that function already re-renders this row on every
+     Firebase update - a separate listener here would just be a second
+     redundant path doing the same thing. -->
+ 
 </body>
-
+ 
 </html>
+ 
