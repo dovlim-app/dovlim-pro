@@ -537,6 +537,10 @@ var T={
     deviceConnTitle:'Device connection',esp32IP:'📡 ESP32 Device IP',localControlHint:'Local control: phone and box on same WiFi',
     saveDeviceIP:'Save Device IP',notSavedStatus:'Not saved',
     morningName:'Morning',middayName:'Midday',eveningName:'Evening',nightName:'Night',midMorningName:'Mid-morning',afternoonName:'Afternoon',
+    rtcNeedsAttentionAlert:'Clock needs attention',rtcNeedsAttentionSub:'Check RTC battery (CR/LIR2032)',
+    pumpStuckAlert:'Water pump stuck',pumpStuckSub:'Check pump relay and wiring',
+    scaleFaultAlert:'Food scale fault',scaleFaultSub:'Scale reading out of range — needs re-taring',
+    tubeBlockedAlert:'Feed tube blocked',tubeBlockedSub:'Check for stuck seeds (IR sensor)',
   },
   fr:{
     appName:'Smart Pro',appSub:'Cage A',online:'En ligne',
@@ -621,6 +625,10 @@ var T={
     deviceConnTitle:'اتصال الجهاز',esp32IP:'📡 عنوان IP الجهاز',localControlHint:'تحكم محلي: الهاتف والجهاز على نفس الواي فاي',
     saveDeviceIP:'حفظ عنوان IP',notSavedStatus:'غير محفوظ',
     morningName:'الصباح',middayName:'الظهيرة',eveningName:'المساء',nightName:'الليل',midMorningName:'منتصف الصباح',afternoonName:'بعد الظهر',
+    rtcNeedsAttentionAlert:'الساعة تحتاج انتباه',rtcNeedsAttentionSub:'تحقق من بطارية RTC (CR/LIR2032)',
+    pumpStuckAlert:'مضخة الماء عالقة',pumpStuckSub:'تحقق من التتابع (Relay) والأسلاك',
+    scaleFaultAlert:'عطل في ميزان الأكل',scaleFaultSub:'قراءة الميزان خارج النطاق — تحتاج معايرة',
+    tubeBlockedAlert:'انسداد أنبوب التوزيع',tubeBlockedSub:'تحقق من انسداد الحبوب (حساس IR)',
   },
   es:{
     appName:'Smart Pro',appSub:'Jaula A',online:'En línea',
@@ -3146,6 +3154,28 @@ document.addEventListener('DOMContentLoaded',function(){
 
     if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
       active.push(dovlimAlertItem('var(--danger)', tr('lowWater'), Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
+    }
+
+    // PATCH 26 — surface diagnostics the firmware already computes and
+    // publishes to Firebase, but that this screen never read before:
+    // RTC self-recovery status (PATCH Q), pump stuck watchdog (PATCH C),
+    // food scale fault (PATCH A), feed tube blockage (PATCH S).
+    // Same pattern as the 4 checks above - read-only, additive, no
+    // existing check touched or reordered.
+    if(d.status && d.status.rtcNeedsAttention === true){
+      active.push(dovlimAlertItem('var(--warn)', tr('rtcNeedsAttentionAlert'), tr('rtcNeedsAttentionSub'), 'now'));
+    }
+
+    if(d.water && d.water.pumpStuck === true){
+      active.push(dovlimAlertItem('var(--danger)', tr('pumpStuckAlert'), tr('pumpStuckSub'), 'now'));
+    }
+
+    if(d.food && d.food.scaleFault === true){
+      active.push(dovlimAlertItem('var(--danger)', tr('scaleFaultAlert'), tr('scaleFaultSub'), 'now'));
+    }
+
+    if(d.food && d.food.tubeBlocked === true){
+      active.push(dovlimAlertItem('var(--danger)', tr('tubeBlockedAlert'), tr('tubeBlockedSub'), 'now'));
     }
 
     if(active.length === 0){
