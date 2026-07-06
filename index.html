@@ -3318,22 +3318,28 @@ document.addEventListener('DOMContentLoaded',function(){
       const solarV = d.power && d.power.solarVoltage !== undefined ? Number(d.power.solarVoltage) : NaN;
       if (Number.isFinite(solarV) && solarV > 0) {
         deviceRows[0].textContent = solarV.toFixed(2) + 'V';
-        deviceRows[0].style.color = 'var(--warn)';
+        deviceRows[0].style.color = 'var(--blue)';
       } else {
         deviceRows[0].textContent = '--';
+        deviceRows[0].style.color = 'var(--text)';
       }
     }
     if(deviceRows[1]){
       const battV = d.power && d.power.batteryVoltage !== undefined ? Number(d.power.batteryVoltage) : NaN;
       if (Number.isFinite(battV) && battV > 0) {
         deviceRows[1].textContent = battV.toFixed(2) + 'V';
-        deviceRows[1].style.color = battV >= 3.7 ? 'var(--ok)' : (battV >= 3.0 ? 'var(--warn)' : 'var(--danger)');
+        deviceRows[1].style.color = 'var(--blue)';
       } else {
         deviceRows[1].textContent = '--';
+        deviceRows[1].style.color = 'var(--text)';
       }
     }
     if(deviceRows[2]) deviceRows[2].textContent = d.water && d.water.pumpRunning ? 'Running' : 'Idle';
-    if(deviceRows[3]) deviceRows[3].textContent = (window.dovlimEspIsOnline && window.dovlimEspIsOnline()) ? 'Online' : 'Offline';
+    if(deviceRows[3]){
+      const isOnline = window.dovlimEspIsOnline && window.dovlimEspIsOnline();
+      deviceRows[3].textContent = isOnline ? 'Online' : 'Offline';
+      deviceRows[3].style.color = isOnline ? 'var(--ok)' : 'var(--danger)';
+    }
   }
 
   function dovlimRenderAllLive(){
