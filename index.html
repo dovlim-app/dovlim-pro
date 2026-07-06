@@ -437,12 +437,12 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="swrap" style="padding-bottom:14px"><div class="shead"><span id="t-water-low-lbl">Low water alert</span><strong id="wv">20%</strong></div><input type="range" min="5" max="40" value="20" step="5" oninput="document.getElementById('wv').textContent=this.value+'%'"></div>
     </div>
     <div class="card"><div class="clbl" id="t-notif-lbl">Notifications</div>
-      <div class="srow"><div class="srowico" style="background:#0d1829">💧</div><div style="flex:1"><div class="stitle" id="t-notif1">Low water</div><div class="ssub" id="t-notif1-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
-      <div class="srow"><div class="srowico" style="background:#1a1200">🌾</div><div style="flex:1"><div class="stitle" id="t-notif2">Low seeds</div><div class="ssub" id="t-notif2-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
-      <div class="srow"><div class="srowico" style="background:#0f0f18">🔋</div><div style="flex:1"><div class="stitle" id="t-notif3">Low battery</div><div class="ssub" id="t-notif3-sub">Alert when below 10%</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
-      <div class="srow"><div class="srowico" style="background:#1a0f0e">🌡️</div><div style="flex:1"><div class="stitle" id="t-notif4">High temp/humidity — box</div><div class="ssub" id="t-notif4-sub">Food spoilage risk</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
-      <div class="srow"><div class="srowico" style="background:#0f1a0e">🐦</div><div style="flex:1"><div class="stitle" id="t-notif5">High humidity — cage air</div><div class="ssub" id="t-notif5-sub">Bird health risk · clean cage</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
-      <div class="srow"><div class="srowico" style="background:#0f0f1a">📶</div><div style="flex:1"><div class="stitle" id="t-notif6">WiFi disconnected</div><div class="ssub" id="t-notif6-sub">Device offline or out of range</div></div><button class="tog ton" onclick="togBtn(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0d1829">💧</div><div style="flex:1"><div class="stitle" id="t-notif1">Low water</div><div class="ssub" id="t-notif1-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#1a1200">🌾</div><div style="flex:1"><div class="stitle" id="t-notif2">Low seeds</div><div class="ssub" id="t-notif2-sub">Alert when below 20%</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f0f18">🔋</div><div style="flex:1"><div class="stitle" id="t-notif3">Low battery</div><div class="ssub" id="t-notif3-sub">Alert when below 3.3V</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#1a0f0e">🌡️</div><div style="flex:1"><div class="stitle" id="t-notif4">High temperature</div><div class="ssub" id="t-notif4-sub">Sensor outside the box</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f1a0e">🐦</div><div style="flex:1"><div class="stitle" id="t-notif5">High humidity</div><div class="ssub" id="t-notif5-sub">Sensor outside the box</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
+      <div class="srow"><div class="srowico" style="background:#0f0f1a">📶</div><div style="flex:1"><div class="stitle" id="t-notif6">Device offline</div><div class="ssub" id="t-notif6-sub">No update from ESP32</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
     </div>
 
     <div class="card"><div class="clbl" id="t-devconn-lbl">Device Connection</div>
@@ -516,8 +516,8 @@ var T={
     seedSizeLabel:'Seed Size',seedSizeHint:'Select before using manual feed or adding meals',
     small:'Small',medium:'Medium',large:'Large',
     alertThresh:'Alert Thresholds',maxHumidity:'Max cage humidity',maxTemp:'Max cage temperature',lowFood:'Low food alert',
-    notifLabel:'Notifications',lowWater:'Low water',lowSeeds:'Low seeds',lowBattery:'Low battery',highTempBox:'High temp/humidity — box',highHumCage:'High humidity — cage air',wifiOff:'WiFi disconnected',
-    alertWhenBelow:'Alert when below',foodSpoilage:'Food spoilage risk',birdRisk:'Bird health risk · clean cage',deviceOffline:'Device offline or out of range',
+    notifLabel:'Notifications',lowWater:'Low water',lowSeeds:'Low seeds',lowBattery:'Low battery',highTempBox:'High temperature',highHumCage:'High humidity',wifiOff:'Device offline',
+    alertWhenBelow:'Alert when below',foodSpoilage:'Food spoilage risk',birdRisk:'Bird health risk · clean cage',deviceOffline:'No update from ESP32',sensorOutsideBox:'Sensor outside the box',
     hardware:'Hardware',camIP:'📷 Camera IP',camIPHint:'Used to load the live stream',wifiNetwork:'WiFi network',save:'Save',
     deviceLabel:'Device',checkUpdates:'Check for updates',fwUpToDate:'FW 8.1.2 · Up to date',factoryReset:'Reset schedule',factoryResetHint:'Resets feeding times & weights to default',
     factoryResetConfirm:'Reset the feeding schedule to default times & weights? This cannot be undone.',
@@ -607,8 +607,8 @@ var T={
     seedSizeLabel:'حجم البذور',seedSizeHint:'حدد قبل التوزيع اليدوي أو إضافة وجبات',
     small:'صغيرة',medium:'متوسطة',large:'كبيرة',
     alertThresh:'حدود التنبيه',maxHumidity:'أقصى رطوبة للقفص',maxTemp:'أقصى حرارة للقفص',lowFood:'تنبيه نقص الغذاء',
-    notifLabel:'الإشعارات',lowWater:'ماء منخفض',lowSeeds:'بذور منخفضة',lowBattery:'بطارية منخفضة',highTempBox:'حرارة/رطوبة عالية — الصندوق',highHumCage:'رطوبة عالية — القفص',wifiOff:'انقطع الواي فاي',
-    alertWhenBelow:'تنبيه عند أقل من',foodSpoilage:'خطر فساد الغذاء',birdRisk:'خطر على صحة الطير · نظف القفص',deviceOffline:'الجهاز غير متصل',
+    notifLabel:'الإشعارات',lowWater:'ماء منخفض',lowSeeds:'بذور منخفضة',lowBattery:'بطارية منخفضة',highTempBox:'حرارة عالية',highHumCage:'رطوبة عالية',wifiOff:'الجهاز غير متصل',
+    alertWhenBelow:'تنبيه عند أقل من',foodSpoilage:'خطر فساد الغذاء',birdRisk:'خطر على صحة الطير · نظف القفص',deviceOffline:'لا تحديث من ESP32',sensorOutsideBox:'الحساس خارج الصندوق',
     hardware:'الأجهزة',camIP:'📷 عنوان IP الكاميرا',camIPHint:'يستخدم لتحميل البث المباشر',wifiNetwork:'شبكة الواي فاي',save:'حفظ',
     deviceLabel:'الجهاز',checkUpdates:'التحقق من التحديثات',fwUpToDate:'FW 8.1.2 · محدّث',factoryReset:'إعادة ضبط الجدول',factoryResetHint:'يرجع أوقات وأوزان التغذية للافتراضي',
     factoryResetConfirm:'إعادة ضبط جدول التغذية للأوقات والأوزان الافتراضية؟ لا يمكن التراجع عن هذا.',
@@ -959,9 +959,9 @@ function applyLanguage(l){
   setText('t-notif-lbl',t.notifLabel);
   setText('t-notif1',t.lowWater);setText('t-notif1-sub','Alert when below 20%');
   setText('t-notif2',t.lowSeeds);setText('t-notif2-sub','Alert when below 20%');
-  setText('t-notif3',t.lowBattery);setText('t-notif3-sub','Alert when below 10%');
-  setText('t-notif4',t.highTempBox);setText('t-notif4-sub',t.foodSpoilage);
-  setText('t-notif5',t.highHumCage);setText('t-notif5-sub',t.birdRisk);
+  setText('t-notif3',t.lowBattery);setText('t-notif3-sub','Alert when below 3.3V');
+  setText('t-notif4',t.highTempBox);setText('t-notif4-sub',t.sensorOutsideBox);
+  setText('t-notif5',t.highHumCage);setText('t-notif5-sub',t.sensorOutsideBox);
   setText('t-notif6',t.wifiOff);setText('t-notif6-sub',t.deviceOffline);
   setText('t-hw-lbl',t.hardware);
   setText('t-cam-ip-title',t.camIP);setText('t-cam-ip-hint',t.camIPHint);
@@ -1014,6 +1014,53 @@ function togBtn(btn){
   btn.classList.toggle('toff',on);
   syncAddMealTimes();
 }
+
+// PATCH 30 — notification toggles now actually persist and actually gate
+// the alerts they claim to control. Kept as a SEPARATE function (not
+// merged into togBtn) because togBtn is shared with the meal
+// enabled/disabled toggles on the Schedule screen - only the 6 rows in
+// Settings call toggleNotifPref via their onclick, so meal toggles are
+// completely unaffected.
+function dovlimGetNotifPrefs(){
+  var defaults = {lowWater:true, lowSeeds:true, lowBattery:true, highTempCage:true, highHumCage:true, deviceOffline:true};
+  try{
+    var saved = JSON.parse(localStorage.getItem('dovlim_notif_prefs') || 'null');
+    if(saved && typeof saved === 'object') return Object.assign({}, defaults, saved);
+  }catch(e){}
+  return defaults;
+}
+
+function toggleNotifPref(btn){
+  var row = btn.closest('.srow');
+  var titleEl = row ? row.querySelector('[id^="t-notif"]') : null;
+  if(!titleEl) return;
+  var map = {
+    't-notif1':'lowWater', 't-notif2':'lowSeeds', 't-notif3':'lowBattery',
+    't-notif4':'highTempCage', 't-notif5':'highHumCage', 't-notif6':'deviceOffline'
+  };
+  var key = map[titleEl.id];
+  if(!key) return;
+  var prefs = dovlimGetNotifPrefs();
+  prefs[key] = btn.classList.contains('ton');
+  localStorage.setItem('dovlim_notif_prefs', JSON.stringify(prefs));
+  if(typeof dovlimRenderAllLive === 'function') dovlimRenderAllLive();
+}
+
+function dovlimApplyNotifPrefsToUI(){
+  var prefs = dovlimGetNotifPrefs();
+  var map = {lowWater:'t-notif1', lowSeeds:'t-notif2', lowBattery:'t-notif3', highTempCage:'t-notif4', highHumCage:'t-notif5', deviceOffline:'t-notif6'};
+  Object.keys(map).forEach(function(key){
+    var titleEl = document.getElementById(map[key]);
+    var row = titleEl ? titleEl.closest('.srow') : null;
+    var btn = row ? row.querySelector('.tog') : null;
+    if(!btn) return;
+    var on = prefs[key] !== false;
+    btn.classList.toggle('ton', on);
+    btn.classList.toggle('toff', !on);
+  });
+}
+document.addEventListener('DOMContentLoaded', dovlimApplyNotifPrefsToUI);
+if(document.readyState !== 'loading') dovlimApplyNotifPrefsToUI();
 
 function syncAddMealTimes(){
   var items=document.querySelectorAll('#s-schedule .slist .sitem');
@@ -3197,6 +3244,7 @@ document.addEventListener('DOMContentLoaded',function(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettingsFinal();
     const schedule = d.schedule || window.dovlimLastSchedule || {};
+    const notifPrefs = dovlimGetNotifPrefs(); // PATCH 30
 
     const active = [];
     const cageHum = d.cage && d.cage.humidity !== undefined ? Number(d.cage.humidity) : NaN;
@@ -3204,20 +3252,35 @@ document.addEventListener('DOMContentLoaded',function(){
     const foodPercent = d.food && d.food.percent !== undefined ? Number(d.food.percent) : NaN;
     const waterPercent = d.water && d.water.percent !== undefined ? Number(d.water.percent) : NaN;
 
-    if(Number.isFinite(cageHum) && cageHum > settings.humidityMax){
+    if(notifPrefs.highHumCage && Number.isFinite(cageHum) && cageHum > settings.humidityMax){
       active.push(dovlimAlertItem('var(--warn)', tr('alertHighHum'), Math.round(cageHum) + '% detected · Max ' + settings.humidityMax + '%', 'now'));
     }
 
-    if(Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
+    if(notifPrefs.highTempCage && Number.isFinite(cageTemp) && cageTemp > settings.temperatureMax){
       active.push(dovlimAlertItem('var(--warn)', tr('highTempCageAir'), cageTemp.toFixed(1) + '°C detected · Max ' + settings.temperatureMax + '°C', 'now'));
     }
 
-    if(Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
+    if(notifPrefs.lowSeeds && Number.isFinite(foodPercent) && foodPercent <= settings.lowFoodPercent){
       active.push(dovlimAlertItem('var(--danger)', tr('lowSeeds'), Math.round(foodPercent) + '% detected · Min ' + settings.lowFoodPercent + '%', 'now'));
     }
 
-    if(Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
+    if(notifPrefs.lowWater && Number.isFinite(waterPercent) && waterPercent <= settings.lowWaterPercent){
       active.push(dovlimAlertItem('var(--danger)', tr('lowWater'), Math.round(waterPercent) + '% detected · Min ' + settings.lowWaterPercent + '%', 'now'));
+    }
+
+    // PATCH 30 — two notification toggles ("Low battery", "Device offline")
+    // existed in Settings with no corresponding alert logic anywhere in the
+    // app. These are the real checks that back them. Battery threshold
+    // (3.3V) is a reasonable default for a single Li-ion cell, agreed with
+    // the project owner - adjust here if a different cutoff is wanted.
+    const battV = d.power && d.power.batteryVoltage !== undefined ? Number(d.power.batteryVoltage) : NaN;
+    if(notifPrefs.lowBattery && Number.isFinite(battV) && battV > 0 && battV < 3.3){
+      active.push(dovlimAlertItem('var(--danger)', tr('lowBattery'), battV.toFixed(2) + 'V detected · Min 3.3V', 'now'));
+    }
+
+    const isOnline = window.dovlimEspIsOnline && window.dovlimEspIsOnline();
+    if(notifPrefs.deviceOffline && !isOnline){
+      active.push(dovlimAlertItem('var(--danger)', tr('wifiOff'), tr('deviceOffline'), 'now'));
     }
 
     // PATCH 26 — surface diagnostics the firmware already computes and
