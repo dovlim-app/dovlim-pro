@@ -814,6 +814,30 @@ function dovlimFactoryReset(){
     updates['device/schedule/' + m + '/seedType'] = defaults[m].seedType;
   });
 
+  // PATCH 27b — the Schedule screen also has an OLDER, fully separate
+  // localStorage-based data source (loadMeals()/saveMeals(), key
+  // 'dovlim_v81_meals') that re-populates the same on-screen rows on
+  // every page load (syncAll(), called on DOMContentLoaded), independent
+  // of Firebase. Discovered by direct code inspection (2 duplicate
+  // loadMeals() closures, both reading/writing this same key) after a
+  // real-device test showed the Schedule tab reverting to old custom
+  // values on re-entry even though Firebase had already been reset.
+  // That local closure's loadMeals()/saveMeals() are private (not on
+  // window), so writing the SAME key directly here - with the exact
+  // schema DEFAULT_MEALS uses - is the safe way to keep both sources in
+  // agreement without restructuring the closures.
+  try {
+    var localDefaults = [
+      {id:1,label:'Morning',icon:'🌅',time:'08:00',grams:2.5,enabled:true, seedSize:'small'},
+      {id:2,label:'Midday', icon:'☀️',time:'12:30',grams:2.0,enabled:true, seedSize:'small'},
+      {id:3,label:'Evening',icon:'🌆',time:'17:00',grams:2.5,enabled:true, seedSize:'small'},
+      {id:4,label:'Night',  icon:'🌙',time:'21:00',grams:1.5,enabled:false,seedSize:'small'}
+    ];
+    localStorage.setItem('dovlim_v81_meals', JSON.stringify(localDefaults));
+  } catch(e) {
+    console.error('Factory reset: local cache clear failed (Firebase reset still applied)', e);
+  }
+
   firebase.database().ref().update(updates).then(function(){
     alert(tr('factoryResetDone'));
   }).catch(function(err){
