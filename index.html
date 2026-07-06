@@ -214,7 +214,7 @@ html,body{height:100%;overflow:hidden;background:#000;font-family:'Inter',sans-s
 .srow:last-child{border-bottom:none;}
 .srowico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
 .stitle{font-size:14px;font-weight:500;color:var(--text);}
-.ssub{font-size:12px;color:var(--text3);margin-top:1px;}
+.ssub{font-size:12px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
 
 /* SLIDER */
 .swrap{padding:12px 16px;}
@@ -445,14 +445,6 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
       <div class="srow"><div class="srowico" style="background:#0f0f1a">📶</div><div style="flex:1"><div class="stitle" id="t-notif6">Device offline</div><div class="ssub" id="t-notif6-sub">No update from ESP32</div></div><button class="tog ton" onclick="togBtn(this);toggleNotifPref(this)"><div class="tknob"></div></button></div>
     </div>
 
-    <div class="card"><div class="clbl" id="t-devconn-lbl">Device Connection</div>
-      <div class="cbody" style="display:flex;flex-direction:column;gap:8px">
-        <div><div class="stitle" id="t-esp32ip-lbl">📡 ESP32 Device IP</div><div class="ssub" id="t-esp32ip-hint">Local control: phone and box on same WiFi</div></div>
-        <input id="deviceIp" class="remoteInput" type="text" placeholder="192.168.1.105">
-        <button class="remoteBtn" onclick="saveDeviceIp()" id="t-savedeviceip-btn">Save Device IP</button>
-        <div id="deviceIpStatus" class="remoteStatus">Not saved</div>
-      </div>
-    </div>
 <div class="card"><div class="clbl" id="t-hw-lbl">Hardware</div>
       <div class="srow" style="flex-direction:column;align-items:stretch;gap:8px;padding:14px 16px">
         <div><div class="stitle" id="t-cam-ip-title">📷 Camera IP</div><div class="ssub" id="t-cam-ip-hint">Used to load the live stream</div></div>
@@ -1484,13 +1476,11 @@ document.addEventListener('DOMContentLoaded',function(){
   if (savedLang && typeof applyLanguage === 'function') {
     applyLanguage(savedLang);
   }
-  setInterval(async()=>{
-    try{
-      const data=await spApiGet(SMARTPRO_API.status);
-      spUpdateDashboard(data);
-      spSetApiStatus(true,'Live · '+new Date().toLocaleTimeString());
-    }catch(e){}
-  },10000);
+  // PATCH 32 - removed the 10s polling loop that called spApiGet() against
+  // a local ESP32 IP. That whole local-network API layer (Device Connection
+  // card in Settings, now removed) had no matching server anywhere in the
+  // firmware - it silently failed every 10 seconds, forever, for no benefit.
+  // Real live data already comes from the Firebase listener (bindRealtimeHome).
 });
 
 // Language handling fully rebuilt in PATCH 24 - see applyLanguage() above.
@@ -2372,9 +2362,20 @@ document.addEventListener('DOMContentLoaded',function(){
   }
 
   function updateFirmware(status){
-    const fw = status && status.firmware ? status.firmware : "--";
+    const fw = status && status.firmware ? status.firmware : "";
     const settingsFw = qs("#t-update-sub");
-    if (settingsFw) settingsFw.textContent = "FW " + fw;
+    if (!settingsFw) return;
+    if (!fw) { settingsFw.textContent = "FW --"; return; }
+    // PATCH 31 - the full firmware string (DOVLIM_CORE_V5_4C_PATCH_A_B_C_
+    // ..._Q) overflows this card as patches accumulate over time. Show a
+    // short "V5.4C · Patch Q" form (version + most recent patch letter)
+    // instead. Full string still available on hover via the title attribute.
+    const versionMatch = fw.match(/V(\d+_\d+[A-Z]?)/);
+    const version = versionMatch ? versionMatch[1].replace('_', '.') : fw;
+    const patchPart = fw.split('_PATCH_')[1];
+    const lastPatch = patchPart ? patchPart.split('_').pop() : '';
+    settingsFw.textContent = 'FW V' + version + (lastPatch ? ' · Patch ' + lastPatch : '');
+    settingsFw.title = fw;
   }
 
   function bindRealtimeHome(){
