@@ -3314,6 +3314,10 @@ document.addEventListener('DOMContentLoaded',function(){
     }
 
     const deviceRows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow .stval");
+    // PATCH 29 - defensive: strip any leftover 'dovlim-not-active' class
+    // (from the now-removed conflicting forEach) so its !important color
+    // rule can never again override the colors this function sets below.
+    deviceRows.forEach(function(el){ el.classList.remove('dovlim-not-active'); });
     if(deviceRows[0]){
       const solarV = d.power && d.power.solarVoltage !== undefined ? Number(d.power.solarVoltage) : NaN;
       if (Number.isFinite(solarV) && solarV > 0) {
@@ -3698,21 +3702,16 @@ document.addEventListener('DOMContentLoaded',function(){
     var cageBadge=qs("#s-home .erow .ebox:nth-child(2) .ebadge");
     if(cageBadge) cageBadge.style.display="none";
 
-    // Device Health values are future modules: keep rows visible, remove fake numbers.
-    // PATCH 28: battery is now real data (firmware Patch I/J) - no longer blanked here.
-    qsa("#s-stats .card .strow").forEach(function(row){
-      var label=qs(".stlbl",row), val=qs(".stval",row);
-      if(!label||!val)return;
-      var text=label.textContent.toLowerCase();
-      if(val.id==="t-bat-val")return; // real data now, handled by Patch 28's own listener
-      if(text.includes("solar")||text.includes("pump")||text.includes("uptime")||
-         text.includes("solaire")||text.includes("pompe")||
-         text.includes("solar hoy")||
-         text.includes("solare")||text.includes("ポンプ")){
-        val.textContent=t.notActive;
-        val.classList.add("dovlim-not-active");
-      }
-    });
+    // PATCH 29 — removed the old forEach that force-muted Solar/Pump/Uptime
+    // with an !important CSS class (dovlim-not-active). Battery already had
+    // an exemption (id="t-bat-val") because it became real data in Patch 28;
+    // Solar, Pump, and Uptime became real data too (Patch T / PATCH 20's
+    // online watchdog / d.water.pumpRunning) but were never added to that
+    // exemption, so the !important class kept overriding the correct color
+    // dovlimRenderStatsLive() set right after, even though the NUMBER shown
+    // was correct. All four Device Health rows are now exclusively owned by
+    // dovlimRenderStatsLive() - this block is fully superseded, not just
+    // redundant, and was actively fighting it.
 
     // Avg cards/charts remain visible; remove fake numeric summaries only.
     var avg1=qs("#s-stats .lgrid .lcard:nth-child(1) .lval");
