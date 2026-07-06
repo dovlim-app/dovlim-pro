@@ -462,7 +462,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
     </div>
     <div class="card"><div class="clbl" id="t-device-lbl">Device</div>
       <div class="srow"><div class="srowico" style="background:var(--bg3)">🔄</div><div style="flex:1"><div class="stitle" id="t-update-title">Check for updates</div><div class="ssub" id="t-update-sub">FW 8.1.2 · Up to date</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
-      <div class="srow"><div class="srowico" style="background:#3d0f0f">⚠️</div><div style="flex:1"><div class="stitle" style="color:var(--danger)" id="t-reset-title">Factory reset</div><div class="ssub" id="t-reset-sub">Clears all schedules &amp; data</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
+      <div class="srow" onclick="dovlimFactoryReset()" style="cursor:pointer"><div class="srowico" style="background:#3d0f0f">⚠️</div><div style="flex:1"><div class="stitle" style="color:var(--danger)" id="t-reset-title">Reset schedule</div><div class="ssub" id="t-reset-sub">Resets feeding times &amp; weights to default</div></div><span style="color:var(--text3);font-size:18px">›</span></div>
     </div>
   </div>
 </div>
@@ -520,7 +520,10 @@ var T={
     notifLabel:'Notifications',lowWater:'Low water',lowSeeds:'Low seeds',lowBattery:'Low battery',highTempBox:'High temp/humidity — box',highHumCage:'High humidity — cage air',wifiOff:'WiFi disconnected',
     alertWhenBelow:'Alert when below',foodSpoilage:'Food spoilage risk',birdRisk:'Bird health risk · clean cage',deviceOffline:'Device offline or out of range',
     hardware:'Hardware',camIP:'📷 Camera IP',camIPHint:'Used to load the live stream',wifiNetwork:'WiFi network',save:'Save',
-    deviceLabel:'Device',checkUpdates:'Check for updates',fwUpToDate:'FW 8.1.2 · Up to date',factoryReset:'Factory reset',factoryResetHint:'Clears all schedules & data',
+    deviceLabel:'Device',checkUpdates:'Check for updates',fwUpToDate:'FW 8.1.2 · Up to date',factoryReset:'Reset schedule',factoryResetHint:'Resets feeding times & weights to default',
+    factoryResetConfirm:'Reset the feeding schedule to default times & weights? This cannot be undone.',
+    factoryResetDone:'Schedule reset to default.',
+    factoryResetError:'Reset failed — check your connection and try again.',
     pumpCycles:'14 this week',motionSub:'Near feeder',motionTitle:'Movement detected',
     alertHighHum:'High humidity — cage air',alertHighHumSub:'71% detected · Max 65% · Clean cage soon',
     mealDist:'Meal distributed',morning:'Morning · 08:00',midday:'Midday · 12:30',
@@ -608,7 +611,10 @@ var T={
     notifLabel:'الإشعارات',lowWater:'ماء منخفض',lowSeeds:'بذور منخفضة',lowBattery:'بطارية منخفضة',highTempBox:'حرارة/رطوبة عالية — الصندوق',highHumCage:'رطوبة عالية — القفص',wifiOff:'انقطع الواي فاي',
     alertWhenBelow:'تنبيه عند أقل من',foodSpoilage:'خطر فساد الغذاء',birdRisk:'خطر على صحة الطير · نظف القفص',deviceOffline:'الجهاز غير متصل',
     hardware:'الأجهزة',camIP:'📷 عنوان IP الكاميرا',camIPHint:'يستخدم لتحميل البث المباشر',wifiNetwork:'شبكة الواي فاي',save:'حفظ',
-    deviceLabel:'الجهاز',checkUpdates:'التحقق من التحديثات',fwUpToDate:'FW 8.1.2 · محدّث',factoryReset:'إعادة ضبط المصنع',factoryResetHint:'يمسح جميع الجداول والبيانات',
+    deviceLabel:'الجهاز',checkUpdates:'التحقق من التحديثات',fwUpToDate:'FW 8.1.2 · محدّث',factoryReset:'إعادة ضبط الجدول',factoryResetHint:'يرجع أوقات وأوزان التغذية للافتراضي',
+    factoryResetConfirm:'إعادة ضبط جدول التغذية للأوقات والأوزان الافتراضية؟ لا يمكن التراجع عن هذا.',
+    factoryResetDone:'تم إرجاع الجدول للوضع الافتراضي.',
+    factoryResetError:'فشلت إعادة الضبط — تحقق من الاتصال وحاول مرة أخرى.',
     pumpCycles:'14 هذا الأسبوع',motionSub:'بالقرب من الموزع',motionTitle:'تم رصد حركة',
     alertHighHum:'رطوبة عالية — هواء القفص',alertHighHumSub:'71% — الحد 65% · نظف القفص قريباً',
     mealDist:'تم توزيع وجبة',morning:'صباح · 08:00',midday:'ظهر · 12:30',
@@ -779,6 +785,41 @@ function dovlimTranslateStatus(raw){
   if (s === 'Waiting...') return tr('waitingStatus');
   if (s === 'Not recorded yet') return tr('notRecorded');
   return s; // unknown values (e.g. "Running", "Completed", "Refilled", "OK") shown as-is
+}
+
+// PATCH 27 — "Reset schedule" (was a dead "Factory reset" button with no
+// onclick at all). Scope is deliberately narrow: ONLY the 4 meal
+// times/weights/enabled/seedType, matching the exact defaults hardcoded
+// in the firmware's meals[] array (DOVLIM_CORE, top of file). Does NOT
+// touch alert thresholds, camera IP, device IP, or any other /device
+// node - those are separate settings the user did not ask to reset here.
+// Uses .update() with explicit per-field paths (not .set() on the whole
+// schedule node) so it never touches lastExecutedDay/lastResult/etc -
+// those are the firmware's own bookkeeping, not "schedule config".
+function dovlimFactoryReset(){
+  if(!confirm(tr('factoryResetConfirm'))) return;
+
+  var defaults = {
+    meal1:{time:'08:00',grams:2.5,enabled:true, seedType:'Small'},
+    meal2:{time:'12:30',grams:2.0,enabled:true, seedType:'Small'},
+    meal3:{time:'17:00',grams:2.5,enabled:true, seedType:'Small'},
+    meal4:{time:'21:00',grams:1.5,enabled:false,seedType:'Small'}
+  };
+
+  var updates = {};
+  Object.keys(defaults).forEach(function(m){
+    updates['device/schedule/' + m + '/time'] = defaults[m].time;
+    updates['device/schedule/' + m + '/grams'] = defaults[m].grams;
+    updates['device/schedule/' + m + '/enabled'] = defaults[m].enabled;
+    updates['device/schedule/' + m + '/seedType'] = defaults[m].seedType;
+  });
+
+  firebase.database().ref().update(updates).then(function(){
+    alert(tr('factoryResetDone'));
+  }).catch(function(err){
+    console.error('Factory reset failed', err);
+    alert(tr('factoryResetError'));
+  });
 }
 
 // ============================================================================
