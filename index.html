@@ -3314,7 +3314,15 @@ document.addEventListener('DOMContentLoaded',function(){
     }
 
     const deviceRows = qsa("#s-stats #t-dev-health-lbl + .cbody .strow .stval");
-    if(deviceRows[0]) deviceRows[0].textContent = '--';
+    if(deviceRows[0]){
+      const solarV = d.power && d.power.solarVoltage !== undefined ? Number(d.power.solarVoltage) : NaN;
+      if (Number.isFinite(solarV) && solarV > 0) {
+        deviceRows[0].textContent = solarV.toFixed(2) + 'V';
+        deviceRows[0].style.color = 'var(--warn)';
+      } else {
+        deviceRows[0].textContent = '--';
+      }
+    }
     if(deviceRows[1]){
       const battV = d.power && d.power.batteryVoltage !== undefined ? Number(d.power.batteryVoltage) : NaN;
       if (Number.isFinite(battV) && battV > 0) {
