@@ -1161,7 +1161,7 @@ var cd={
 var wd=[28,32,30,35,29,33,31],wl=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
 function drawChart(cid,lid,vals,lbls,col,colLast){
-  var mx=Math.max.apply(null,vals);
+  var mx=Math.max.apply(null,vals) || 1; // PATCH 37 - avoid NaN height when all values are 0 (e.g. first days after install, no history yet)
   document.getElementById(cid).innerHTML=vals.map(function(v,i){
     var h=Math.round(v/mx*100);
     return '<div class="bar" style="height:'+h+'%;background:'+(i===vals.length-1?colLast:col)+';"></div>';
@@ -1182,7 +1182,10 @@ function tick(){
     String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
 }
 
-drawChart('ch1','lb1',cd[7].v,cd[7].l,'var(--blue-md)','var(--blue)');
+// PATCH 37 - removed the fake drawChart('ch1', cd[7]...) call here.
+// dovlimRenderSeedChart() (defined further down) draws #ch1 with real
+// Firebase data the moment it's available. ch2 (Water Consumed) is a
+// separate chart and still uses placeholder data - out of scope here.
 drawChart('ch2','lb2',wd,wl,'var(--blue-md)','var(--blue)');
 tick();setInterval(tick,10000);
 
@@ -3154,6 +3157,40 @@ document.addEventListener('DOMContentLoaded',function(){
     }
   }
 
+  // PATCH 37 — real 7-day seed consumption chart, reading the history
+  // the firmware now actually records (PATCH U), replacing the old
+  // hardcoded fake numbers. Bars will read 0 for any day before this
+  // patch was installed on the device - there is no way to recover data
+  // that was never recorded, and showing 0 is more honest than a guess.
+  function dovlimRenderSeedChart(){
+    const d = dovlimLastDeviceData || {};
+    const daily = (d.history && d.history.daily) || {};
+    const todayTotal = d.food && d.food.dailyTotal !== undefined ? Number(d.food.dailyTotal) : NaN;
+
+    const vals = [];
+    const lbls = [];
+    const today = new Date();
+
+    for (let i = 6; i >= 0; i--) {
+      const dt = new Date(today);
+      dt.setDate(today.getDate() - i);
+      const key = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+
+      let v;
+      if (i === 0 && Number.isFinite(todayTotal)) {
+        v = todayTotal; // today isn't archived yet - use the live running total
+      } else if (daily[key] && daily[key].foodGrams !== undefined) {
+        v = Number(daily[key].foodGrams);
+      } else {
+        v = 0;
+      }
+      vals.push(Number.isFinite(v) ? v : 0);
+      lbls.push(dt.toLocaleDateString('en-US', { weekday: 'short' }));
+    }
+
+    if (typeof drawChart === 'function') drawChart('ch1', 'lb1', vals, lbls, 'var(--blue-md)', 'var(--blue)');
+  }
+
   function dovlimRenderStatsLive(){
     const d = dovlimLastDeviceData || {};
     const settings = dovlimGetSettingsFinal();
@@ -3233,6 +3270,7 @@ document.addEventListener('DOMContentLoaded',function(){
     try{ dovlimCleanStatsPumpRow(); }catch(e){ console.error("Stats cleanup failed", e); }
     try{ dovlimRenderAlertsStrict(); }catch(e){ console.error("Alerts render failed", e); }
     try{ dovlimRenderStatsLive(); }catch(e){ console.error("Stats render failed", e); }
+    try{ dovlimRenderSeedChart(); }catch(e){ console.error("Seed chart render failed", e); }
   }
 
 
