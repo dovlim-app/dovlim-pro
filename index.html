@@ -210,7 +210,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Inter',s
 .dval{font-size:18px;font-weight:500;color:var(--text);min-width:52px;text-align:center;font-family:'Inter',sans-serif;}
 
 /* SAVE BTN */
-.savebtn{background:var(--blue);color:#fff;border:none;border-radius:var(--rs);padding:15px;font-size:15px;font-weight:500;width:100%;cursor:pointer;margin-top:4px;font-family:'Inter',sans-serif;}
+.savebtn{background:#5aa0e6;color:#fff;border:none;border-radius:var(--rs);padding:15px;font-size:15px;font-weight:500;width:100%;cursor:pointer;margin-top:4px;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;}
 .savebtn:disabled{background:var(--bg4);color:var(--text3);cursor:not-allowed;}
 
 /* SECTION LABEL */
@@ -397,7 +397,7 @@ input[type=range]::-webkit-slider-thumb{appearance:none;width:22px;height:22px;b
           <button class="dbtn" onclick="chgD(0.5)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         </div>
       </div>
-      <button class="savebtn" id="savebtn" disabled onclick="doSave(this)"><span id="t-savemeal">Save meal</span></button>
+      <button class="savebtn" id="savebtn" disabled onclick="doSave(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span id="t-savemeal">Save meal</span></button>
     </div></div>
     <div class="card"><div class="clbl" id="t-manfeed-lbl">Manual Feed</div><div class="cbody" style="display:flex;flex-direction:column;gap:12px">
       <div style="display:flex;align-items:center;gap:12px">
