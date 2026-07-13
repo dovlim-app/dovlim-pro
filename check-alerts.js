@@ -10,7 +10,11 @@ initializeApp({
   credential: cert({
     projectId: "dovlim-smart-pro-2",
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    // PATCH GHA-2 - GitHub Secrets store the key as plain text, so the
+    // "\n" sequences typed into the secret box are literal backslash+n
+    // characters, not real newlines. The PEM parser needs actual
+    // newlines, so we convert them here before use.
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
   }),
   databaseURL: process.env.FIREBASE_DATABASE_URL,
 });
