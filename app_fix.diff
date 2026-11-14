@@ -1,0 +1,126 @@
+diff --git a/index.html b/index.html
+index 7e75916..89303a9 100644
+--- a/index.html
++++ b/index.html
+@@ -3030,11 +3030,23 @@ document.addEventListener('DOMContentLoaded',function(){
+   };
+ 
+   function overrideAppActions(){
++    // APP-1: time and grams are kept on screen as "pending" and written to
++    // the device only by "Save meal" (before, every arrow press wrote).
++    const dovlimPendingTime = {};    // slot -> true
++    const dovlimPendingGrams = {};   // slot -> grams
++    function dovlimMarkPending(on){
++      const save = qs("#savebtn");
++      if(save) save.style.boxShadow = on ? "0 0 0 2px var(--warn)" : "";
++    }
++    function dovlimAnyPending(){
++      return Object.keys(dovlimPendingTime).length > 0 || Object.keys(dovlimPendingGrams).length > 0;
++    }
++
+     const oldUpdateScheduleTime = window.updateScheduleTime;
+     window.updateScheduleTime = function(input){
+       if (typeof oldUpdateScheduleTime === "function") oldUpdateScheduleTime(input);
+       const slot = Number(input && input.getAttribute("data-slot"));
+-      dovlimWriteMeal(slot, {time: input.value}, {requireSeed:true});
++      if(slot >= 0 && slot <= 3){ dovlimPendingTime[slot] = true; dovlimMarkPending(true); }
+     };
+ 
+     const oldTogBtn = window.togBtn;
+@@ -3061,12 +3073,14 @@ document.addEventListener('DOMContentLoaded',function(){
+       }
+       let grams = selectedMealGrams();
+       if(devMeal){
+-        const cur = Number(devMeal.grams);
++        const pend = dovlimPendingGrams[dovlimSelectedSlot];
++        const cur = Number(pend !== undefined ? pend : devMeal.grams);
+         const base = Number.isFinite(cur) ? cur : grams;
+         grams = Math.round(Math.max(1, Math.min(50, base + Number(delta || 0))) * 10) / 10;
+         const dv = qs("#dval"); if(dv) dv.textContent = grams + " g";
+       }
+-      dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seed}, {requireSeed:true});
++      dovlimPendingGrams[dovlimSelectedSlot] = grams;      // APP-1: saved by "Save meal" only
++      dovlimMarkPending(true);
+     };
+ 
+     const oldSelSeed = window.selSeed;
+@@ -3084,6 +3098,10 @@ document.addEventListener('DOMContentLoaded',function(){
+       if (typeof oldSelTime === "function") oldSelTime(el);
+       const slot = Number(el && el.getAttribute("data-slot"));
+       dovlimUpdateEditorFromSlot(slot);
++      if(dovlimPendingGrams[slot] !== undefined){            // APP-1: show the unsaved grams again
++        const dv = qs("#dval"); if(dv) dv.textContent = dovlimPendingGrams[slot] + " g";
++      }
++      dovlimMarkPending(dovlimAnyPending());
+     dovlimShowSeedRequirementIfNeeded();
+     };
+ 
+@@ -3095,7 +3113,18 @@ document.addEventListener('DOMContentLoaded',function(){
+         return;
+       }
+       const grams = selectedMealGrams();
+-      const ok = await dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seedType}, {requireSeed:true});
++      let ok = await dovlimWriteMeal(dovlimSelectedSlot, {grams: grams, seedType: seedType}, {requireSeed:true});
++      if (ok) { delete dovlimPendingGrams[dovlimSelectedSlot]; delete dovlimPendingTime[dovlimSelectedSlot]; }
++      // APP-1: other meals with unsaved changes (time edited in the list, grams edited then left)
++      for (let s = 0; s <= 3; s++) {
++        if (s === dovlimSelectedSlot) continue;
++        if (!dovlimPendingTime[s] && dovlimPendingGrams[s] === undefined) continue;
++        const patch = (dovlimPendingGrams[s] !== undefined) ? {grams: dovlimPendingGrams[s]} : {};
++        const okS = await dovlimWriteMeal(s, patch, {requireSeed:true});
++        if (okS) { delete dovlimPendingGrams[s]; delete dovlimPendingTime[s]; } else ok = false;
++      }
++      dovlimUpdateEditorFromSlot(dovlimSelectedSlot);
++      dovlimMarkPending(dovlimAnyPending());
+       if (ok && btn) {
+         const old = btn.textContent || "Save meal";
+         btn.textContent = tr('savedW');
+@@ -3468,6 +3497,8 @@ document.addEventListener('DOMContentLoaded',function(){
+       active.push(dovlimAlertItem('var(--danger)', tr('jamSuspectedAlert'), tr('jamSuspectedSub'), 'now'));
+     }
+ 
++    window.dovlimActiveAlertCount = active.length;   // APP-3: read by the home banner
++
+     if(active.length === 0){
+       active.push(dovlimAlertItem('var(--ok)', tr('noActiveAlerts'), tr('allLimitsNormal'), 'now'));
+     }
+@@ -4402,7 +4433,7 @@ document.addEventListener('DOMContentLoaded',function(){
+   }
+ 
+   function registerForPush(){
+-    navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function(registration){
++    navigator.serviceWorker.register('firebase-messaging-sw.js').then(function(registration){
+       return Notification.requestPermission().then(function(permission){
+         if (permission !== 'granted') {
+           console.warn("PATCH FCM-1: notification permission not granted");
+@@ -4863,12 +4894,12 @@ document.addEventListener('DOMContentLoaded',function(){
+   function setText(id,v){ var e=document.getElementById(id); if(e){ if(!dovlimSwapLeadingEmoji(e,v)) e.textContent=v; } }
+ 
+   var langMap={
+-    en:{sleeping:"All good — night sleep mode starts at:",battery:"Saving power — will resume at:",normal:"All good — night sleep mode starts at:",normalOff:"All good — the system is operating normally",na:"--",offline:"Device not connected — readings may be out of date"},
+-    ar:{sleeping:"كل شيء على ما يرام - يبدأ وضع السكون الليلي عند:",battery:"توفير الطاقة - يستأنف التشغيل عند:",normal:"كل شيء على ما يرام - يبدأ وضع السكون الليلي عند:",normalOff:"كل شيء على ما يرام - النظام يعمل بشكل طبيعي",na:"--",offline:"الجهاز غير متصل — القراءات قد تكون قديمة"},
+-    fr:{sleeping:"Tout va bien — le mode veille nocturne commence à :",battery:"Économie d'énergie — reprise à :",normal:"Tout va bien — le mode veille nocturne commence à :",normalOff:"Tout va bien — le système fonctionne normalement",na:"--",offline:"Appareil non connecté — données possiblement obsolètes"},
+-    es:{sleeping:"Todo bien — el modo de sueño nocturno comienza a las:",battery:"Ahorro de energía — se reanuda a las:",normal:"Todo bien — el modo de sueño nocturno comienza a las:",normalOff:"Todo bien — el sistema funciona normalmente",na:"--",offline:"Dispositivo sin conexión — datos posiblemente desactualizados"},
+-    it:{sleeping:"Tutto bene — la modalità di riposo notturno inizia alle:",battery:"Risparmio energetico — riprende alle:",normal:"Tutto bene — la modalità di riposo notturno inizia alle:",normalOff:"Tutto bene — il sistema funziona normalmente",na:"--",offline:"Dispositivo non connesso — dati forse non aggiornati"},
+-    ja:{sleeping:"問題ありません — 夜間スリープモードの開始時刻:",battery:"省電力中 — 再開時刻:",normal:"問題ありません — 夜間スリープモードの開始時刻:",normalOff:"問題ありません — システムは正常に動作しています",na:"--",offline:"デバイス未接続 — 表示は古い可能性があります"}
++    en:{sleeping:"All good — night sleep mode starts at:",battery:"Saving power — will resume at:",normal:"All good — night sleep mode starts at:",normalOff:"All good — the system is operating normally",na:"--",offline:"Device not connected — readings may be out of date",alerts:"Attention — active alerts:"},
++    ar:{sleeping:"كل شيء على ما يرام - يبدأ وضع السكون الليلي عند:",battery:"توفير الطاقة - يستأنف التشغيل عند:",normal:"كل شيء على ما يرام - يبدأ وضع السكون الليلي عند:",normalOff:"كل شيء على ما يرام - النظام يعمل بشكل طبيعي",na:"--",offline:"الجهاز غير متصل — القراءات قد تكون قديمة",alerts:"تنبيه — توجد تنبيهات نشطة:"},
++    fr:{sleeping:"Tout va bien — le mode veille nocturne commence à :",battery:"Économie d'énergie — reprise à :",normal:"Tout va bien — le mode veille nocturne commence à :",normalOff:"Tout va bien — le système fonctionne normalement",na:"--",offline:"Appareil non connecté — données possiblement obsolètes",alerts:"Attention — alertes actives :"},
++    es:{sleeping:"Todo bien — el modo de sueño nocturno comienza a las:",battery:"Ahorro de energía — se reanuda a las:",normal:"Todo bien — el modo de sueño nocturno comienza a las:",normalOff:"Todo bien — el sistema funciona normalmente",na:"--",offline:"Dispositivo sin conexión — datos posiblemente desactualizados",alerts:"Atención — alertas activas:"},
++    it:{sleeping:"Tutto bene — la modalità di riposo notturno inizia alle:",battery:"Risparmio energetico — riprende alle:",normal:"Tutto bene — la modalità di riposo notturno inizia alle:",normalOff:"Tutto bene — il sistema funziona normalmente",na:"--",offline:"Dispositivo non connesso — dati forse non aggiornati",alerts:"Attenzione — avvisi attivi:"},
++    ja:{sleeping:"問題ありません — 夜間スリープモードの開始時刻:",battery:"省電力中 — 再開時刻:",normal:"問題ありません — 夜間スリープモードの開始時刻:",normalOff:"問題ありません — システムは正常に動作しています",na:"--",offline:"デバイス未接続 — 表示は古い可能性があります",alerts:"注意 — アクティブなアラート:"}
+   };
+ 
+   function currentLang(){
+@@ -4905,6 +4936,11 @@ document.addEventListener('DOMContentLoaded',function(){
+       setText("t-power-icon", "🌙");
+       setText("t-power-title", t.sleeping);
+       setText("t-power-sub", lastNextWake || t.na);
++    } else if (lastSleeping === false && Number(window.dovlimActiveAlertCount) > 0) {
++      banner.style.display = "block";                       // APP-3: no "All good" during an alert
++      setText("t-power-icon", "⚠️");
++      setText("t-power-title", t.alerts);
++      setText("t-power-sub", String(window.dovlimActiveAlertCount));
+     } else if (lastSleeping === false && window.dovlimNightSleepEnabled === false) {
+       banner.style.display = "block";
+       setText("t-power-icon", "✅");
